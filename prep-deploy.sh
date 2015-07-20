@@ -18,10 +18,10 @@ if [ ${NUM_JRES} -ne 1 ] ; then
 fi
 
 # Build Windows
-# ${SCRIPT_BASE}/windows.sh || die "Error building Windows app"
+${SCRIPT_BASE}/windows.sh || die "Error building Windows app"
 
 # Build Linux
-# ${SCRIPT_BASE}/linux.sh || die "Error building Linux app"
+${SCRIPT_BASE}/linux.sh || die "Error building Linux app"
 
 # Build MacOS
 if [[ $(uname -a) =~ "Linux" ]] ; then
