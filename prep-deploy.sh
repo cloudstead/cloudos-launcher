@@ -7,8 +7,18 @@ function die {
 BASE_DIR="$(cd $(dirname ${0}) && pwd)"
 cd ${BASE_DIR}
 
+JRE_DIR="${BASE_DIR}/jre/unrolled"
+if [ ! -d ${JRE_DIR} ] ; then
+  die "No JREs found in ${JRE_DIR}. Put JRE tarballs in jre/ directory, then run jre/unroll.sh"
+fi
+
+NUM_JRES=$(find ${JRE_DIR} -mindepth 1 -maxdepth 1 -type d | wc -l | tr -d ' ')
+if [ ${NUM_JRES} -ne 1 ] ; then
+  die "Expected one JRE version in ${JRE_DIR}, found ${NUM_JRES}"
+fi
+
 # Windows -- create one zipfile per arch
-ARCH_DIRS="$(find $(find jre/unrolled -maxdepth 2 -type d -name windows) -mindepth 1 -maxdepth 1 -type d)"
+ARCH_DIRS="$(find $(find ${JRE_DIR} -maxdepth 2 -type d -name windows) -mindepth 1 -maxdepth 1 -type d)"
 for arch_dir in ${ARCH_DIRS} ; do
   cd ${BASE_DIR}
   arch="$(basename ${arch_dir})"
@@ -40,8 +50,7 @@ if [[ $(uname -a) =~ "Linux" ]] ; then
   dd if=/dev/zero of=${TEMP_ARTIFACT} bs=1k count=${DMG_SIZE}
 
   # create and mount filesystem
-  ARTIFACT_MOUNT="/mnt/$(basename ${TEMP_ARTIFACT})"
-  mkdir -p ${ARTIFACT_MOUNT}
+  ARTIFACT_MOUNT=$(mktemp -d "/mnt/$(basename ${TEMP_ARTIFACT}).XXXXXXX")
   mkfs.hfsplus -v "${DMG_TITLE}" ${TEMP_ARTIFACT}
   mount -o loop ${TEMP_ARTIFACT} ${ARTIFACT_MOUNT}
 
@@ -50,10 +59,14 @@ if [[ $(uname -a) =~ "Linux" ]] ; then
 
   # unmount it and move to target dir
   umount ${ARTIFACT_MOUNT}
+  rmdir ${ARTIFACT_MOUNT}
   mv ${TEMP_ARTIFACT} ${ARTIFACT}
   echo "ARTIFACT: ${ARTIFACT}"
 
 elif [[ $(uname -a) =~ "Darwin" ]] ; then
+
+  ARTIFACT_MOUNT="/Volumes/${DMG_TITLE}"
+  hdiutil detach "${ARTIFACT_MOUNT}" 2> /dev/null && echo "Detached existing mount: ${ARTIFACT_MOUNT}"
 
   # create blank DMG
   hdiutil create -srcfolder "${DMG_SRC_DIR}" -volname "${DMG_TITLE}" -fs HFS+ \
@@ -66,7 +79,7 @@ elif [[ $(uname -a) =~ "Darwin" ]] ; then
   # todo...
 
   # Finalize and unmount the DMG
-  chmod -Rf go-w "/Volumes/${DMG_TITLE}"
+  chmod -Rf go-w ${ARTIFACT_MOUNT}
   sync ; sync
   hdiutil detach ${device}
   hdiutil convert "/${TEMP_ARTIFACT}" -format UDZO -imagekey zlib-level=9 -o "${ARTIFACT}"
@@ -76,4 +89,3 @@ elif [[ $(uname -a) =~ "Darwin" ]] ; then
 else
   die "Building MacOS bundles not supported on platform: $(uname -a)"
 fi
-
