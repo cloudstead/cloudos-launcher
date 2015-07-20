@@ -1,0 +1,39 @@
+# Things in {{CURLIES}} will be read from the process environment when the server starts up.
+# The jrun launcher will typically load these from ~/.cloudos-launcher.env
+
+serverName: cloudos-launcher
+
+publicUriBase: http://127.0.0.1
+
+#database:
+#  driver: org.postgresql.Driver
+#  url: jdbc:postgresql://127.0.0.1:5432/cloudos
+#  user: cloudos
+#  password: {{CLOUDOS_DB_PASS}}
+#
+#  hibernate:
+#    entityPackages: [ cloudos.launcher.model ]
+#    dialect: org.hibernate.dialect.PostgreSQLDialect
+#    showSql: true
+#    hbm2ddlAuto: validate
+#    validationMode: ddl
+
+staticAssets:
+  baseUri: /
+  assetRoot: web/
+  localOverride: {{ASSETS_DIR}}
+  mustacheCacheEnabled: false
+  mustacheResourceRoot: web/
+  utilPaths:
+    INDEX_PATH: /index.html
+    INDEX_ALIASES: /
+    LOCALIZE: /localize
+
+http:
+  # pick a random port
+  port: 0
+  baseUri: /api
+
+jersey:
+  resourcePackages: [ cloudos.launcher.resources, org.cobbzilla.wizard.server, org.cobbzilla.wizard.filters ]
+  responseFilters: [ org.cobbzilla.wizard.filters.ScrubbableScrubber ]
