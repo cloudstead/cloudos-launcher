@@ -7,6 +7,10 @@ function die {
 SCRIPT_DIR="$(cd $(dirname ${0}) && pwd)"
 BASE_DIR="$(cd ${SCRIPT_DIR}/../.. && pwd)"
 
+if [ ! -f "${BASE_DIR}/target/cloudos-launcher.exe" ] ; then
+  die "No cloudos-launcher.exe found in ${BASE_DIR}/target (run 'mvn package' to create it)"
+fi
+
 JRE_DIR="${BASE_DIR}/jre/unrolled"
 if [ ! -d ${JRE_DIR} ] ; then
   die "No JREs found in ${JRE_DIR}. Put JRE tarballs in jre/ directory, then run jre/unroll.sh"
@@ -24,7 +28,7 @@ for arch_dir in ${ARCH_DIRS} ; do
   arch="$(basename ${arch_dir})"
   archive_dir="cloudos_launcher_win_${arch}"
   build_dir="target/${archive_dir}"
-  jre_dir="$(find ${arch_dir} -type d -mindepth 1 -maxdepth 1)"
+  jre_dir="$(find ${arch_dir} -mindepth 1 -maxdepth 1 -type d)"
 
   rm -rf ${build_dir}
   mkdir -p ${build_dir}
