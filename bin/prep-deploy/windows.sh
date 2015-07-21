@@ -4,11 +4,16 @@ function die {
   echo "${1}" >&2 && exit 1
 }
 
+# script assumes that ../.. is the cloudos-launcher base directory
 SCRIPT_DIR="$(cd $(dirname ${0}) && pwd)"
 BASE_DIR="$(cd ${SCRIPT_DIR}/../.. && pwd)"
 
-if [ ! -f "${BASE_DIR}/target/cloudos-launcher.exe" ] ; then
-  die "No cloudos-launcher.exe found in ${BASE_DIR}/target (run 'mvn package' to create it)"
+LAUNCHER_EXE="${BASE_DIR}/target/cloudos-launcher.exe"
+if [ ! -f "${LAUNCHER_EXE}" ] ; then
+   mvn -DskipTests=true package || die "Error building cloudos-launcher.exe"
+  if [ ! -f "${LAUNCHER_EXE}" ] ; then
+    die "Error building cloudos-launcher.exe"
+  fi
 fi
 
 JRE_DIR="${BASE_DIR}/jre/unrolled"

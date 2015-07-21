@@ -19,7 +19,11 @@ fi
 
 JAR="$(find ${BASE_DIR}/target -maxdepth 1 -type f -name cloudos-launcher-*.jar | head -1)"
 if [ -z "${JAR}" ] ; then
-  die "No cloudos-launcher-*.jar found in ${BASE_DIR}/target (run 'mvn package' to create it)"
+  mvn -DskipTests=true package || die "Error building cloudos-launcher jar"
+  JAR="$(find ${BASE_DIR}/target -maxdepth 1 -type f -name cloudos-launcher-*.jar | head -1)"
+  if [ -z "${JAR}" ] ; then
+    die "Error building cloudos-launcher jar"
+  fi
 fi
 
 # Linux -- create one zipfile per arch

@@ -365,11 +365,17 @@ For commercial use, please contact cloudstead.io
                             <tasks>
                                 <property name="build.dir" value="target/macosx"/>
                                 <property name="bundle.name" value="Cloudstead Launcher"/>
+                                <property file="jre/unrolled/jre.properties"/>
                                 <property environment="env"/>
 
                                 <path id="bundle.classpath">
                                     <fileset dir="${project.build.directory}" includes="${project.build.finalName}.jar"/>
                                 </path>
+
+                                <!--<taskdef name="echoproperties"-->
+                                         <!--classpath="/Users/jcobb/.m2/repository/org/apache/ant/ant-nodeps/1.8.1/ant-nodeps-1.8.1.jar"-->
+                                         <!--classname="org.apache.tools.ant.taskdefs.optional.EchoProperties"/>-->
+                                <!--<echoproperties/>-->
 
                                 <taskdef name="bundleapp"
                                          classpath="lib/appbundler-1.0ea.jar"
@@ -391,7 +397,7 @@ For commercial use, please contact cloudstead.io
                                         copyright="2015 (c) Cloudstead, Inc."
                                         applicationCategory="public.app-category.utilities">
 
-                                    <runtime dir="${env.JAVA_HOME}" />
+                                    <runtime dir="${jre.macosx.x64.home}" />
 
                                     <arch name="x86_64"/>
                                     <arch name="i386"/>
