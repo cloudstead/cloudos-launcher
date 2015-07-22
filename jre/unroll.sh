@@ -1,4 +1,19 @@
 #!/bin/bash
+#
+# This script unrolls JRE tarballs and creates jre.properties file
+#
+# Place JRE tarballs here, filenames for JREs should be in the form:
+#
+#    jre-VERSION-PLATFORM-ARCH.tar.gz
+#
+# VERSION is the Java version number. For example 8u51
+# PLATFORM is one of: windows, macosx, linux
+# ARCH is i586 or x64
+#
+# The jre.properties file will then contain properties in the form
+#
+#   jre.platform.arch.home=/path/to/JAVA_HOME
+#
 
 THIS_DIR=$(cd $(dirname $0) && pwd)
 JRE_HOME="${THIS_DIR}/unrolled"
