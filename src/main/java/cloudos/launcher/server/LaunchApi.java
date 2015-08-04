@@ -19,6 +19,10 @@ public class LaunchApi extends RestServerBase<LaunchApiConfiguration> {
 
     public static final String[] API_CONFIG_YML = {"launcher-config.yml"};
 
+    public static final String ENV_DB_DATA_DIR = "DB_DATA_DIR";
+    public static final String ENV_ASSETS = "LAUNCHER_ASSETS_DIR";
+    public static final String ENV_PORT = "LAUNCHER_PORT";
+
     private static RestServerLifecycleListener listener = new LaunchApiServerListener();
 
     @Override protected String getListenAddress() { return NetworkUtil.getLocalhostIpv4(); }
@@ -44,10 +48,13 @@ public class LaunchApi extends RestServerBase<LaunchApiConfiguration> {
         // fixed environment, ignore System.getenv except for ASSETS_DIR
         final Map<String, String> env = new HashMap<>();
         env.put("HOME", getUserHomeDir());
-        env.put("DB_DATA_DIR", abs(LaunchApiConfiguration.configDir("db")));
+        env.put(ENV_DB_DATA_DIR, abs(LaunchApiConfiguration.configDir("db")));
 
-        final String assetsDir = System.getenv("ASSETS_DIR");
-        if (!empty(assetsDir)) env.put("ASSETS_DIR", assetsDir);
+        final String assetsDir = System.getenv(ENV_ASSETS);
+        if (!empty(assetsDir)) env.put(ENV_ASSETS, assetsDir);
+
+        final String port = System.getenv(ENV_PORT);
+        env.put(ENV_PORT, empty(port) ? "0" : port);
 
         return env;
     }

@@ -1,7 +1,8 @@
 # Normally, things in {{CURLIES}} will be read from the process environment when the server starts up
 #
 # The environment for this app is set programmatically in LaunchApi.java
-# Nothing set in the environment that started this process will be used here (except ASSETS_DIR, see below)
+# From the environment that started this process, only ASSETS_DIR and API_PORT will be used here.
+# The other values are determined at server startup time.
 #
 # Instead, the only variables defined by LaunchApi are:
 #
@@ -10,7 +11,9 @@
 #
 #  DB_DATA_DIR  directory where database files will be stored, typically somewhere under HOME
 #
-#  ASSETS_DIR  if defined in the process environment, the value is still available here. Otherwise this is empty
+#  LAUNCHER_ASSETS_DIR  if defined in the process environment, the value is still available here. Otherwise this is empty
+#
+#  LAUNCHER_PORT  if defined in the process environment, the value is still available here. Otherwise this is 0 (pick a random port)
 #
 
 serverName: cloudos-launcher
@@ -33,7 +36,7 @@ database:
 staticAssets:
   baseUri: /
   assetRoot: web/
-  localOverride: {{ASSETS_DIR}}
+  localOverride: {{LAUNCHER_ASSETS_DIR}}
   mustacheCacheEnabled: false
   mustacheResourceRoot: web/
   utilPaths:
@@ -42,8 +45,8 @@ staticAssets:
     LOCALIZE: /localize
 
 http:
-  # pick a random port
-  port: 0
+  # if empty, a random port will be used
+  port: {{LAUNCHER_PORT}}
   baseUri: /api
 
 jersey:
