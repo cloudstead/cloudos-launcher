@@ -11,7 +11,7 @@ BASE_DIR="$(cd ${SCRIPT_DIR}/../.. && pwd)"
 ARTIFACT="${BASE_DIR}/target/cloudos_launcher.dmg"
 APP_DIR="Cloudstead Launcher.app"
 DMG_SRC_DIR="target/macosx/${APP_DIR}"
-DMG_SIZE=$(expr $(du -mxs ${BASE_DIR}/target/macosx | awk '{print $1}') + 2)
+DMG_SIZE=$(expr $(du -kxs ${BASE_DIR}/target/macosx | awk '{print $1}') + 1024)
 DMG_TITLE="Cloudstead Launcher"
 TEMP_ARTIFACT=${ARTIFACT}.tmp.dmg
 rm -f ${ARTIFACT} ${TEMP_ARTIFACT}
@@ -24,7 +24,7 @@ fi
 
 # create blank DMG
 hdiutil create -srcfolder "${DMG_SRC_DIR}" -volname "${DMG_TITLE}" -fs HFS+ \
-  -fsargs "-c c=64,a=16,e=16" -format UDRW -size ${DMG_SIZE}m ${TEMP_ARTIFACT} \
+  -fsargs "-c c=64,a=16,e=16" -format UDRW -size ${DMG_SIZE}k ${TEMP_ARTIFACT} \
   || die "Error creating DMG: ${TEMP_ARTIFACT}"
 
 # mount it as R/W
