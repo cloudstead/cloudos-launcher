@@ -13,6 +13,8 @@ For commercial use, please contact cloudstead.io
 
     <properties>
         <app.mainClass>cloudos.launcher.server.LaunchApi</app.mainClass>
+        <app.jvm.minHeap>256</app.jvm.minHeap>
+        <app.jvm.maxHeap>1536</app.jvm.maxHeap>
     </properties>
 
     <parent>
@@ -65,9 +67,9 @@ For commercial use, please contact cloudstead.io
             <version>${cglib.version}</version>
         </dependency>
         <dependency>
-            <groupId>${jdbcDriver.postgres.groupId}</groupId>
-            <artifactId>${jdbcDriver.postgres.artifactId}</artifactId>
-            <version>${jdbcDriver.postgres.version}</version>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>1.4.187</version>
         </dependency>
 
         <dependency>
@@ -347,8 +349,8 @@ For commercial use, please contact cloudstead.io
                             <icon>src/main/resources/icons/cloudstead-logo.ico</icon>
                             <jre>
                                 <path>jre</path>
-                                <initialHeapSize>128</initialHeapSize>
-                                <maxHeapSize>1024</maxHeapSize>
+                                <initialHeapSize>${app.jvm.minHeap}</initialHeapSize>
+                                <maxHeapSize>${app.jvm.maxHeap}</maxHeapSize>
                             </jre>
                         </configuration>
                     </execution>
@@ -412,7 +414,8 @@ For commercial use, please contact cloudstead.io
                                     <option value="-Dcom.apple.smallTabs=true"/>
                                     <option value="-Dfile.encoding=UTF-8"/>
 
-                                    <option value="-Xmx1024M" name="Xmx"/>
+                                    <option value="-Xms${app.jvm.minHeap}M" name="Xms"/>
+                                    <option value="-Xmx${app.jvm.maxHeap}M" name="Xmx"/>
 
                                     <!-- debugging -->
                                     <!--<option value="-Xdebug"/>-->
