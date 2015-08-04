@@ -47,7 +47,11 @@ To specify a LAUNCHER_PORT and/or LAUNCHER_ASSETS_DIR, pass them on the command 
     LAUNCHER_ASSETS_DIR=$(pwd)/csapp/dist \
     java -jar $(find target -maxdepth 1 -type f -name "cloudos-launcher-*.jar")
     
-By setting `LAUNCHER_ASSETS_DIR=$(pwd)/csapp/dist`, the web content for the launcher will be read from disk,
-instead of from within the launcher jar file. This makes front-end development much easier, since you can
-modify files in csapp, then run `lineman build` to rebuild the front-end code (which will be written to `csapp/dist`)
+### Frontend development
+
+By setting `LAUNCHER_ASSETS_DIR=$(pwd)/csapp/dist`, the web content for the launcher will be read from disk
+instead of from within the launcher jar file.
+
+This makes front-end development much easier. If you modify some files in `csapp` and then run `lineman build` from within the `csapp` directory,
+the new site will be written to `csapp/dist`, and the cloudos-launcher server will now see the updated files.
  
