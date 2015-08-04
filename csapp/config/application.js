@@ -29,7 +29,7 @@ module.exports = function(lineman) {
 
 		appendTasks:{
 			common: ["copy:dev_apps", "copy:dev_apps_list"],
-			dist: ["copy:dist_apps", "copy:dist_apps_list", "copy:build"],
+			dist: ["copy:dist_apps", "copy:dist_apps_list", "copy:build"]
 		},
 
 
@@ -40,7 +40,7 @@ module.exports = function(lineman) {
 						expand: true,
 						cwd: APPS_DATA_LIST_CWD,
 						src: APPS_DATA_LIST_FILE,
-						dest: 'dist/' + APPS_DATA_DEST,
+						dest: 'dist/' + APPS_DATA_DEST
 					}
 				]
 			},
@@ -50,7 +50,7 @@ module.exports = function(lineman) {
 						expand: true,
 						cwd: APPS_DATA_CWD,
 						src: APPS_DATA_FOLDER + "**/*",
-						dest: 'dist/' + APPS_DATA_DEST,
+						dest: 'dist/' + APPS_DATA_DEST
 					}
 				]
 			},
@@ -60,7 +60,7 @@ module.exports = function(lineman) {
 						expand: true,
 						cwd: APPS_DATA_LIST_CWD,
 						src: APPS_DATA_LIST_FILE,
-						dest: 'generated/' + APPS_DATA_DEST,
+						dest: 'generated/' + APPS_DATA_DEST
 					}
 				]
 			},
@@ -70,7 +70,7 @@ module.exports = function(lineman) {
 						expand: true,
 						cwd: APPS_DATA_CWD,
 						src: APPS_DATA_FOLDER + "**/*",
-						dest: 'generated/' + APPS_DATA_DEST,
+						dest: 'generated/' + APPS_DATA_DEST
 					}
 				]
 			},
@@ -79,7 +79,7 @@ module.exports = function(lineman) {
 						{	expand: true,
 							cwd: 'dist',
 							src: '**/*',
-							dest: '../dist/web',
+							dest: '../target/classes/web'
 							}
 				]
 			}
