@@ -9,7 +9,7 @@
     <context:annotation-config/>
 
     <!-- DB-related beans (dataSource, sessionFactory, hibernateTemplate, etc) -->
-    <!--<context:component-scan base-package="org.cobbzilla.wizard.spring.config.rdbms"/>-->
+    <context:component-scan base-package="org.cobbzilla.wizard.spring.config.rdbms"/>
 
     <!-- RedisService -->
     <!--<context:component-scan base-package="org.cobbzilla.wizard.cache.redis"/>-->
@@ -18,9 +18,9 @@
     <!--<context:component-scan base-package="org.cobbzilla.mail.service"/>-->
 
     <!-- jersey resources, DAOs -->
-    <!--<context:component-scan base-package="cloudos.model"/>-->
-    <!--<context:component-scan base-package="cloudos.dao"/>-->
-    <!--<context:component-scan base-package="cloudos.service"/>-->
+    <context:component-scan base-package="cloudos.launcher.model"/>
+    <context:component-scan base-package="cloudos.launcher.dao"/>
     <context:component-scan base-package="cloudos.launcher.resources"/>
+    <!--<context:component-scan base-package="cloudos.service"/>-->
 
 </beans>

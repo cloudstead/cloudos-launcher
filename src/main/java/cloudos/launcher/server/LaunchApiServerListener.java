@@ -38,6 +38,9 @@ public class LaunchApiServerListener extends RestServerLifecycleListenerBase<Lau
                         log.error(msg, e);
                         die(msg, e);
                     }
+                } else {
+                    // no browser. tell the user where the server is listening via log statement
+                    log.info("\n\nCloudstead Launcher Successfully Started\n\nNo browser found to launch.\nWeb UI is: "+baseUri+"\nAPI is: "+baseUri+"/api\nHit Control-C to stop the server\n");
                 }
             }
         });
