@@ -21,11 +21,15 @@ public class LaunchApi extends RestServerBase<LaunchApiConfiguration> {
 
     public static final String ENV_DB_DATA_DIR = "DB_DATA_DIR";
     public static final String ENV_ASSETS = "LAUNCHER_ASSETS_DIR";
+    public static final String ENV_LISTEN_ADDR = "LAUNCHER_LISTEN_ADDR";
     public static final String ENV_PORT = "LAUNCHER_PORT";
 
     private static RestServerLifecycleListener listener = new LaunchApiServerListener();
 
-    @Override protected String getListenAddress() { return NetworkUtil.getLocalhostIpv4(); }
+    @Override protected String getListenAddress() {
+        final String addr = System.getenv(ENV_LISTEN_ADDR);
+        return empty(addr) ? NetworkUtil.getLocalhostIpv4() : addr;
+    }
 
     // args are ignored, config is loaded from the classpath, and env is hardcoded
     public static void main(String[] args) throws Exception {

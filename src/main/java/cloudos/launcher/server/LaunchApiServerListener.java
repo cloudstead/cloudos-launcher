@@ -23,7 +23,7 @@ public class LaunchApiServerListener extends RestServerLifecycleListenerBase<Lau
         final LaunchApi apiServer = (LaunchApi) server;
 
         final RestServerConfiguration config = server.getConfiguration();
-        config.setPublicUriBase("http://" + apiServer.getListenAddress() + ":" +config.getHttp().getPort());
+        config.setPublicUriBase("http://" + apiServer.getPrimaryListenAddress() + ":" +config.getHttp().getPort());
 
         SERVER = server;
         final String baseUri = config.getPublicUriBase();
@@ -40,7 +40,7 @@ public class LaunchApiServerListener extends RestServerLifecycleListenerBase<Lau
                     }
                 } else {
                     // no browser. tell the user where the server is listening via log statement
-                    log.info("\n\nCloudstead Launcher Successfully Started\n\nNot launching browser: No browser and/or desktop window manager was found.\n\nWeb UI is: "+baseUri+"\nAPI is: "+baseUri+"/api\nHit Control-C to stop the server\n");
+                    log.info("\n\nCloudstead Launcher Successfully Started\n\nNot launching browser: System lacks a browser and/or desktop window manager.\n\nWeb UI is: "+baseUri+"\nAPI is: "+baseUri+"/api\nHit Control-C to stop the server\n");
                 }
             }
         });

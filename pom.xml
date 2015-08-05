@@ -351,6 +351,13 @@ For commercial use, please contact cloudstead.io
                                 <path>jre</path>
                                 <initialHeapSize>${app.jvm.minHeap}</initialHeapSize>
                                 <maxHeapSize>${app.jvm.maxHeap}</maxHeapSize>
+                                <!--<opts>-->
+                                    <!-- debugging -->
+                                    <!--<opt>-Xdebug</opt>-->
+                                    <!--<opt>-Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=4000</opt>-->
+                                    <!--<opt>-Xnoagent</opt>-->
+                                    <!--<opt>-Djava.compiler=NONE</opt>-->
+                                <!--</opts>-->
                             </jre>
                         </configuration>
                     </execution>
