@@ -17,6 +17,28 @@ if [ ${NUM_JRES} -ne 1 ] ; then
   die "Expected one JRE version in ${JRE_DIR}, found ${NUM_JRES}"
 fi
 
+JAR="$(find ${BASE_DIR}/target -maxdepth 1 -type f -name "cloudos-launcher-*.jar" | head -1)"
+if [ -z "${JAR}" ] ; then
+  die "No cloudos-launcher-*.jar found in ${BASE_DIR}/target"
+fi
+
+# API stuff -- todo: move these to maven pom.xml
+
+# generate API examples
+if [ ! -d ${BASE_DIR}/target/api-examples ] ; then
+  mvn verify || die "Error generating API examples"
+fi
+cd ${BASE_DIR}/target && mkdir -p classes/web && cp -R api-examples classes/web || die "Error copying api-examples to web dir"
+
+# generate API docs
+if [ ! -d ${BASE_DIR}/target/miredot ] ; then
+  ${BASE_DIR}/gen-apidocs.sh || die "Error generating API docs"
+fi
+cd ${BASE_DIR}/target && mkdir -p classes/web && cp -R miredot classes/web/api-docs || die "Error copying api-docs to web dir"
+
+# re-roll jar file with API docs
+cd ${BASE_DIR} && mvn -DskipTests=true package
+
 # Build Windows
 ${SCRIPT_BASE}/windows.sh || die "Error building Windows app"
 

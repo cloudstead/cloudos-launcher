@@ -382,7 +382,7 @@ For commercial use, please contact cloudstead.io
                                 </path>
 
                                 <!--<taskdef name="echoproperties"-->
-                                         <!--classpath="/Users/jcobb/.m2/repository/org/apache/ant/ant-nodeps/1.8.1/ant-nodeps-1.8.1.jar"-->
+                                         <!--classpath="${user.home}/.m2/repository/org/apache/ant/ant-nodeps/1.8.1/ant-nodeps-1.8.1.jar"-->
                                          <!--classname="org.apache.tools.ant.taskdefs.optional.EchoProperties"/>-->
                                 <!--<echoproperties/>-->
 

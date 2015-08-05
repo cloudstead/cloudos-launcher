@@ -10,7 +10,7 @@ BASE_DIR="$(cd ${SCRIPT_DIR}/../.. && pwd)"
 # MacOS -- create DMG file. Use different process when building on Linux vs Mac
 ARTIFACT="${BASE_DIR}/target/cloudos_launcher.dmg"
 APP_DIR="Cloudstead Launcher.app"
-DMG_SRC_DIR="target/macosx/${APP_DIR}"
+DMG_SRC_DIR="${BASE_DIR}/target/macosx/${APP_DIR}"
 DMG_SIZE=$(expr $(du -kxs ${BASE_DIR}/target/macosx | awk '{print $1}') + 1024)
 DMG_TITLE="Cloudstead Launcher"
 TEMP_ARTIFACT=${ARTIFACT}.tmp.dmg
