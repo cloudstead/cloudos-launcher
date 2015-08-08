@@ -1,9 +1,10 @@
 package cloudos.launcher.resources;
 
 import cloudos.launcher.model.LaunchConfig;
+import org.cobbzilla.wizard.util.RestResponse;
 import org.junit.Test;
 
-import static cloudos.launcher.resources.LaunchConfigsResource.CONFIGS_ENDPOINT;
+import static cloudos.launcher.ApiConstants.CONFIGS_ENDPOINT;
 import static org.cobbzilla.util.daemon.ZillaRuntime.empty;
 import static org.cobbzilla.util.json.JsonUtil.fromJson;
 import static org.cobbzilla.util.json.JsonUtil.toJson;
@@ -14,14 +15,13 @@ import static org.junit.Assert.assertTrue;
 
 public class LaunchConfigsResourceIT extends ApiResourceITBase {
 
-    public static final String DOC_TARGET = "Launch Config";
+    public static final String DOC_TARGET = "Launch Configs";
 
     // this is actually a real zip file, base64 encoded. it simply contains a small text file named test.txt
     public static final String DUMMY_ZIP_DATA
     = "UEsDBBQAAAAIAOIKBEextbl4GAAAABkAAAAIABwAdGVzdC50eHRVVAkAA2h2wFVodsBVdXgLAAEE9QEAAAQUAAAAK8nILFYAoqzS4hKFRIWSVCCVlpmTygUAUEsBAh4DFAAAAAgA4goER7G1uXgYAAAAGQAAAAgAGAAAAAAAAQAAAKSBAAAAAHRlc3QudHh0VVQFAANodsBVdXgLAAEE9QEAAAQUAAAAUEsFBgAAAAABAAEATgAAAFoAAAAAAA==";
 
-    @Test
-    public void testCrud () throws Exception {
+    @Test public void testCrud () throws Exception {
 
         LaunchConfig[] configs;
         LaunchConfig config;
@@ -35,7 +35,7 @@ public class LaunchConfigsResourceIT extends ApiResourceITBase {
 
         config = (LaunchConfig) new LaunchConfig().setBase64zipData(DUMMY_ZIP_DATA).setName(randomName());
         apiDocs.addNote("create a config");
-        config = fromJson(post(CONFIGS_ENDPOINT+"/"+config.getName(), toJson(config)).json, LaunchConfig.class);
+        config = fromJson(post(CONFIGS_ENDPOINT + "/" + config.getName(), toJson(config)).json, LaunchConfig.class);
         assertNotNull(config);
 
         config2 = (LaunchConfig) new LaunchConfig().setBase64zipData(DUMMY_ZIP_DATA).setName(randomName());

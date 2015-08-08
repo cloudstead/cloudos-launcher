@@ -50,5 +50,12 @@ http:
   baseUri: /api
 
 jersey:
-  resourcePackages: [ cloudos.launcher.resources, org.cobbzilla.wizard.server, org.cobbzilla.wizard.filters ]
+  resourcePackages:
+    - cloudos.launcher.resources
+    - cloudos.launcher.auth
+    - org.cobbzilla.wizard.server
+    - org.cobbzilla.wizard.filters
+    - org.cobbzilla.wizard.filters.auth
+    - org.cobbzilla.wizard.exceptionmappers
+  requestFilters: [ cloudos.launcher.auth.LaunchAuthFilter ]
   responseFilters: [ org.cobbzilla.wizard.filters.ScrubbableScrubber ]

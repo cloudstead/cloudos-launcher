@@ -11,7 +11,7 @@ import java.awt.*;
 import static org.cobbzilla.util.daemon.ZillaRuntime.die;
 
 @Slf4j
-public class LaunchApiServerListener extends RestServerLifecycleListenerBase<LaunchApiConfiguration> {
+public class LaunchApiListener extends RestServerLifecycleListenerBase<LaunchApiConfiguration> {
 
     private static RestServer SERVER = null;
     public static RestServer getServer () { return SERVER; }

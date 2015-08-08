@@ -24,7 +24,7 @@ public class LaunchApi extends RestServerBase<LaunchApiConfiguration> {
     public static final String ENV_LISTEN_ADDR = "LAUNCHER_LISTEN_ADDR";
     public static final String ENV_PORT = "LAUNCHER_PORT";
 
-    private static RestServerLifecycleListener listener = new LaunchApiServerListener();
+    private static RestServerLifecycleListener listener = new LaunchApiListener();
 
     @Override protected String getListenAddress() {
         final String addr = System.getenv(ENV_LISTEN_ADDR);
