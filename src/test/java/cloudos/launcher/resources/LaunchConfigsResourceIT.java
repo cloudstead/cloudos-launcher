@@ -1,7 +1,6 @@
 package cloudos.launcher.resources;
 
 import cloudos.launcher.model.LaunchConfig;
-import org.cobbzilla.wizard.util.RestResponse;
 import org.junit.Test;
 
 import static cloudos.launcher.ApiConstants.CONFIGS_ENDPOINT;
@@ -17,10 +16,6 @@ public class LaunchConfigsResourceIT extends ApiResourceITBase {
 
     public static final String DOC_TARGET = "Launch Configs";
 
-    // this is actually a real zip file, base64 encoded. it simply contains a small text file named test.txt
-    public static final String DUMMY_ZIP_DATA
-    = "UEsDBBQAAAAIAOIKBEextbl4GAAAABkAAAAIABwAdGVzdC50eHRVVAkAA2h2wFVodsBVdXgLAAEE9QEAAAQUAAAAK8nILFYAoqzS4hKFRIWSVCCVlpmTygUAUEsBAh4DFAAAAAgA4goER7G1uXgYAAAAGQAAAAgAGAAAAAAAAQAAAKSBAAAAAHRlc3QudHh0VVQFAANodsBVdXgLAAEE9QEAAAQUAAAAUEsFBgAAAAABAAEATgAAAFoAAAAAAA==";
-
     @Test public void testCrud () throws Exception {
 
         LaunchConfig[] configs;
@@ -29,7 +24,7 @@ public class LaunchConfigsResourceIT extends ApiResourceITBase {
 
         apiDocs.startRecording(DOC_TARGET, "create, list, read, update and delete launch configs");
 
-        apiDocs.addNote("fetch all configs, should be none");
+        apiDocs.addNote("list configs, should be none");
         configs = fromJson(get(CONFIGS_ENDPOINT).json, LaunchConfig[].class);
         assertTrue(empty(configs));
 

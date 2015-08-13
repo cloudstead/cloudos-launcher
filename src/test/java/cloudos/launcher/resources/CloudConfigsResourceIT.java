@@ -7,7 +7,6 @@ import static cloudos.launcher.ApiConstants.CLOUDS_ENDPOINT;
 import static org.cobbzilla.util.daemon.ZillaRuntime.empty;
 import static org.cobbzilla.util.json.JsonUtil.fromJson;
 import static org.cobbzilla.util.json.JsonUtil.toJson;
-import static org.cobbzilla.wizardtest.RandomUtil.randomName;
 import static org.junit.Assert.*;
 
 public class CloudConfigsResourceIT extends ApiResourceITBase {
@@ -23,7 +22,7 @@ public class CloudConfigsResourceIT extends ApiResourceITBase {
 
         apiDocs.startRecording(DOC_TARGET, "create, list, read, update and delete cloud configs");
 
-        apiDocs.addNote("fetch all configs, should be none");
+        apiDocs.addNote("list configs, should be none");
         configs = fromJson(get(CLOUDS_ENDPOINT).json, CloudConfig[].class);
         assertTrue(empty(configs));
 
@@ -64,10 +63,6 @@ public class CloudConfigsResourceIT extends ApiResourceITBase {
         apiDocs.addNote("list configs, should be none");
         configs = fromJson(get(CLOUDS_ENDPOINT).json, CloudConfig[].class);
         assertTrue(empty(configs));
-    }
-
-    protected CloudConfig randomCloudConfig() {
-        return (CloudConfig) new CloudConfig().setAccessKey(randomName()).setSecretKey(randomName()).setName(randomName());
     }
 
 }

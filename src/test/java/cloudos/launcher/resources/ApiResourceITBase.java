@@ -1,11 +1,11 @@
 package cloudos.launcher.resources;
 
+import cloudos.launcher.model.CloudConfig;
 import cloudos.launcher.server.LaunchApi;
 import cloudos.launcher.server.LaunchApiConfiguration;
 import cloudos.model.auth.ApiToken;
 import org.cobbzilla.wizard.server.config.factory.ConfigurationSource;
 import org.cobbzilla.wizard.server.config.factory.StreamConfigurationSource;
-import org.cobbzilla.wizard.util.RestResponse;
 import org.cobbzilla.wizardtest.resources.ApiDocsResourceIT;
 import org.junit.Before;
 
@@ -18,6 +18,14 @@ import static org.cobbzilla.util.json.JsonUtil.fromJson;
 import static org.cobbzilla.wizardtest.RandomUtil.randomName;
 
 public abstract class ApiResourceITBase extends ApiDocsResourceIT<LaunchApiConfiguration, LaunchApi> {
+
+    // this is actually a real zip file, base64 encoded. it simply contains a small text file named test.txt
+    public static final String DUMMY_ZIP_DATA
+    = "UEsDBBQAAAAIAOIKBEextbl4GAAAABkAAAAIABwAdGVzdC50eHRVVAkAA2h2wFVodsBVdXgLAAEE9QEAAAQUAAAAK8nILFYAoqzS4hKFRIWSVCCVlpmTygUAUEsBAh4DFAAAAAgA4goER7G1uXgYAAAAGQAAAAgAGAAAAAAAAQAAAKSBAAAAAHRlc3QudHh0VVQFAANodsBVdXgLAAEE9QEAAAQUAAAAUEsFBgAAAAABAAEATgAAAFoAAAAAAA==";
+
+    protected static CloudConfig randomCloudConfig() {
+        return (CloudConfig) new CloudConfig().setAccessKey(randomName()).setSecretKey(randomName()).setName(randomName());
+    }
 
     @Override protected String getTokenHeader() { return H_TOKEN; }
 

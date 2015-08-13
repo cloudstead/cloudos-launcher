@@ -30,7 +30,7 @@ database:
     entityPackages: [ cloudos.launcher.model ]
     dialect: org.hibernate.dialect.H2Dialect
     showSql: true
-    hbm2ddlAuto: update
+    hbm2ddlAuto: create
     validationMode: ddl
 
 staticAssets:

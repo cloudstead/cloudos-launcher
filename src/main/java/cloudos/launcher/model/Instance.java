@@ -20,16 +20,21 @@ public class Instance extends UniquelyNamedEntity {
     @Getter @Setter private String account;
 
     @Transient @JsonIgnore
-    @Getter @Setter private LaunchAccount launchAccount;
+    @Getter private LaunchAccount launchAccount;
+    public Instance setLaunchAccount(LaunchAccount launchAccount) {
+        this.launchAccount = launchAccount;
+        this.account = launchAccount == null ? null : launchAccount.getUuid();
+        return this;
+    }
 
     // the UUID of a LaunchConfig
     @NotNull @HasValue(message="err.instance.launch.empty")
-    @Column(nullable=false, unique=true, updatable=false, length=UUID_MAXLEN)
+    @Column(nullable=false, updatable=false, length=UUID_MAXLEN)
     @Getter @Setter private String launch;
 
     // the UUID of a CloudConfig
     @NotNull @HasValue(message="err.instance.cloud.empty")
-    @Column(nullable=false, unique=true, updatable=false, length=UUID_MAXLEN)
+    @Column(nullable=false, updatable=false, length=UUID_MAXLEN)
     @Getter @Setter private String cloud;
 
     // JSON representing the instance, returned from cloudos-lib

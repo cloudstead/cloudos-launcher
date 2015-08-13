@@ -4,10 +4,12 @@ import cloudos.launcher.ApiConstants;
 import cloudos.launcher.dao.InstanceDAO;
 import cloudos.launcher.model.Instance;
 import cloudos.launcher.model.LaunchAccount;
+import cloudos.launcher.service.CloudOsLaunchTask;
 import cloudos.launcher.service.TaskService;
 import com.qmino.miredot.annotations.ReturnType;
 import com.sun.jersey.api.core.HttpContext;
 import lombok.extern.slf4j.Slf4j;
+import org.cobbzilla.wizard.task.TaskId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -71,7 +73,7 @@ public class InstancesResource {
         final LaunchAccount account = userPrincipal(context);
         final Instance found = instanceDAO.findByNameAndAccount(account, name);
         if (found == null) {
-            instance = instanceDAO.create(instance);
+            instance = instanceDAO.create(instance.setAccount(account.getUuid()));
 
         } else {
             found.setCloud(instance.getCloud());
@@ -79,6 +81,27 @@ public class InstancesResource {
             instance = instanceDAO.update(found);
         }
         return ok(instance);
+    }
+
+    /**
+     * Launch an instance
+     * @param context used to retrieve the logged-in user session
+     * @param name The name of the instance to launch
+     * @return a TaskId that can be used to monitor progress of the launch
+     */
+    @POST
+    @Path("/{name}/launch")
+    @ReturnType("org.cobbzilla.wizard.task.TaskId")
+    public Response launch (@Context HttpContext context,
+                                    @PathParam("name") String name,
+                                    Instance instance) {
+        final LaunchAccount account = userPrincipal(context);
+        final Instance found = instanceDAO.findByNameAndAccount(account, name);
+        if (found == null) return notFound(name);
+
+        final TaskId taskId = taskService.execute(new CloudOsLaunchTask(found.setLaunchAccount(account)));
+
+        return ok(taskId);
     }
 
     /**
