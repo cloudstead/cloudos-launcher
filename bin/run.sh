@@ -46,6 +46,13 @@ fi
 
 if [ -z "${LAUNCHER_ASSETS_DIR}" ] ; then
   LAUNCHER_ASSETS_DIR="${BASE_DIR}/csapp/dist"
+  # if using the default, ensure symlinks exist to api-docs and api-examples, if present
+  if [[ ! -L ${LAUNCHER_ASSETS_DIR}/api-docs && -d ${BASE_DIR}/target/miredot ]] ; then
+    ln -s ${BASE_DIR}/target/miredot ${LAUNCHER_ASSETS_DIR}/api-docs
+  fi
+  if [[ ! -L ${LAUNCHER_ASSETS_DIR}/api-examples && -d ${BASE_DIR}/target/api-examples ]] ; then
+    ln -s ${BASE_DIR}/target/api-examples ${LAUNCHER_ASSETS_DIR}/api-examples
+  fi
 fi
 
 if [ -z "${LAUNCHER_LISTEN_ADDR}" ] ; then
