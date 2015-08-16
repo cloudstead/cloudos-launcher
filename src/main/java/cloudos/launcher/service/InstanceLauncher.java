@@ -64,12 +64,17 @@ public class InstanceLauncher extends CloudOsLauncherBase<LaunchAccount, Instanc
         // Is djbdns the DNS provider? If so, enable cloudos-dns and djbdns apps, init cloudos-dns account
 
 
-        // ensure required apps are included
+        // build app list
         final List<String> allApps = cloudOs.getAllApps();
+
+        // add all apps found in solo.json
+
+        // add all required apps
         for (String requiredApp : CloudOsAppBundle.required.getApps()) {
             if (!allApps.contains(requiredApp)) allApps.add(requiredApp);
         }
 
+        // prep staging dir
         final File chefMaster = configuration.getChefMaster();
         if (!CloudOsChefDeployer.prepChefStagingDir(stagingDir, chefMaster, allApps, configuration)) {
             die("preLaunch: CloudOsChefDeployer.prepChefStagingDir error");

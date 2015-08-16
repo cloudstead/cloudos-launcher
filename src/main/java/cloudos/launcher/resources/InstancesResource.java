@@ -122,7 +122,7 @@ public class InstancesResource {
      * @return a TaskId that can be used to monitor progress of the launch
      */
     @POST
-    @Path("/{name}/launch")
+    @Path("/{name}" + ApiConstants.EP_LAUNCH)
     @ReturnType("org.cobbzilla.wizard.task.TaskId")
     public Response launch (@Context HttpContext context,
                             @PathParam("name") String name) {

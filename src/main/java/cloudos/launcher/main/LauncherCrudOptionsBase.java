@@ -23,6 +23,7 @@ public abstract class LauncherCrudOptionsBase<E> extends LauncherMainOptionsBase
     public boolean hasName () { return !empty(name); }
 
     public boolean isValidForWrite() { return hasName(); }
+    public boolean isCustomAction() { return false; }
 
     public abstract String getEndpoint();
 

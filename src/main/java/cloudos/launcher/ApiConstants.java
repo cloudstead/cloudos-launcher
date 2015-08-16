@@ -18,6 +18,9 @@ public class ApiConstants {
     // account endpoints
     public static final String EP_CHANGE_PASSWORD = "/change_password";
 
+    // instance endpoints
+    public static final String EP_LAUNCH = "/launch";
+
     // factories
     public static final CsCloudTypeFactory CLOUD_TYPE_FACTORY = new CsCloudTypeFactory();
     public static final CsCloudFactory CLOUD_FACTORY = new CsCloudFactory();
