@@ -52,7 +52,8 @@ public class CloudConfigsResource {
     public Response find (@Context HttpContext context,
                           @PathParam("name") String name) {
         final LaunchAccount account = userPrincipal(context);
-        return ok(configDAO.findByAccountAndName(account, name));
+        final CloudConfig config = configDAO.findByAccountAndName(account, name);
+        return config == null ? notFound(name) : ok(config);
     }
 
     /**

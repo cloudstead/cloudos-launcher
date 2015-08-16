@@ -1,15 +1,19 @@
 package cloudos.launcher.resources;
 
 import cloudos.launcher.ApiConstants;
+import cloudos.launcher.dao.CloudConfigDAO;
 import cloudos.launcher.dao.InstanceDAO;
+import cloudos.launcher.dao.LaunchConfigDAO;
+import cloudos.launcher.model.CloudConfig;
 import cloudos.launcher.model.Instance;
 import cloudos.launcher.model.LaunchAccount;
-import cloudos.launcher.service.CloudOsLaunchTask;
-import cloudos.launcher.service.TaskService;
+import cloudos.launcher.model.LaunchConfig;
+import cloudos.launcher.model.support.InstanceRequest;
+import cloudos.launcher.service.InstanceLaunchManager;
+import cloudos.model.CsGeoRegion;
 import com.qmino.miredot.annotations.ReturnType;
 import com.sun.jersey.api.core.HttpContext;
 import lombok.extern.slf4j.Slf4j;
-import org.cobbzilla.wizard.task.TaskId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,7 +31,10 @@ import static org.cobbzilla.wizard.resources.ResourceUtil.*;
 public class InstancesResource {
 
     @Autowired private InstanceDAO instanceDAO;
-    @Autowired private TaskService taskService;
+    @Autowired private CloudConfigDAO cloudConfigDAO;
+    @Autowired private LaunchConfigDAO launchConfigDAO;
+
+    @Autowired private InstanceLaunchManager launchManager;
 
     /**
      * Retrieve all instances
@@ -61,7 +68,7 @@ public class InstancesResource {
      * Create or update an instance
      * @param context used to retrieve the logged-in user session
      * @param name The name of the instance to create or update. Not case-sensitive
-     * @param instance The instance to create or update.
+     * @param request Provides information required to launch the instance: name, region, additional apps
      * @return The updated instance
      */
     @POST
@@ -69,18 +76,43 @@ public class InstancesResource {
     @ReturnType("cloudos.launcher.model.Instance")
     public Response createOrUpdate (@Context HttpContext context,
                                     @PathParam("name") String name,
-                                    Instance instance) {
+                                    InstanceRequest request) {
         final LaunchAccount account = userPrincipal(context);
-        final Instance found = instanceDAO.findByNameAndAccount(account, name);
-        if (found == null) {
-            instance = instanceDAO.create(instance.setAccount(account.getUuid()));
+
+        final CloudConfig cloudConfig = cloudConfigDAO.findByAccountAndName(account, request.getCloud());
+        if (cloudConfig == null) return invalid("err.instance.cloudConfig.notFound");
+
+        final LaunchConfig launchConfig = launchConfigDAO.findByAccountAndName(account, request.getLaunchConfig(), false);
+        if (launchConfig == null) return invalid("err.instance.launchConfig.notFound");
+
+        Instance instance = instanceDAO.findByNameAndAccount(account, name);
+        if (instance == null) {
+            instance = new Instance();
+            instance = populate(instance, account, request, cloudConfig, launchConfig);
+            instance = instanceDAO.create(instance);
 
         } else {
-            found.setCloud(instance.getCloud());
-            found.setLaunch(instance.getLaunch());
-            instance = instanceDAO.update(found);
+            instance = populate(instance, account, request, cloudConfig, launchConfig);
+            instance = instanceDAO.update(instance);
         }
         return ok(instance);
+    }
+
+    protected Instance populate(Instance instance,
+                                LaunchAccount account,
+                                InstanceRequest request,
+                                CloudConfig cloudConfig,
+                                LaunchConfig launchConfig) {
+
+        final CsGeoRegion geoRegion = cloudConfig.getCloudType().getRegion(request.getRegion());
+        instance.setAdminUuid(account.getUuid());
+        instance.setName(request.getName());
+        instance.setCloud(cloudConfig.getUuid());
+        instance.setLaunch(launchConfig.getUuid());
+        instance.setCsRegion(geoRegion);
+        instance.setInstanceType(request.getInstanceType());
+        instance.setApps(request.getAdditionalApps());
+        return instance;
     }
 
     /**
@@ -93,15 +125,12 @@ public class InstancesResource {
     @Path("/{name}/launch")
     @ReturnType("org.cobbzilla.wizard.task.TaskId")
     public Response launch (@Context HttpContext context,
-                                    @PathParam("name") String name,
-                                    Instance instance) {
+                            @PathParam("name") String name) {
         final LaunchAccount account = userPrincipal(context);
         final Instance found = instanceDAO.findByNameAndAccount(account, name);
         if (found == null) return notFound(name);
 
-        final TaskId taskId = taskService.execute(new CloudOsLaunchTask(found.setLaunchAccount(account)));
-
-        return ok(taskId);
+        return ok(launchManager.launch(account, found));
     }
 
     /**

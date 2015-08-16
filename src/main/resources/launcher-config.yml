@@ -27,7 +27,9 @@ database:
   password:
 
   hibernate:
-    entityPackages: [ cloudos.launcher.model ]
+    entityPackages:
+    - cloudos.launcher.model
+    - cloudos.model.instance
     dialect: org.hibernate.dialect.H2Dialect
     showSql: true
     hbm2ddlAuto: update

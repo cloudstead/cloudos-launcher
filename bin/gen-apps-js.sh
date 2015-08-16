@@ -1,4 +1,7 @@
 #!/bin/bash
+#
+# Generate apps.js file and copy metadata files so they are visible to the EmberJS app
+#
 
 function die {
   echo "${1}" >&2 && exit 1
@@ -6,7 +9,7 @@ function die {
 
 BASE_DIR="$(cd $(dirname ${0})/.. && pwd)"
 
-# Parse arguments
+# Determine CLOUDOS_DIR
 if [ -z "${CLOUDOS_DIR}" ] ; then
   CLOUDOS_DIR=$(echo ${BASE_DIR} | egrep -o '.+/cloudos/')
   if [ -z "${CLOUDOS_DIR}" ] ; then

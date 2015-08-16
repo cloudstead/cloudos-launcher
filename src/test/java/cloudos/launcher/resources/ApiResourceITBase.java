@@ -4,6 +4,7 @@ import cloudos.launcher.model.CloudConfig;
 import cloudos.launcher.server.LaunchApi;
 import cloudos.launcher.server.LaunchApiConfiguration;
 import cloudos.model.auth.ApiToken;
+import org.apache.commons.lang3.RandomUtils;
 import org.cobbzilla.wizard.server.config.factory.ConfigurationSource;
 import org.cobbzilla.wizard.server.config.factory.StreamConfigurationSource;
 import org.cobbzilla.wizardtest.resources.ApiDocsResourceIT;
@@ -24,7 +25,16 @@ public abstract class ApiResourceITBase extends ApiDocsResourceIT<LaunchApiConfi
     = "UEsDBBQAAAAIAOIKBEextbl4GAAAABkAAAAIABwAdGVzdC50eHRVVAkAA2h2wFVodsBVdXgLAAEE9QEAAAQUAAAAK8nILFYAoqzS4hKFRIWSVCCVlpmTygUAUEsBAh4DFAAAAAgA4goER7G1uXgYAAAAGQAAAAgAGAAAAAAAAQAAAKSBAAAAAHRlc3QudHh0VVQFAANodsBVdXgLAAEE9QEAAAQUAAAAUEsFBgAAAAABAAEATgAAAFoAAAAAAA==";
 
     protected static CloudConfig randomCloudConfig() {
-        return (CloudConfig) new CloudConfig().setAccessKey(randomName()).setSecretKey(randomName()).setName(randomName());
+        return (CloudConfig) new CloudConfig()
+                .setVendor(randomCloudVendor())
+                .setAccessKey(randomName())
+                .setSecretKey(randomName())
+                .setName(randomName());
+    }
+
+    public static final String[] CLOUD_VENDORS = {"AwsCloudType", "DigitalOceanCloudType", "RackspaceCloudType"};
+    private static String randomCloudVendor() {
+        return CLOUD_VENDORS[RandomUtils.nextInt(0, CLOUD_VENDORS.length)];
     }
 
     @Override protected String getTokenHeader() { return H_TOKEN; }

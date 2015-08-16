@@ -7,8 +7,12 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.exec.CommandLine;
+import org.apache.commons.io.IOUtils;
 import org.cobbzilla.util.security.Crypto;
 import org.cobbzilla.util.string.Base64;
+import org.cobbzilla.util.system.Command;
+import org.cobbzilla.util.system.CommandShell;
 import org.cobbzilla.wizard.model.UniquelyNamedEntity;
 
 import javax.persistence.Column;
@@ -18,6 +22,7 @@ import java.io.*;
 
 import static org.cobbzilla.util.daemon.ZillaRuntime.die;
 import static org.cobbzilla.util.daemon.ZillaRuntime.empty;
+import static org.cobbzilla.util.io.FileUtil.abs;
 
 @Entity @Slf4j @Accessors(chain=true)
 public class LaunchConfig extends UniquelyNamedEntity {
@@ -82,6 +87,27 @@ public class LaunchConfig extends UniquelyNamedEntity {
             die("preCreate: error writing base64zipData to disk: " + e, e);
         }
         return this;
+    }
+
+    /**
+     * Decrypt and unroll a launch config zipfile
+     * @return a temp directory where the zipfile has been unrolled
+     */
+    public File decryptZipData(File dir) {
+        final Crypto crypto = getLaunchAccount().getCrypto();
+        try {
+            @Cleanup final InputStream in = new FileInputStream(getZipFile());
+            @Cleanup("delete") final File tempZip = File.createTempFile("launcher-zip", ".zip");
+            @Cleanup final OutputStream out = new FileOutputStream(tempZip);
+            IOUtils.copyLarge(new ByteArrayInputStream(crypto.decrypt(in)), out);
+
+            final Command command = new Command(new CommandLine("unzip").addArgument(abs(tempZip))).setDir(dir);
+            CommandShell.exec(command);
+
+        } catch (Exception e) {
+            die("decryptZipData: "+e, e);
+        }
+        return dir;
     }
 
 }

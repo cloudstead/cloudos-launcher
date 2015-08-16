@@ -17,7 +17,12 @@
     <context:component-scan base-package="cloudos.launcher.dao"/>
     <context:component-scan base-package="cloudos.launcher.auth"/>
     <context:component-scan base-package="cloudos.launcher.resources"/>
-    <context:component-scan base-package="cloudos.launcher.service"/>
+
+    <!-- mock InstanceLaunchManager -->
+    <context:component-scan base-package="cloudos.launcher.service">
+        <context:exclude-filter type="regex" expression="cloudos.launcher.service.InstanceLaunchManager"/>
+    </context:component-scan>
+    <bean class="cloudos.launcher.service.MockInstanceLaunchManager"/>
 
     <bean id="uniqueValidator" class="org.cobbzilla.wizard.validation.UniqueValidator"/>
 

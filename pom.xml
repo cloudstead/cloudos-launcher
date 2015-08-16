@@ -256,6 +256,14 @@ For commercial use, please contact cloudstead.io
                             <executable>bin/gen-apps-js.sh</executable>
                         </configuration>
                     </execution>
+                    <execution>
+                        <id>Copy app bundles to resources</id>
+                        <phase>generate-resources</phase>
+                        <goals><goal>exec</goal></goals>
+                        <configuration>
+                            <executable>bin/embed-chef.sh</executable>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
 

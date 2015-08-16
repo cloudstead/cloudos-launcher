@@ -16,27 +16,22 @@ import static org.cobbzilla.util.io.FileUtil.abs;
 @Repository
 public class LaunchConfigDAO extends UniquelyNamedEntityDAO<LaunchConfig> {
 
-    @Override
-    public LaunchConfig findByName(String name) {
+    @Override public LaunchConfig findByName(String name) {
         final LaunchConfig found = super.findByName(name);
-        if (found == null) return null;
-        return found.readZipData();
+        return found == null ? null : found.readZipData();
     }
 
-    @Override
-    public Object preCreate(@Valid LaunchConfig config) {
+    @Override public Object preCreate(@Valid LaunchConfig config) {
         config.writeZipData();
         return super.preCreate(config);
     }
 
-    @Override
-    public Object preUpdate(@Valid LaunchConfig config) {
+    @Override public Object preUpdate(@Valid LaunchConfig config) {
         config.writeZipData();
         return super.preUpdate(config);
     }
 
-    @Override
-    public void delete(String uuid) {
+    @Override public void delete(String uuid) {
         final LaunchConfig config = findByUuid(uuid);
         if (config == null) die("not found: "+uuid);
         final File zipFile = config.getZipFile();
@@ -46,17 +41,21 @@ public class LaunchConfigDAO extends UniquelyNamedEntityDAO<LaunchConfig> {
 
     public List<LaunchConfig> findByAccount(LaunchAccount account) {
         final List<LaunchConfig> configs = findByField("account", account.getUuid());
-        for (LaunchConfig c : configs) {
-            c.setLaunchAccount(account).readZipData();
-        }
+        for (LaunchConfig c : configs) c.setLaunchAccount(account);
         return configs;
     }
 
     public LaunchConfig findByAccountAndName(LaunchAccount account, String name) {
+        return findByAccountAndName(account, name, true);
+    }
+
+    public LaunchConfig findByAccountAndName(LaunchAccount account, String name, boolean loadZipData) {
         final LaunchConfig config = uniqueResult(criteria().add(
                 Restrictions.and(
                         Restrictions.eq("account", account.getUuid()),
                         Restrictions.eq("name", nameValue(name)))));
-        return config == null ? null : config.setLaunchAccount(account).readZipData();
+        if (config == null) return null;
+        config.setLaunchAccount(account);
+        return loadZipData ? config.readZipData() : config;
     }
 }
