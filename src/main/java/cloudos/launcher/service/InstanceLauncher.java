@@ -90,16 +90,16 @@ public class InstanceLauncher extends CloudOsLauncherBase<LaunchAccount, Instanc
         final String domain = base.getParent_domain();
 
         final String groupPrefix = "cloudstead-launcher-" + sha256_hex(admin.getUuid() + "-" + cloudOs.getName());
-        CsCloudConfig config = new CsCloudConfig()
-                .setType(cloud.getCloudType())
-                .setAccountId(cloud.getAccessKey())
-                .setAccountSecret(cloud.getSecretKey())
-                .setInstanceSize(cloudOs.getInstanceType())
-                .setRegion(region.getRegion())
-                .setImage(region.getImage(CsPlatform.ubuntu_14_lts))
-                .setGroupPrefix(groupPrefix)
-                .setUser(cloudOs.getName())
-                .setDomain(domain);
+        final CsCloudConfig config = new CsCloudConfig();
+        config.setType(cloud.getCloudType());
+        config.setAccountId(cloud.getAccessKey());
+        config.setAccountSecret(cloud.getSecretKey());
+        config.setInstanceSize(cloudOs.getInstanceType());
+        config.setRegion(region.getRegion());
+        config.setImage(region.getImage(CsPlatform.ubuntu_14_lts));
+        config.setGroupPrefix(groupPrefix);
+        config.setUser(cloudOs.getName());
+        config.setDomain(domain);
 
         try {
             return CLOUD_FACTORY.buildCloud(config);
