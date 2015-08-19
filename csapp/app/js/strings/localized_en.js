@@ -15,6 +15,7 @@ TRANSLATIONS['en'] = {
         },
 
         dyndns: {
+            tab: 'Dyn',
             description: 'Configure your cloudstead to use an account with <a href="http://dyn.com/">Dyn</a> for DNS services.',
             fields: {
                 'dns.account': {
@@ -36,12 +37,42 @@ TRANSLATIONS['en'] = {
             }
         },
 
-        djbdns: {
-            description: 'Configure your cloudstead to use <a href="http://cr.yp.to/djbdns.html">djbdns</a> (also called tinydns) ' +
+        builtin_djbdns: {
+            tab: 'Built-in TinyDNS',
+            description: 'Configure your cloudstead to use a built-in <a href="http://cr.yp.to/djbdns.html">djbdns</a> (also called tinydns) ' +
             'for DNS services. The djbdns server will be installed automatically with your new cloudstead, but you will need ' +
             'to update your Name Servers with your domain registrars to include the hostname of this new cloudstead. ' +
             'You will also need to ensure that this is the primary DNS server for your domain, and all other Name Servers will ' +
-            'be secondaries.'
+            'be secondaries.',
+            fields: {
+                'djbdns/init/allow_axfr': {
+                    label: 'Allow AXFR from',
+                    info: 'A comma-separated list of IP addresses that this server will allow AXFR requests from. Typically, these are your secondary DNS servers.'
+                }
+            }
+        },
+
+        external_dns: {
+            tab: 'External DNS Server',
+            description: 'Configure your cloudstead to use an external <a href="http://cr.yp.to/djbdns.html">djbdns</a> (also called tinydns) server ' +
+                'for DNS services. If you choose this method, you must also install the cloudos-dns (todo: provide link) server on the external system ' +
+                'running djbdns. The cloudos-dns standalone installer has detailed instructions on how to set this up. Once you have installed and ' +
+                'configured cloudos-dns, enter the credentials here.',
+            fields: {
+                'dns.user': {
+                    label: 'cloudos-dns Username',
+                    info: 'This can either be the cloudos-dns super-admin username, or a specific user you have created just for this cloudstead. ' +
+                        'If going the latter route, the username should be the same as the name of the cloudstead'
+                },
+                'dns.password': {
+                    label: 'cloudos-dns Password',
+                    info: 'Password for the cloudos-dns Username'
+                },
+                'dns.base_uri': {
+                    label: 'cloudos-dns URL',
+                    info: 'A publicly accessible URL for the cloudos-dns server API'
+                }
+            }
         }
     },
 
