@@ -7,7 +7,7 @@ import cloudos.launcher.model.LaunchAccount;
 import cloudos.model.auth.ApiToken;
 import com.qmino.miredot.annotations.ReturnType;
 import lombok.extern.slf4j.Slf4j;
-import org.cobbzilla.util.security.Crypto;
+import org.cobbzilla.util.security.CryptoSimple;
 import org.cobbzilla.wizard.model.HashedPassword;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -64,7 +64,7 @@ public class AuthResource {
         }
 
         token = tokenDAO.createSession(account);
-        account.setCrypto(new Crypto(string_decrypt(account.getDataKey(), password)));
+        account.setCrypto(new CryptoSimple(string_decrypt(account.getDataKey(), password)));
 
         return ok(token);
     }

@@ -63,7 +63,7 @@ public class LaunchConfig extends UniquelyNamedEntity {
         final Crypto crypto = getLaunchAccount().getCrypto();
         try {
             @Cleanup final InputStream in = new FileInputStream(getZipFile());
-            setBase64zipData(Base64.encodeBytes(crypto.decrypt(in)));
+            setBase64zipData(Base64.encodeBytes(crypto.decryptBytes(in)));
 
         } catch (Exception e) {
             die("readZipData: "+e, e);
@@ -99,7 +99,7 @@ public class LaunchConfig extends UniquelyNamedEntity {
             @Cleanup final InputStream in = new FileInputStream(getZipFile());
             @Cleanup("delete") final File tempZip = File.createTempFile("launcher-zip", ".zip");
             @Cleanup final OutputStream out = new FileOutputStream(tempZip);
-            IOUtils.copyLarge(new ByteArrayInputStream(crypto.decrypt(in)), out);
+            IOUtils.copyLarge(crypto.decryptStream(in), out);
 
             final Command command = new Command(new CommandLine("unzip").addArgument(abs(tempZip))).setDir(dir);
             CommandShell.exec(command);

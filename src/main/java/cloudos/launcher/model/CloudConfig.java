@@ -30,8 +30,7 @@ public class CloudConfig extends UniquelyNamedEntity implements CustomScrubbage 
     };
     @Override public ScrubbableField[] fieldsToScrub() { return SCRUB; }
 
-    @Override
-    public void scrub(Object entity, ScrubbableField field) {
+    @Override public void scrub(Object entity, ScrubbableField field) {
         switch (field.name) {
             case "accessKey":
                 ((CloudConfig) entity).setAccessKey(accessKey.substring(0, 5) + "...");
