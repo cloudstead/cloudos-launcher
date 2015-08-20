@@ -22,7 +22,11 @@ public abstract class LauncherCrudOptionsBase<E> extends LauncherMainOptionsBase
     @Getter @Setter private String name;
     public boolean hasName () { return !empty(name); }
 
-    public boolean isValidForWrite() { return hasName(); }
+    public boolean isValidForWrite() {
+        if (!hasName()) required("NAME");
+        return hasName();
+    }
+
     public boolean isCustomAction() { return false; }
 
     public abstract String getEndpoint();

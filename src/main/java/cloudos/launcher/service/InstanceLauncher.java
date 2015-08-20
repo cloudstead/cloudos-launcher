@@ -49,6 +49,10 @@ public class InstanceLauncher extends CloudOsLauncherBase<LaunchAccount, Instanc
         this.configuration = configuration;
     }
 
+    @Override protected String getSimpleHostname() {
+        return fromJsonOrDie(new File(abs(initFilesDir)+"/data_bags/cloudos/base.json"), BaseDatabag.class).getHostname();
+    }
+
     @Override protected boolean preLaunch() {
 
         stagingDir = mkdirOrDie(createTempDirOrDie(configDir("deploy-staging"), cloudOs.getName()));

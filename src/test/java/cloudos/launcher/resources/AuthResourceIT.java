@@ -18,8 +18,7 @@ public class AuthResourceIT extends ApiResourceITBase {
 
     @Override protected boolean shouldCreateUser() { return false; }
 
-    @Test
-    public void testAccountCrud () throws Exception {
+    @Test public void testAccountCrud () throws Exception {
 
         RestResponse response;
         apiDocs.startRecording(DOC_TARGET, "account management");

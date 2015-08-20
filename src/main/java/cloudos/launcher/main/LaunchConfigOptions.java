@@ -17,10 +17,10 @@ import static org.cobbzilla.util.io.FileUtil.abs;
 
 public class LaunchConfigOptions extends LauncherCrudOptionsBase<LaunchConfig> {
 
-    public static final String USAGE_VENDOR = "The zip file. Required for create/update.";
-    public static final String OPT_VENDOR = "-z";
-    public static final String LONGOPT_VENDOR = "--zip-file";
-    @Option(name=OPT_VENDOR, aliases=LONGOPT_VENDOR, usage=USAGE_VENDOR)
+    public static final String USAGE_ZIPFILE = "The zip file. Required for create/update.";
+    public static final String OPT_ZIPFILE = "-z";
+    public static final String LONGOPT_ZIPFILE = "--zip-file";
+    @Option(name=OPT_ZIPFILE, aliases=LONGOPT_ZIPFILE, usage=USAGE_ZIPFILE)
     @Getter @Setter private File zipFile;
     public boolean hasZipFile () { return !empty(zipFile); }
 
@@ -34,6 +34,7 @@ public class LaunchConfigOptions extends LauncherCrudOptionsBase<LaunchConfig> {
     }
 
     @Override public boolean isValidForWrite() {
+        if (!hasZipFile()) required("ZIPFILE");
         return super.isValidForWrite() && hasZipFile();
     }
 

@@ -60,6 +60,10 @@ public class InstanceMainOptions extends LauncherCrudOptionsBase<InstanceRequest
     @Getter @Setter private long pollSeconds = TimeUnit.SECONDS.toMillis(10);
 
     @Override public boolean isValidForWrite() {
+        if (!hasCloud()) required("CLOUD");
+        if (!hasLaunch()) required("LAUNCH_CONFIG");
+        if (!hasInstanceType()) required("INSTANCE_TYPE");
+        if (!hasRegion()) required("REGION");
         return super.isValidForWrite() && hasCloud() && hasLaunch() && hasInstanceType() && hasRegion();
     }
 

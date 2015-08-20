@@ -46,6 +46,9 @@ public class CloudConfigOptions extends LauncherCrudOptionsBase<CloudConfig> {
     @Override public String getEndpoint() { return ApiConstants.CLOUDS_ENDPOINT; }
 
     @Override public boolean isValidForWrite () {
+        if (!hasVendor()) required("VENDOR");
+        if (!hasAccessKey()) required("ACCESS_KEY");
+        if (!hasSecretKey()) required("SECRET_KEY");
         return super.isValidForWrite() && hasVendor() && hasAccessKey() && hasSecretKey();
     }
 
