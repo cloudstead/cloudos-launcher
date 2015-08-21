@@ -1,15 +1,20 @@
 package cloudos.launcher.service;
 
 import cloudos.launcher.model.Instance;
-import lombok.Getter;
-import lombok.Setter;
+import cloudos.launcher.model.LaunchAccount;
+import cloudos.model.instance.CloudOsEvent;
+import cloudos.model.instance.CloudOsTaskResultBase;
+import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
-import org.cobbzilla.wizard.task.TaskResult;
+import org.cobbzilla.wizard.dao.DAO;
 
-@Accessors(chain=true)
-public class LauncherTaskResult extends TaskResult {
+@Accessors(chain=true) @NoArgsConstructor
+public class LauncherTaskResult extends CloudOsTaskResultBase<LaunchAccount, Instance> {
 
-    @Getter @Setter private Instance instance;
-    @Getter @Setter private InstanceStatus status;
+    public LauncherTaskResult(LaunchAccount admin, Instance cloudOs) { super(admin, cloudOs); }
+
+    public LauncherTaskResult(LaunchAccount admin, Instance cloudOs, DAO<CloudOsEvent> eventDAO) {
+        super(admin, cloudOs, eventDAO);
+    }
 
 }

@@ -8,15 +8,13 @@ import java.util.concurrent.TimeUnit;
 
 public class MockCloudOsLaunchTask extends TaskBase<LauncherTaskResult> {
 
-    public MockCloudOsLaunchTask(Instance instance, InstanceStatus status) {
-        result.setInstance(instance);
-        result.setStatus(status);
+    public MockCloudOsLaunchTask(Instance instance) {
+        result.setCloudOs(instance);
     }
 
     @Override public LauncherTaskResult call() throws Exception {
         Sleep.sleep(TimeUnit.SECONDS.toMillis(5));
-        result.getStatus().success("success");
-        result.setSuccess(true);
+        result.success("success");
         return result;
     }
 

@@ -2,6 +2,7 @@ package cloudos.launcher.service;
 
 import cloudos.cslib.compute.CsCloud;
 import cloudos.cslib.compute.CsCloudConfig;
+import cloudos.dao.CloudOsEventDAO;
 import cloudos.databag.BaseDatabag;
 import cloudos.deploy.CloudOsChefDeployer;
 import cloudos.deploy.CloudOsLauncherBase;
@@ -17,6 +18,7 @@ import cloudos.model.instance.CloudOsAppBundle;
 import lombok.extern.slf4j.Slf4j;
 import org.cobbzilla.util.io.DeleteOnExit;
 import org.cobbzilla.wizard.dao.DAO;
+import org.cobbzilla.wizard.task.ITask;
 
 import java.io.File;
 import java.util.List;
@@ -29,7 +31,9 @@ import static org.cobbzilla.util.json.JsonUtil.fromJsonOrDie;
 import static org.cobbzilla.util.security.ShaUtil.sha256_hex;
 
 @Slf4j
-public class InstanceLauncher extends CloudOsLauncherBase<LaunchAccount, Instance, InstanceStatus> {
+public class InstanceLaunchTask
+        extends CloudOsLauncherBase<LaunchAccount, Instance, LauncherTaskResult>
+        implements ITask<LauncherTaskResult> {
 
     private CloudConfigDAO cloudConfigDAO;
     private LaunchConfigDAO launchConfigDAO;
@@ -38,30 +42,32 @@ public class InstanceLauncher extends CloudOsLauncherBase<LaunchAccount, Instanc
     private File stagingDir;
     private File initFilesDir;
 
-    public InstanceLauncher(InstanceStatus status,
-                            DAO<Instance> cloudOsDAO,
-                            CloudConfigDAO cloudConfigDAO,
-                            LaunchConfigDAO launchConfigDAO,
-                            LaunchApiConfiguration configuration) {
-        super(status, cloudOsDAO);
+    public InstanceLaunchTask(LaunchAccount account,
+                              Instance instance,
+                              DAO<Instance> cloudOsDAO,
+                              CloudConfigDAO cloudConfigDAO,
+                              LaunchConfigDAO launchConfigDAO,
+                              LaunchApiConfiguration configuration,
+                              CloudOsEventDAO eventDAO) {
+        init(account, instance, cloudOsDAO, eventDAO);
         this.cloudConfigDAO = cloudConfigDAO;
         this.launchConfigDAO = launchConfigDAO;
         this.configuration = configuration;
     }
 
     @Override protected String getSimpleHostname() {
-        return fromJsonOrDie(new File(abs(initFilesDir)+"/data_bags/cloudos/base.json"), BaseDatabag.class).getHostname();
+        return fromJsonOrDie(new File(abs(initFilesDir) + "/data_bags/cloudos/base.json"), BaseDatabag.class).getHostname();
     }
 
     @Override protected boolean preLaunch() {
 
-        stagingDir = mkdirOrDie(createTempDirOrDie(configDir("deploy-staging"), cloudOs.getName()));
+        stagingDir = mkdirOrDie(createTempDirOrDie(configDir("deploy-staging"), cloudOs().getName()));
         DeleteOnExit.schedule(log, stagingDir);
 
         // decrypt and unroll the zipfile
         initFilesDir = mkdirOrDie(new File(stagingDir, "init_files"));
-        launchConfigDAO.findByUuid(cloudOs.getLaunch())
-                .setLaunchAccount(admin)
+        launchConfigDAO.findByUuid(cloudOs().getLaunch())
+                .setLaunchAccount(admin())
                 .decryptZipData(initFilesDir);
 
         // prep databags
@@ -69,7 +75,7 @@ public class InstanceLauncher extends CloudOsLauncherBase<LaunchAccount, Instanc
 
 
         // build app list
-        final List<String> allApps = cloudOs.getAllApps();
+        final List<String> allApps = cloudOs().getAllApps();
 
         // add all apps found in solo.json
 
@@ -89,8 +95,11 @@ public class InstanceLauncher extends CloudOsLauncherBase<LaunchAccount, Instanc
 
     @Override protected CsCloud buildCloud() {
 
-        final CloudConfig cloud = cloudConfigDAO.findByUuid(cloudOs.getCloud());
-        final CsGeoRegion region = cloudOs.getCsRegion();
+        final CloudConfig cloud = cloudConfigDAO.findByUuid(cloudOs().getCloud());
+        if (cloud == null) die("CloudConfig not found: " + cloudOs().getCloud());
+        cloud.setLaunchAccount(cloudOs().getLaunchAccount()).decrypt();
+
+        final CsGeoRegion region = cloudOs().getCsRegion();
 
         // get domain from base databag
         final File baseDatabagFile = new File(abs(initFilesDir) + "/data_bags/cloudos/base.json");
@@ -98,16 +107,16 @@ public class InstanceLauncher extends CloudOsLauncherBase<LaunchAccount, Instanc
         final BaseDatabag base = fromJsonOrDie(baseDatabagFile, BaseDatabag.class);
         final String domain = base.getParent_domain();
 
-        final String groupPrefix = "cloudstead-launcher-" + sha256_hex(admin.getUuid() + "-" + cloudOs.getName());
+        final String groupPrefix = "cloudstead-launcher-" + sha256_hex(admin().getUuid() + "-" + cloudOs().getName());
         final CsCloudConfig config = new CsCloudConfig();
         config.setType(cloud.getCloudType());
         config.setAccountId(cloud.getAccessKey());
         config.setAccountSecret(cloud.getSecretKey());
-        config.setInstanceSize(cloudOs.getInstanceType());
+        config.setInstanceSize(cloudOs().getInstanceType());
         config.setRegion(region.getRegion());
         config.setImage(region.getImage(CsPlatform.ubuntu_14_lts));
         config.setGroupPrefix(groupPrefix);
-        config.setUser(cloudOs.getName());
+        config.setUser(cloudOs().getName());
         config.setDomain(domain);
 
         try {

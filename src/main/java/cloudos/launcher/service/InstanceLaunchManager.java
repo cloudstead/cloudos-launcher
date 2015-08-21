@@ -23,9 +23,8 @@ public class InstanceLaunchManager {
     @Autowired protected TaskService taskService;
 
     public TaskId launch(LaunchAccount account, Instance instance) {
-        final InstanceStatus status = new InstanceStatus(account, instance, eventDAO);
-        final CloudOsLaunchTask task = new CloudOsLaunchTask(status, instance, instanceDAO, cloudConfigDAO, launchConfigDAO, configuration);
-        return taskService.execute(task);
+        final InstanceLaunchTask launcher = new InstanceLaunchTask(account, instance, instanceDAO, cloudConfigDAO, launchConfigDAO, configuration, eventDAO);
+        return taskService.execute(launcher);
     }
 
 }

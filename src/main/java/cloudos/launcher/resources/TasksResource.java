@@ -41,7 +41,7 @@ public class TasksResource {
         final LauncherTaskResult result = taskService.getResult(uuid);
 
         if (result == null) return notFound(uuid);
-        if (!account.getUuid().equals(result.getInstance().getAdminUuid())) return forbidden();
+        if (!account.getUuid().equals(result.getCloudOs().getAdminUuid())) return forbidden();
         return ok(result);
     }
 
