@@ -20,10 +20,13 @@ public class InstanceMain extends LauncherCrudMainBase<InstanceMainOptions, Inst
 
         final InstanceMainOptions options = getOptions();
         final ApiClientBase api = getApiClient();
-        if (!options.isDoLaunch()) die("handleCustomAction called but launch flag not set");
-        if (!options.hasName()) die("name is required");
+        if (!options.isDoLaunch() && !options.isForce()) options.requiredAndDie("LAUNCH");
+        if (!options.hasName()) options.requiredAndDie("NAME");
 
-        final String launchUri = INSTANCES_ENDPOINT + "/" + options.getName() + EP_LAUNCH;
+        final String launchUri = INSTANCES_ENDPOINT
+                + "/" + options.getName() + EP_LAUNCH
+                + (options.isForce() ? "?force=true" : "");
+
         final TaskId taskId = fromJson(api.post(launchUri, null).json, TaskId.class);
 
         LauncherTaskResult result;

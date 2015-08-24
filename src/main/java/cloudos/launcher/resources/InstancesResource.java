@@ -11,9 +11,11 @@ import cloudos.launcher.model.LaunchConfig;
 import cloudos.launcher.model.support.InstanceRequest;
 import cloudos.launcher.service.InstanceLaunchManager;
 import cloudos.model.CsGeoRegion;
+import cloudos.model.instance.CloudOsState;
 import com.qmino.miredot.annotations.ReturnType;
 import com.sun.jersey.api.core.HttpContext;
 import lombok.extern.slf4j.Slf4j;
+import org.cobbzilla.wizard.task.TaskId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -119,40 +121,66 @@ public class InstancesResource {
      * Launch an instance
      * @param context used to retrieve the logged-in user session
      * @param name The name of the instance to launch
+     * @param force If true, and the instance has already been launched, this will kill the running instance
      * @return a TaskId that can be used to monitor progress of the launch
+     * @statuscode 422 if the instance has already been launched, and force was not true
      */
     @POST
     @Path("/{name}" + ApiConstants.EP_LAUNCH)
     @ReturnType("org.cobbzilla.wizard.task.TaskId")
     public Response launch (@Context HttpContext context,
-                            @PathParam("name") String name) {
+                            @PathParam("name") String name,
+                            @QueryParam("force") boolean force) {
         final LaunchAccount account = userPrincipal(context);
         final Instance found = instanceDAO.findByNameAndAccount(account, name);
         if (found == null) return notFound(name);
 
-        return ok(launchManager.launch(account, found));
+        if (!found.isLaunchable()) {
+            if (!force) return invalid("err.instance.cannotLaunch");
+            launchManager.destroy(account, found);
+        }
+
+        final TaskId taskId = launchManager.launch(account, found);
+        return ok(taskId);
+    }
+
+    /**
+     * Destroy an instance
+     * @param context used to retrieve the logged-in user session
+     * @param name The name of the instance to destroy
+     * @return the state of the instance, which will be 'destroyed' if it was successfully destroyed
+     */
+    @POST
+    @Path("/{name}" + ApiConstants.EP_LAUNCH)
+    @ReturnType("cloudos.model.instance.CloudOsState")
+    public Response destroy (@Context HttpContext context,
+                             @PathParam("name") String name) {
+        final LaunchAccount account = userPrincipal(context);
+        final Instance found = instanceDAO.findByNameAndAccount(account, name);
+        if (found == null) return notFound(name);
+        return ok(launchManager.destroy(account, found));
     }
 
     /**
      * Delete an instance
      * @param context used to retrieve the logged-in user session
      * @param name The name of the instance to delete. Not case-sensitive.
-     * @return an empty 200 OK response on success.
+     * @return the state of the instance, which will be 'destroyed' if it was successfully destroyed
      * @statuscode 404 if no instance exists with that name
      */
     @DELETE
     @Path("/{name}")
-    @ReturnType("java.lang.Void")
+    @ReturnType("cloudos.model.instance.CloudOsState")
     public Response deleteInstance (@Context HttpContext context,
                                     @PathParam("name") String name) {
         final LaunchAccount account = userPrincipal(context);
         Instance instance = instanceDAO.findByNameAndAccount(account, name);
         if (instance == null) return notFound(name);
 
-        // todo: teardown instance if it is running
-
+        final CloudOsState state = launchManager.destroy(account, instance);
         instanceDAO.delete(instance.getUuid());
-        return ok();
+
+        return ok(state);
     }
 
 }

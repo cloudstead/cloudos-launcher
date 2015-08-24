@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
+import org.cobbzilla.util.security.Crypto;
 import org.cobbzilla.wizard.validation.HasValue;
 import org.cobbzilla.wizard.validation.IsUnique;
 
@@ -26,6 +27,8 @@ public class Instance extends CloudOsBase {
         return this;
     }
 
+    @Override public Crypto getCrypto() { return launchAccount.getCrypto(); }
+
     // the UUID of a LaunchConfig
     @HasValue(message="err.instance.launchConfig.empty")
     @Column(nullable=false, updatable=false, length=UUID_MAXLEN)
@@ -35,5 +38,4 @@ public class Instance extends CloudOsBase {
     @HasValue(message="err.instance.cloudConfig.empty")
     @Column(nullable=false, updatable=false, length=UUID_MAXLEN)
     @Getter @Setter private String cloud;
-
 }

@@ -25,7 +25,9 @@ import java.util.List;
         final CloudConfig config = uniqueResult(criteria().add(
                 Restrictions.and(
                         Restrictions.eq("account", account.getUuid()),
-                        Restrictions.eq("name", nameValue(name)))));
+                        Restrictions.or(
+                                Restrictions.eq("name", nameValue(name)),
+                                Restrictions.eq("uuid", nameValue(name))))));
         return config == null ? null : config.setLaunchAccount(account).decrypt();
     }
 }

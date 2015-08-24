@@ -5,7 +5,7 @@ import cloudos.cslib.compute.CsCloudConfig;
 import cloudos.dao.CloudOsEventDAO;
 import cloudos.databag.BaseDatabag;
 import cloudos.deploy.CloudOsChefDeployer;
-import cloudos.deploy.CloudOsLauncherBase;
+import cloudos.deploy.CloudOsLaunchTaskBase;
 import cloudos.launcher.dao.CloudConfigDAO;
 import cloudos.launcher.dao.LaunchConfigDAO;
 import cloudos.launcher.model.CloudConfig;
@@ -15,6 +15,7 @@ import cloudos.launcher.server.LaunchApiConfiguration;
 import cloudos.model.CsGeoRegion;
 import cloudos.model.CsPlatform;
 import cloudos.model.instance.CloudOsAppBundle;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.cobbzilla.util.io.DeleteOnExit;
 import org.cobbzilla.wizard.dao.DAO;
@@ -32,7 +33,7 @@ import static org.cobbzilla.util.security.ShaUtil.sha256_hex;
 
 @Slf4j
 public class InstanceLaunchTask
-        extends CloudOsLauncherBase<LaunchAccount, Instance, LauncherTaskResult>
+        extends CloudOsLaunchTaskBase<LaunchAccount, Instance, LauncherTaskResult>
         implements ITask<LauncherTaskResult> {
 
     private CloudConfigDAO cloudConfigDAO;
@@ -41,6 +42,16 @@ public class InstanceLaunchTask
 
     private File stagingDir;
     private File initFilesDir;
+
+    @Getter(lazy=true) private final BaseDatabag baseDatabag = initBaseDatabag();
+    private String hostname;
+    private String domain;
+
+    private BaseDatabag initBaseDatabag() {
+        final File baseDatabagFile = new File(abs(initFilesDir) + "/data_bags/cloudos/base.json");
+        if (!baseDatabagFile.exists()) die("buildCloud: base databag not found: "+abs(baseDatabagFile));
+        return fromJsonOrDie(baseDatabagFile, BaseDatabag.class);
+    }
 
     public InstanceLaunchTask(LaunchAccount account,
                               Instance instance,
@@ -55,9 +66,7 @@ public class InstanceLaunchTask
         this.configuration = configuration;
     }
 
-    @Override protected String getSimpleHostname() {
-        return fromJsonOrDie(new File(abs(initFilesDir) + "/data_bags/cloudos/base.json"), BaseDatabag.class).getHostname();
-    }
+    @Override protected String getSimpleHostname() { return getBaseDatabag().getHostname(); }
 
     @Override protected boolean preLaunch() {
 
@@ -69,6 +78,11 @@ public class InstanceLaunchTask
         launchConfigDAO.findByUuid(cloudOs().getLaunch())
                 .setLaunchAccount(admin())
                 .decryptZipData(initFilesDir);
+
+        // set cloudos name based on databag
+        final BaseDatabag baseDatabag = getBaseDatabag();
+        hostname = baseDatabag.getHostname();
+        domain = baseDatabag.getParent_domain();
 
         // prep databags
         // Is djbdns the DNS provider? If so, enable cloudos-dns and djbdns apps, init cloudos-dns account
@@ -101,22 +115,16 @@ public class InstanceLaunchTask
 
         final CsGeoRegion region = cloudOs().getCsRegion();
 
-        // get domain from base databag
-        final File baseDatabagFile = new File(abs(initFilesDir) + "/data_bags/cloudos/base.json");
-        if (!baseDatabagFile.exists()) die("buildCloud: base databag not found: "+abs(baseDatabagFile));
-        final BaseDatabag base = fromJsonOrDie(baseDatabagFile, BaseDatabag.class);
-        final String domain = base.getParent_domain();
-
-        final String groupPrefix = "cloudstead-launcher-" + sha256_hex(admin().getUuid() + "-" + cloudOs().getName());
+        final String groupPrefix = hostname + "-" + sha256_hex(admin().getUuid() + "-" + cloudOs().getName()).substring(0, 5);
         final CsCloudConfig config = new CsCloudConfig();
         config.setType(cloud.getCloudType());
         config.setAccountId(cloud.getAccessKey());
         config.setAccountSecret(cloud.getSecretKey());
         config.setInstanceSize(cloudOs().getInstanceType());
-        config.setRegion(region.getRegion());
+        config.setRegion(region.getName());
         config.setImage(region.getImage(CsPlatform.ubuntu_14_lts));
         config.setGroupPrefix(groupPrefix);
-        config.setUser(cloudOs().getName());
+        config.setUser(hostname);
         config.setDomain(domain);
 
         try {

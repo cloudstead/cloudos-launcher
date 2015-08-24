@@ -53,6 +53,12 @@ public class InstanceMainOptions extends LauncherCrudOptionsBase<InstanceRequest
     @Option(name=OPT_LAUNCH, aliases=LONGOPT_LAUNCH, usage=USAGE_LAUNCH)
     @Getter @Setter private boolean doLaunch = false;
 
+    public static final String USAGE_FORCE = "Force launch the instance. If it's already running, kill it before launching.";
+    public static final String OPT_FORCE = "-F";
+    public static final String LONGOPT_FORCE = "--force";
+    @Option(name=OPT_FORCE, aliases=LONGOPT_FORCE, usage=USAGE_FORCE)
+    @Getter @Setter private boolean force = false;
+
     public static final String USAGE_POLL = "After a launch, wait this many seconds in between status checks";
     public static final String OPT_POLL = "-p";
     public static final String LONGOPT_POLL = "--poll";

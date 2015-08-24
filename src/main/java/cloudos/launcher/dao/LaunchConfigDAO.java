@@ -53,7 +53,9 @@ public class LaunchConfigDAO extends UniquelyNamedEntityDAO<LaunchConfig> {
         final LaunchConfig config = uniqueResult(criteria().add(
                 Restrictions.and(
                         Restrictions.eq("account", account.getUuid()),
-                        Restrictions.eq("name", nameValue(name)))));
+                        Restrictions.or(
+                                Restrictions.eq("name", nameValue(name)),
+                                Restrictions.eq("uuid", nameValue(name))))));
         if (config == null) return null;
         config.setLaunchAccount(account);
         return loadZipData ? config.readZipData() : config;
