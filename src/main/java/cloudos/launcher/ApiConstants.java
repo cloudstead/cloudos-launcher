@@ -20,9 +20,10 @@ public class ApiConstants {
 
     // instance endpoints
     public static final String EP_LAUNCH = "/launch";
+    public static final String EP_DESTROY = "/destroy";
 
     // factories
     public static final CsCloudTypeFactory CLOUD_TYPE_FACTORY = new CsCloudTypeFactory();
-    public static final CsCloudFactory CLOUD_FACTORY = new CsCloudFactory();
 
+    public static final CsCloudFactory CLOUD_FACTORY = new CsCloudFactory();
 }

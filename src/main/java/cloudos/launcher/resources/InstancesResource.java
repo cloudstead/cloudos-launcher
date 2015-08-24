@@ -151,7 +151,7 @@ public class InstancesResource {
      * @return the state of the instance, which will be 'destroyed' if it was successfully destroyed
      */
     @POST
-    @Path("/{name}" + ApiConstants.EP_LAUNCH)
+    @Path("/{name}" + ApiConstants.EP_DESTROY)
     @ReturnType("cloudos.model.instance.CloudOsState")
     public Response destroy (@Context HttpContext context,
                              @PathParam("name") String name) {
