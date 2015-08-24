@@ -54,7 +54,7 @@ public class InstanceMainOptions extends LauncherCrudOptionsBase<InstanceRequest
     @Getter @Setter private boolean doLaunch = false;
 
     public static final String USAGE_FORCE = "Force launch the instance. If it's already running, kill it before launching.";
-    public static final String OPT_FORCE = "-F";
+    public static final String OPT_FORCE = "-f";
     public static final String LONGOPT_FORCE = "--force";
     @Option(name=OPT_FORCE, aliases=LONGOPT_FORCE, usage=USAGE_FORCE)
     @Getter @Setter private boolean force = false;
