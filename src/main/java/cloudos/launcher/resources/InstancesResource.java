@@ -63,7 +63,8 @@ public class InstancesResource {
     public Response find (@Context HttpContext context,
                           @PathParam("name") String name) {
         final LaunchAccount account = userPrincipal(context);
-        return ok(instanceDAO.findByNameAndAccount(account, name));
+        final Instance instance = instanceDAO.findByNameAndAccount(account, name);
+        return instance == null ? notFound(name) : ok(instance);
     }
 
     /**

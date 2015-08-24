@@ -4,6 +4,7 @@ import cloudos.cslib.compute.CsCloud;
 import cloudos.cslib.compute.CsCloudConfig;
 import cloudos.dao.CloudOsEventDAO;
 import cloudos.databag.BaseDatabag;
+import cloudos.databag.CloudOsDatabag;
 import cloudos.deploy.CloudOsLaunchTaskBase;
 import cloudos.launcher.dao.CloudConfigDAO;
 import cloudos.launcher.dao.LaunchConfigDAO;
@@ -24,6 +25,8 @@ import java.util.List;
 
 import static cloudos.launcher.ApiConstants.CLOUD_FACTORY;
 import static org.cobbzilla.util.daemon.ZillaRuntime.die;
+import static org.cobbzilla.util.io.FileUtil.*;
+import static org.cobbzilla.util.json.JsonUtil.toJsonOrDie;
 import static org.cobbzilla.util.security.ShaUtil.sha256_hex;
 
 @Slf4j
@@ -31,6 +34,7 @@ public class InstanceLaunchTask
         extends CloudOsLaunchTaskBase<LaunchAccount, Instance, LauncherTaskResult>
         implements ITask<LauncherTaskResult> {
 
+    public static final String CLOUDOS_SERVER_TARBALL = "cloudos-server.tar.gz";
     private CloudConfigDAO cloudConfigDAO;
     private LaunchConfigDAO launchConfigDAO;
     private LaunchApiConfiguration configuration;
@@ -75,7 +79,8 @@ public class InstanceLaunchTask
 
         // prep staging dir
         final File chefMaster = configuration.getChefMaster();
-        if (!prepChefRepo(cloudOs().getStagingDirFile(), chefMaster, allApps, configuration)) {
+        final File stagingDir = cloudOs().getStagingDirFile();
+        if (!prepChefRepo(stagingDir, chefMaster, allApps, configuration)) {
             die("preLaunch: CloudOsChefDeployer.prepChefStagingDir error");
         }
 
@@ -85,9 +90,15 @@ public class InstanceLaunchTask
         final String domain = baseDatabag.getParent_domain();
 
         // prep databags
-        // Is djbdns the DNS provider? If so, enable cloudos-dns and djbdns apps, init cloudos-dns account
+        final CloudOsDatabag cloudOsDatabag = getCloudOsDatabag();
+        if (!cloudOsDatabag.hasServerTarball()) {
+            final File destFile = new File(abs(stagingDir) + "/data_files/cloudos/"+CLOUDOS_SERVER_TARBALL);
+            copyFile(configuration.getServerTarball(CLOUDOS_SERVER_TARBALL), destFile);
+            cloudOsDatabag.setServer_tarball("@data_files/cloudos/" + CLOUDOS_SERVER_TARBALL);
+        }
+        toFileOrDie(getCloudOsDatabagFile(), toJsonOrDie(cloudOsDatabag));
 
-        // add all apps found in solo.json
+        // Is djbdns the DNS provider? If so, enable cloudos-dns and djbdns apps, init cloudos-dns account
 
         return super.preLaunch();
     }

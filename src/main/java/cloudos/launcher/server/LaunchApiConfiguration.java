@@ -26,6 +26,7 @@ public class LaunchApiConfiguration
 
     public static final String CHEF_MASTER = "chef-master";
     public static final String APP_BUNDLES = "app-bundles";
+    public static final String SERVER_TARBALLS = "server-tarballs";
 
     public static File configDir(String dir) {
         if (empty(dir)) dir = "/";
@@ -44,6 +45,19 @@ public class LaunchApiConfiguration
             loadResourceAsFile(APP_BUNDLES + "/" + bundleFilename, bundleFile);
         }
         return bundleFile;
+    }
+
+    public File getServerTarball(String name) {
+        final File tarballDir = configDir(SERVER_TARBALLS);
+        final File tarball = new File(tarballDir, name);
+        if (!tarball.exists()) {
+            try {
+                loadResourceAsFile(SERVER_TARBALLS + "/" + name, tarball);
+            } catch (IOException e) {
+                die("getServerTarball: error loading "+name+": "+e, e);
+            }
+        }
+        return tarball;
     }
 
     public File getChefMaster() {

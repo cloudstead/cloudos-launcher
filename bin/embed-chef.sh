@@ -34,6 +34,7 @@ done
 # Copy chef scripts
 CLOUDOS_LIB="${CLOUDOS_DIR}/cloudos-lib"
 CLOUDOS_SERVER="${CLOUDOS_DIR}/cloudos-server"
+CLOUDOS_DNS="${CLOUDOS_DIR}/cloudos-dns/dns-server"
 
 CHEF_MASTER="${BASE_DIR}/target/classes/chef-master"
 mkdir -p ${CHEF_MASTER}
@@ -47,3 +48,18 @@ for f in JSON.sh solo.rb install.sh uninstall.sh deploy_lib.sh ; do
 done && \
 cp ${CLOUDOS_SERVER}/chef-repo/deploy.sh ${CHEF_MASTER}/
 echo "deploy.sh" >> ${CHEF_MASTER_MANIFEST}
+
+
+SERVER_TARBALLS="${BASE_DIR}/target/classes/server-tarballs"
+mkdir -p ${SERVER_TARBALLS}
+
+TARBALLS="${CLOUDOS_SERVER}/target/cloudos-server.tar.gz ${CLOUDOS_DNS}/target/cloudos-dns-server.tar.gz"
+for tarball in ${TARBALLS} ; do
+  if [ ! -f ${tarball} ] ; then
+    (cd $(dirname ${tarball})/.. && artifact=$(basename $(pwd)) && mvn -DskipTests=true package && ${CLOUDOS_DIR}/prep-deploy.sh ${artifact})
+  fi
+  if [ ! -f ${tarball} ] ; then
+    die "Error building tarball: ${tarball}"
+  fi
+  cp ${tarball} ${SERVER_TARBALLS}/
+done
