@@ -2,16 +2,17 @@ package cloudos.launcher.main;
 
 import cloudos.launcher.model.support.InstanceRequest;
 import cloudos.launcher.service.LauncherTaskResult;
+import lombok.extern.slf4j.Slf4j;
 import org.cobbzilla.wizard.client.ApiClientBase;
 import org.cobbzilla.wizard.task.TaskId;
+import org.cobbzilla.wizard.util.RestResponse;
 
-import static cloudos.launcher.ApiConstants.EP_LAUNCH;
-import static cloudos.launcher.ApiConstants.INSTANCES_ENDPOINT;
-import static cloudos.launcher.ApiConstants.TASKS_ENDPOINT;
+import static cloudos.launcher.ApiConstants.*;
 import static org.cobbzilla.util.json.JsonUtil.fromJson;
 import static org.cobbzilla.util.json.JsonUtil.toJson;
 import static org.cobbzilla.util.system.Sleep.sleep;
 
+@Slf4j
 public class InstanceMain extends LauncherCrudMainBase<InstanceMainOptions, InstanceRequest> {
 
     public static void main (String[] args) { main(InstanceMain.class, args); }
@@ -20,26 +21,40 @@ public class InstanceMain extends LauncherCrudMainBase<InstanceMainOptions, Inst
 
         final InstanceMainOptions options = getOptions();
         final ApiClientBase api = getApiClient();
-        if (!options.isDoLaunch() && !options.isForce()) options.requiredAndDie("LAUNCH");
+
+        if (!options.isDoLaunch() && !options.isForce() && !options.isDestroy()) {
+            die("No operation selected");
+        }
         if (!options.hasName()) options.requiredAndDie("NAME");
 
-        final String launchUri = INSTANCES_ENDPOINT
-                + "/" + options.getName() + EP_LAUNCH
-                + (options.isForce() ? "?force=true" : "");
+        String uri = INSTANCES_ENDPOINT + "/" + options.getName();
 
-        final TaskId taskId = fromJson(api.post(launchUri, null).json, TaskId.class);
+        if (options.isDestroy()) {
+            uri += EP_DESTROY;
+            out(api.doPost(uri, null));
 
-        LauncherTaskResult result;
-        sleep(options.getPollSeconds());
+        } else {
+            uri += EP_LAUNCH + (options.isForce() ? "?force=true" : "");
+            final TaskId taskId = fromJson(api.post(uri, null).json, TaskId.class);
 
-        final String taskUri = TASKS_ENDPOINT + "/" + taskId.getUuid();
-        result = fromJson(api.get(taskUri).json, LauncherTaskResult.class);
-        while (!result.isComplete()) {
-            out(toJson(result));
+            LauncherTaskResult result;
             sleep(options.getPollSeconds());
-            result = fromJson(api.get(taskUri).json, LauncherTaskResult.class);
-        }
 
-        out(toJson(result));
+            final String taskUri = TASKS_ENDPOINT + "/" + taskId.getUuid();
+            result = fromJson(api.get(taskUri).json, LauncherTaskResult.class);
+            while (!result.isComplete()) {
+                out(toJson(result));
+                sleep(options.getPollSeconds());
+                final RestResponse response = api.get(taskUri);
+                out(response);
+                if (!response.isSuccess()) {
+                    log.warn("Error checking task status");
+                } else {
+                    result = fromJson(response.json, LauncherTaskResult.class);
+                }
+
+            }
+            out(toJson(result));
+        }
     }
 }

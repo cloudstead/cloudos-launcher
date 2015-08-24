@@ -59,6 +59,12 @@ public class InstanceMainOptions extends LauncherCrudOptionsBase<InstanceRequest
     @Option(name=OPT_FORCE, aliases=LONGOPT_FORCE, usage=USAGE_FORCE)
     @Getter @Setter private boolean force = false;
 
+    public static final String USAGE_DESTROY = "Destroy the instance.";
+    public static final String OPT_DESTROY = "-X";
+    public static final String LONGOPT_DESTROY = "--destroy";
+    @Option(name=OPT_DESTROY, aliases=LONGOPT_DESTROY, usage=USAGE_DESTROY)
+    @Getter @Setter private boolean destroy = false;
+
     public static final String USAGE_POLL = "After a launch, wait this many seconds in between status checks";
     public static final String OPT_POLL = "-p";
     public static final String LONGOPT_POLL = "--poll";
@@ -73,7 +79,7 @@ public class InstanceMainOptions extends LauncherCrudOptionsBase<InstanceRequest
         return super.isValidForWrite() && hasCloud() && hasLaunch() && hasInstanceType() && hasRegion();
     }
 
-    @Override public boolean isCustomAction() { return doLaunch; }
+    @Override public boolean isCustomAction() { return doLaunch || force || destroy; }
 
     @Override public String getEndpoint() { return ApiConstants.INSTANCES_ENDPOINT; }
 

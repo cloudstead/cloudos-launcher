@@ -41,7 +41,7 @@ mkdir -p ${CHEF_MASTER}
 CHEF_MASTER_MANIFEST="${BASE_DIR}/target/classes/chef-master/manifest.txt"
 cat /dev/null > ${CHEF_MASTER_MANIFEST}
 
-for f in JSON.sh solo.rb install.sh deploy_lib.sh ; do
+for f in JSON.sh solo.rb install.sh uninstall.sh deploy_lib.sh ; do
   cp ${CLOUDOS_LIB}/chef-repo/${f} ${CHEF_MASTER}/
   echo "${f}" >> ${CHEF_MASTER_MANIFEST}
 done && \

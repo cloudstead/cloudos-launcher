@@ -4,7 +4,6 @@ import cloudos.cslib.compute.CsCloud;
 import cloudos.cslib.compute.CsCloudConfig;
 import cloudos.dao.CloudOsEventDAO;
 import cloudos.databag.BaseDatabag;
-import cloudos.deploy.CloudOsChefDeployer;
 import cloudos.deploy.CloudOsLaunchTaskBase;
 import cloudos.launcher.dao.CloudConfigDAO;
 import cloudos.launcher.dao.LaunchConfigDAO;
@@ -14,10 +13,9 @@ import cloudos.launcher.model.LaunchAccount;
 import cloudos.launcher.server.LaunchApiConfiguration;
 import cloudos.model.CsGeoRegion;
 import cloudos.model.CsPlatform;
-import cloudos.model.instance.CloudOsAppBundle;
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.cobbzilla.util.io.DeleteOnExit;
+import org.apache.commons.lang3.RandomStringUtils;
+import org.cobbzilla.util.collection.SingletonList;
 import org.cobbzilla.wizard.dao.DAO;
 import org.cobbzilla.wizard.task.ITask;
 
@@ -25,10 +23,7 @@ import java.io.File;
 import java.util.List;
 
 import static cloudos.launcher.ApiConstants.CLOUD_FACTORY;
-import static cloudos.launcher.server.LaunchApiConfiguration.configDir;
 import static org.cobbzilla.util.daemon.ZillaRuntime.die;
-import static org.cobbzilla.util.io.FileUtil.*;
-import static org.cobbzilla.util.json.JsonUtil.fromJsonOrDie;
 import static org.cobbzilla.util.security.ShaUtil.sha256_hex;
 
 @Slf4j
@@ -40,18 +35,23 @@ public class InstanceLaunchTask
     private LaunchConfigDAO launchConfigDAO;
     private LaunchApiConfiguration configuration;
 
-    private File stagingDir;
-    private File initFilesDir;
-
-    @Getter(lazy=true) private final BaseDatabag baseDatabag = initBaseDatabag();
-    private String hostname;
-    private String domain;
-
-    private BaseDatabag initBaseDatabag() {
-        final File baseDatabagFile = new File(abs(initFilesDir) + "/data_bags/cloudos/base.json");
-        if (!baseDatabagFile.exists()) die("buildCloud: base databag not found: "+abs(baseDatabagFile));
-        return fromJsonOrDie(baseDatabagFile, BaseDatabag.class);
+    protected BaseDatabag initBaseDatabag() {
+        writeZipData();
+        return super.initBaseDatabag();
     }
+
+    private void writeZipData() {
+        launchConfigDAO.findByUuid(cloudOs().getLaunch())
+                .setLaunchAccount(admin())
+                .decryptZipData(getInitFilesDir());
+    }
+
+    @Override protected File createInitFilesDir(String dir) { return LaunchApiConfiguration.configDir(dir); }
+    @Override protected File createChefDir(String dir) { return LaunchApiConfiguration.configDir(dir); }
+
+    @Override public List<File> getCookbookSources() { return new SingletonList<>(new File("/nopath-"+System.currentTimeMillis()+ RandomStringUtils.randomAlphanumeric(10))); }
+
+    @Override public Mode getMode() { return Mode.inline; }
 
     public InstanceLaunchTask(LaunchAccount account,
                               Instance instance,
@@ -70,39 +70,24 @@ public class InstanceLaunchTask
 
     @Override protected boolean preLaunch() {
 
-        stagingDir = mkdirOrDie(createTempDirOrDie(configDir("deploy-staging"), cloudOs().getName()));
-        DeleteOnExit.schedule(log, stagingDir);
+        // build app list
+        final List<String> allApps = cloudOs().getAllApps();
 
-        // decrypt and unroll the zipfile
-        initFilesDir = mkdirOrDie(new File(stagingDir, "init_files"));
-        launchConfigDAO.findByUuid(cloudOs().getLaunch())
-                .setLaunchAccount(admin())
-                .decryptZipData(initFilesDir);
+        // prep staging dir
+        final File chefMaster = configuration.getChefMaster();
+        if (!prepChefRepo(cloudOs().getStagingDirFile(), chefMaster, allApps, configuration)) {
+            die("preLaunch: CloudOsChefDeployer.prepChefStagingDir error");
+        }
 
         // set cloudos name based on databag
         final BaseDatabag baseDatabag = getBaseDatabag();
-        hostname = baseDatabag.getHostname();
-        domain = baseDatabag.getParent_domain();
+        final String hostname = baseDatabag.getHostname();
+        final String domain = baseDatabag.getParent_domain();
 
         // prep databags
         // Is djbdns the DNS provider? If so, enable cloudos-dns and djbdns apps, init cloudos-dns account
 
-
-        // build app list
-        final List<String> allApps = cloudOs().getAllApps();
-
         // add all apps found in solo.json
-
-        // add all required apps
-        for (String requiredApp : CloudOsAppBundle.required.getApps()) {
-            if (!allApps.contains(requiredApp)) allApps.add(requiredApp);
-        }
-
-        // prep staging dir
-        final File chefMaster = configuration.getChefMaster();
-        if (!CloudOsChefDeployer.prepChefStagingDir(stagingDir, chefMaster, allApps, configuration)) {
-            die("preLaunch: CloudOsChefDeployer.prepChefStagingDir error");
-        }
 
         return super.preLaunch();
     }
@@ -115,14 +100,20 @@ public class InstanceLaunchTask
 
         final CsGeoRegion region = cloudOs().getCsRegion();
 
+        final BaseDatabag baseDatabag = getBaseDatabag();
+        final String hostname = baseDatabag.getHostname();
+        final String domain = baseDatabag.getParent_domain();
+
         final String groupPrefix = hostname + "-" + sha256_hex(admin().getUuid() + "-" + cloudOs().getName()).substring(0, 5);
         final CsCloudConfig config = new CsCloudConfig();
+        final String instanceType = cloudOs().getInstanceType();
+
         config.setType(cloud.getCloudType());
         config.setAccountId(cloud.getAccessKey());
         config.setAccountSecret(cloud.getSecretKey());
-        config.setInstanceSize(cloudOs().getInstanceType());
+        config.setInstanceSize(instanceType);
         config.setRegion(region.getName());
-        config.setImage(region.getImage(CsPlatform.ubuntu_14_lts));
+        config.setImage(region.getImage(instanceType, CsPlatform.ubuntu_14_lts));
         config.setGroupPrefix(groupPrefix);
         config.setUser(hostname);
         config.setDomain(domain);
