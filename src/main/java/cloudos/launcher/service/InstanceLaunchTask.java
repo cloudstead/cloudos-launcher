@@ -15,6 +15,7 @@ import cloudos.launcher.server.LaunchApiConfiguration;
 import cloudos.model.CsGeoRegion;
 import cloudos.model.CsPlatform;
 import cloudos.model.SslCertificateBase;
+import cloudos.model.instance.CloudOsEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.cobbzilla.util.collection.SingletonList;
@@ -98,11 +99,13 @@ public class InstanceLaunchTask
         try {
             cert = new SslCertificateBase().setPem(FileUtil.toStringOrDie(certFile));
         } catch (Exception e) {
-            return die("preLaunch: Error parsing certificate PEM: "+e, e);
+            error("{err.cert.invalid}", e);
+            return false;
         }
         final String fqdn = hostname + "." + domain;
         if (!cert.isValidForHostname(fqdn)) {
-            return die("preLaunch: Invalid certificate (was for "+cert.getCommonName()+" but target host is "+fqdn+")");
+            error("{err.cert.wrongName}", "SSL certificate was for "+cert.getCommonName()+" and will not work with this hostname ("+fqdn+")");
+            return false;
         }
 
         // prep databags
