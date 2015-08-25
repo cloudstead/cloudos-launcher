@@ -14,9 +14,11 @@ import cloudos.launcher.model.LaunchAccount;
 import cloudos.launcher.server.LaunchApiConfiguration;
 import cloudos.model.CsGeoRegion;
 import cloudos.model.CsPlatform;
+import cloudos.model.SslCertificateBase;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.cobbzilla.util.collection.SingletonList;
+import org.cobbzilla.util.io.FileUtil;
 import org.cobbzilla.wizard.dao.DAO;
 import org.cobbzilla.wizard.task.ITask;
 
@@ -53,6 +55,8 @@ public class InstanceLaunchTask
     @Override protected File createInitFilesDir(String dir) { return LaunchApiConfiguration.configDir(dir); }
     @Override protected File createChefDir(String dir) { return LaunchApiConfiguration.configDir(dir); }
 
+    @Override public String getJsonEdit() { return configuration.getJsonEdit(); }
+
     @Override public List<File> getCookbookSources() { return new SingletonList<>(new File("/nopath-"+System.currentTimeMillis()+ RandomStringUtils.randomAlphanumeric(10))); }
 
     @Override public Mode getMode() { return Mode.inline; }
@@ -79,22 +83,35 @@ public class InstanceLaunchTask
 
         // prep staging dir
         final File chefMaster = configuration.getChefMaster();
-        final File stagingDir = cloudOs().getStagingDirFile();
+        final File stagingDir = getStagingDir();
         if (!prepChefRepo(stagingDir, chefMaster, allApps, configuration)) {
-            die("preLaunch: CloudOsChefDeployer.prepChefStagingDir error");
+            die("preLaunch: prepChefRepo error");
         }
 
-        // set cloudos name based on databag
         final BaseDatabag baseDatabag = getBaseDatabag();
         final String hostname = baseDatabag.getHostname();
         final String domain = baseDatabag.getParent_domain();
+
+        // ensure certificate is for correct hostname
+        final File certFile = new File(abs(getInitFilesDir()) + "/certs/cloudos/"+baseDatabag.getSsl_cert_name()+".pem");
+        SslCertificateBase cert;
+        try {
+            cert = new SslCertificateBase().setPem(FileUtil.toStringOrDie(certFile));
+        } catch (Exception e) {
+            return die("preLaunch: Error parsing certificate PEM: "+e, e);
+        }
+        final String fqdn = hostname + "." + domain;
+        if (!cert.isValidForHostname(fqdn)) {
+            return die("preLaunch: Invalid certificate (was for "+cert.getCommonName()+" but target host is "+fqdn+")");
+        }
 
         // prep databags
         final CloudOsDatabag cloudOsDatabag = getCloudOsDatabag();
         if (!cloudOsDatabag.hasServerTarball()) {
             final File destFile = new File(abs(stagingDir) + "/data_files/cloudos/"+CLOUDOS_SERVER_TARBALL);
             copyFile(configuration.getServerTarball(CLOUDOS_SERVER_TARBALL), destFile);
-            cloudOsDatabag.setServer_tarball("@data_files/cloudos/" + CLOUDOS_SERVER_TARBALL);
+            // note that after substitution at chef-runtime, @data_files becomes chef-repo/data_files/{appname}
+            cloudOsDatabag.setServer_tarball("@data_files/" + CLOUDOS_SERVER_TARBALL);
         }
         toFileOrDie(getCloudOsDatabagFile(), toJsonOrDie(cloudOsDatabag));
 

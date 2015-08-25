@@ -2,6 +2,7 @@ package cloudos.launcher.server;
 
 import cloudos.deploy.AppBundleResolver;
 import lombok.Setter;
+import org.cobbzilla.util.json.main.JsonEditor;
 import org.cobbzilla.util.string.StringUtil;
 import org.cobbzilla.wizard.server.config.DatabaseConfiguration;
 import org.cobbzilla.wizard.server.config.HasDatabaseConfiguration;
@@ -74,6 +75,12 @@ public class LaunchApiConfiguration
             }
         }
         return chefMaster;
+    }
+
+    public String getJsonEdit() {
+        String classpath = System.getProperty("java.class.path");
+        if (classpath.contains(File.pathSeparator)) classpath = classpath.substring(0, classpath.indexOf(File.pathSeparatorChar));
+        return "java -cp " + System.getProperty("user.dir") + File.separator + "/" + classpath + " " + JsonEditor.class.getName();
     }
 
 }
