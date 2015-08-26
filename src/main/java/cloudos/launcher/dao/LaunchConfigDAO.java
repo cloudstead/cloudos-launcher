@@ -1,8 +1,14 @@
 package cloudos.launcher.dao;
 
+import cloudos.databag.BaseDatabag;
 import cloudos.launcher.model.LaunchAccount;
 import cloudos.launcher.model.LaunchConfig;
+import cloudos.model.SslCertificateBase;
+import lombok.Cleanup;
+import org.cobbzilla.util.io.FileUtil;
+import org.cobbzilla.util.io.TempDir;
 import org.cobbzilla.wizard.dao.UniquelyNamedEntityDAO;
+import org.cobbzilla.wizard.validation.SimpleViolationException;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
@@ -22,13 +28,31 @@ public class LaunchConfigDAO extends UniquelyNamedEntityDAO<LaunchConfig> {
     }
 
     @Override public Object preCreate(@Valid LaunchConfig config) {
+        validate(config);
         config.writeZipData();
         return super.preCreate(config);
     }
 
     @Override public Object preUpdate(@Valid LaunchConfig config) {
+        validate(config);
         config.writeZipData();
         return super.preUpdate(config);
+    }
+
+    private void validate(LaunchConfig config) {
+        // ensure certificate is for correct hostname
+        @Cleanup final TempDir tempDir = new TempDir();
+        config.decryptZipData(tempDir);
+        final BaseDatabag base = BaseDatabag.fromChefRepo(tempDir);
+        final File certFile = new File(abs(tempDir) + "/certs/cloudos/"+base.getSsl_cert_name()+".pem");
+        SslCertificateBase cert;
+        try {
+            cert = new SslCertificateBase().setPem(FileUtil.toStringOrDie(certFile));
+        } catch (Exception e) {
+            throw new SimpleViolationException("{err.cert.invalid}");
+        }
+        final String fqdn = base.getHostname() + "." + base.getParent_domain();
+        if (!cert.isValidForHostname(fqdn)) throw new SimpleViolationException("{err.cert.wrongName}");
     }
 
     @Override public void delete(String uuid) {

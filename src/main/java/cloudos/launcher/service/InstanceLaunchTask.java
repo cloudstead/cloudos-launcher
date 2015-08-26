@@ -11,14 +11,13 @@ import cloudos.launcher.dao.LaunchConfigDAO;
 import cloudos.launcher.model.CloudConfig;
 import cloudos.launcher.model.Instance;
 import cloudos.launcher.model.LaunchAccount;
+import cloudos.launcher.model.LaunchConfig;
 import cloudos.launcher.server.LaunchApiConfiguration;
 import cloudos.model.CsGeoRegion;
 import cloudos.model.CsPlatform;
-import cloudos.model.SslCertificateBase;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.cobbzilla.util.collection.SingletonList;
-import org.cobbzilla.util.io.FileUtil;
 import org.cobbzilla.wizard.dao.DAO;
 import org.cobbzilla.wizard.task.ITask;
 
@@ -42,14 +41,13 @@ public class InstanceLaunchTask
     private LaunchApiConfiguration configuration;
 
     protected BaseDatabag initBaseDatabag() {
-        writeZipData();
+        writeZipData(getInitFilesDir());
         return super.initBaseDatabag();
     }
 
-    private void writeZipData() {
-        launchConfigDAO.findByUuid(cloudOs().getLaunch())
-                .setLaunchAccount(admin())
-                .decryptZipData(getInitFilesDir());
+    private void writeZipData(File dir) {
+        final LaunchConfig config = launchConfigDAO.findByUuid(cloudOs().getLaunch()).setLaunchAccount(admin());
+        config.decryptZipData(dir);
     }
 
     @Override protected File createInitFilesDir(String dir) { return LaunchApiConfiguration.configDir(dir); }
@@ -92,21 +90,6 @@ public class InstanceLaunchTask
         final String hostname = baseDatabag.getHostname();
         final String domain = baseDatabag.getParent_domain();
 
-        // ensure certificate is for correct hostname
-        final File certFile = new File(abs(getInitFilesDir()) + "/certs/cloudos/"+baseDatabag.getSsl_cert_name()+".pem");
-        SslCertificateBase cert;
-        try {
-            cert = new SslCertificateBase().setPem(FileUtil.toStringOrDie(certFile));
-        } catch (Exception e) {
-            error("{err.cert.invalid}", e);
-            return false;
-        }
-        final String fqdn = hostname + "." + domain;
-        if (!cert.isValidForHostname(fqdn)) {
-            error("{err.cert.wrongName}", "SSL certificate was for "+cert.getCommonName()+" and will not work with this hostname ("+fqdn+")");
-            return false;
-        }
-
         // prep databags
         final CloudOsDatabag cloudOsDatabag = getCloudOsDatabag();
         if (!cloudOsDatabag.hasServerTarball()) {
@@ -115,7 +98,7 @@ public class InstanceLaunchTask
             // note that after substitution at chef-runtime, @data_files becomes chef-repo/data_files/{appname}
             cloudOsDatabag.setServer_tarball("@data_files/" + CLOUDOS_SERVER_TARBALL);
         }
-        toFileOrDie(getCloudOsDatabagFile(), toJsonOrDie(cloudOsDatabag));
+        cloudOsDatabag.writeChefRepo(getInitFilesDir());
 
         // Is djbdns the DNS provider? If so, enable cloudos-dns and djbdns apps, init cloudos-dns account
 
