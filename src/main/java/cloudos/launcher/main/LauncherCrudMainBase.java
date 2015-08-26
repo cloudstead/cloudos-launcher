@@ -22,7 +22,7 @@ public class LauncherCrudMainBase<OPT extends LauncherCrudOptionsBase<R>, R> ext
             switch (options.getOperation()) {
                 case read:
                     if (options.hasName()) uri += "/" + options.getName();
-                    out(api.get(uri));
+                    out(api.doGet(uri));
                     break;
 
                 case create:
@@ -30,13 +30,13 @@ public class LauncherCrudMainBase<OPT extends LauncherCrudOptionsBase<R>, R> ext
                     if (!options.isValidForWrite()) die("Missing one or more required arguments");
                     uri += "/" + options.getName();
                     R requestObject = options.getRequestObject();
-                    out(api.post(uri, toJson(requestObject)));
+                    out(api.doPost(uri, toJson(requestObject)));
                     break;
 
                 case delete:
                     if (!options.hasName()) die("Name is required");
                     uri += "/" + options.getName();
-                    out(api.delete(uri));
+                    out(api.doDelete(uri));
                     break;
 
                 default:

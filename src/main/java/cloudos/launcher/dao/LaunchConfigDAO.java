@@ -5,6 +5,7 @@ import cloudos.launcher.model.LaunchAccount;
 import cloudos.launcher.model.LaunchConfig;
 import cloudos.model.SslCertificateBase;
 import lombok.Cleanup;
+import org.apache.commons.io.FileUtils;
 import org.cobbzilla.util.io.FileUtil;
 import org.cobbzilla.util.io.TempDir;
 import org.cobbzilla.wizard.dao.UniquelyNamedEntityDAO;
@@ -29,30 +30,43 @@ public class LaunchConfigDAO extends UniquelyNamedEntityDAO<LaunchConfig> {
 
     @Override public Object preCreate(@Valid LaunchConfig config) {
         validate(config);
-        config.writeZipData();
         return super.preCreate(config);
     }
 
     @Override public Object preUpdate(@Valid LaunchConfig config) {
         validate(config);
-        config.writeZipData();
         return super.preUpdate(config);
     }
 
     private void validate(LaunchConfig config) {
         // ensure certificate is for correct hostname
-        @Cleanup final TempDir tempDir = new TempDir();
-        config.decryptZipData(tempDir);
-        final BaseDatabag base = BaseDatabag.fromChefRepo(tempDir);
-        final File certFile = new File(abs(tempDir) + "/certs/cloudos/"+base.getSsl_cert_name()+".pem");
-        SslCertificateBase cert;
+        boolean ok = false;
         try {
-            cert = new SslCertificateBase().setPem(FileUtil.toStringOrDie(certFile));
+            config.writeZipData();
+            @Cleanup final TempDir tempDir = new TempDir();
+            config.decryptZipData(tempDir);
+            final BaseDatabag base = BaseDatabag.fromChefRepo(tempDir);
+            final File certFile = new File(abs(tempDir) + "/certs/cloudos/" + base.getSsl_cert_name() + ".pem");
+            SslCertificateBase cert;
+            try {
+                cert = new SslCertificateBase().setPem(FileUtil.toStringOrDie(certFile));
+            } catch (Exception e) {
+                throw new SimpleViolationException("{err.cert.invalid}");
+            }
+            final String fqdn = base.getHostname() + "." + base.getParent_domain();
+            if (!cert.isValidForHostname(fqdn)) throw new SimpleViolationException("{err.cert.wrongName}");
+            ok = true;
+
+        } catch (SimpleViolationException e) {
+            throw e;
+
         } catch (Exception e) {
             throw new SimpleViolationException("{err.cert.invalid}");
+
+        } finally {
+            final File zipFile = config.getZipFile();
+            if (!ok && zipFile.exists()) FileUtils.deleteQuietly(zipFile);
         }
-        final String fqdn = base.getHostname() + "." + base.getParent_domain();
-        if (!cert.isValidForHostname(fqdn)) throw new SimpleViolationException("{err.cert.wrongName}");
     }
 
     @Override public void delete(String uuid) {

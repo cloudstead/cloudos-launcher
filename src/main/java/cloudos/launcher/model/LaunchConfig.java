@@ -9,6 +9,7 @@ import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.io.IOUtils;
+import org.cobbzilla.util.io.TempDir;
 import org.cobbzilla.util.security.Crypto;
 import org.cobbzilla.util.string.Base64;
 import org.cobbzilla.util.system.Command;
@@ -91,7 +92,8 @@ public class LaunchConfig extends UniquelyNamedEntity {
 
     /**
      * Decrypt and unroll a launch config zipfile
-     * @return a temp directory where the zipfile has been unrolled
+     * @param dir The directory where the unrolling will occur
+     * @return a temp directory where the zipfile has been unrolled (same as was passed in)
      */
     public File decryptZipData(File dir) {
         final Crypto crypto = getLaunchAccount().getCrypto();
