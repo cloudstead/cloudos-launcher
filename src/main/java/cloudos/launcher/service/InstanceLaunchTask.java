@@ -15,7 +15,6 @@ import cloudos.launcher.server.LaunchApiConfiguration;
 import cloudos.model.CsGeoRegion;
 import cloudos.model.CsPlatform;
 import cloudos.model.SslCertificateBase;
-import cloudos.model.instance.CloudOsEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.cobbzilla.util.collection.SingletonList;
