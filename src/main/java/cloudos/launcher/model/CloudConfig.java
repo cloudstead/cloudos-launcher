@@ -28,15 +28,19 @@ public class CloudConfig extends UniquelyNamedEntity implements CustomScrubbage 
             new ScrubbableField(CloudConfig.class, "accessKey", String.class),
             new ScrubbableField(CloudConfig.class, "secretKey", String.class)
     };
+
+    public static final int ACCESS_KEY_SHOW_CHARS = 5;
+    public static final String SECRET_KEY_MASK = "-secret-";
+
     @Override public ScrubbableField[] fieldsToScrub() { return SCRUB; }
 
     @Override public void scrub(Object entity, ScrubbableField field) {
         switch (field.name) {
             case "accessKey":
-                ((CloudConfig) entity).setAccessKey(accessKey.substring(0, 5) + "...");
+                ((CloudConfig) entity).setAccessKey(accessKey.substring(0, ACCESS_KEY_SHOW_CHARS) + "...");
                 break;
             case "secretKey":
-                ((CloudConfig) entity).setSecretKey("-secret-");
+                ((CloudConfig) entity).setSecretKey(SECRET_KEY_MASK);
                 break;
         }
     }

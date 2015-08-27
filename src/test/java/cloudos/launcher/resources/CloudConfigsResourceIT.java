@@ -34,7 +34,7 @@ public class CloudConfigsResourceIT extends ApiResourceITBase {
 
         config2 = randomCloudConfig();
         apiDocs.addNote("create another config");
-        config2 = fromJson(post(CLOUDS_ENDPOINT+"/"+config2.getName(), toJson(config2)).json, CloudConfig.class);
+        config2 = fromJson(post(CLOUDS_ENDPOINT + "/" + config2.getName(), toJson(config2)).json, CloudConfig.class);
         assertNotNull(config2);
 
         apiDocs.addNote("list configs, should be two");
@@ -44,7 +44,8 @@ public class CloudConfigsResourceIT extends ApiResourceITBase {
         apiDocs.addNote("fetch a single configuration");
         found = fromJson(get(CLOUDS_ENDPOINT+"/"+config.getName()).json, CloudConfig.class);
         assertNotNull(found);
-        assertEquals(accessKey, found.getAccessKey());
+        assertTrue(accessKey.startsWith(found.getAccessKey().substring(0, CloudConfig.ACCESS_KEY_SHOW_CHARS)));
+        assertEquals("secret key should not be exposed!", CloudConfig.SECRET_KEY_MASK, found.getSecretKey());
 
         apiDocs.addNote("update a config");
         config = fromJson(post(CLOUDS_ENDPOINT+"/"+config.getName(), toJson(config)).json, CloudConfig.class);

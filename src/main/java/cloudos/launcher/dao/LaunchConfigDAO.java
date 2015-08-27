@@ -38,7 +38,7 @@ public class LaunchConfigDAO extends UniquelyNamedEntityDAO<LaunchConfig> {
         return super.preUpdate(config);
     }
 
-    private void validate(LaunchConfig config) {
+    protected void validate(LaunchConfig config) {
         // ensure certificate is for correct hostname
         boolean ok = false;
         try {

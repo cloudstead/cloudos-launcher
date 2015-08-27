@@ -14,7 +14,13 @@
     <!-- jersey resources, DAOs -->
     <context:component-scan base-package="cloudos.launcher.model"/>
     <context:component-scan base-package="cloudos.dao"/>
-    <context:component-scan base-package="cloudos.launcher.dao"/>
+
+    <!-- mock LaunchConfigDAO to override cert validation -->
+    <context:component-scan base-package="cloudos.launcher.dao">
+        <context:exclude-filter type="regex" expression="cloudos.launcher.dao.LaunchConfigDAO"/>
+    </context:component-scan>
+    <bean class="cloudos.launcher.dao.MockLaunchConfigDAO"/>
+
     <context:component-scan base-package="cloudos.launcher.auth"/>
     <context:component-scan base-package="cloudos.launcher.resources"/>
 

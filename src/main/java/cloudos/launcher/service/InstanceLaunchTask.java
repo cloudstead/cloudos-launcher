@@ -26,8 +26,8 @@ import java.util.List;
 
 import static cloudos.launcher.ApiConstants.CLOUD_FACTORY;
 import static org.cobbzilla.util.daemon.ZillaRuntime.die;
-import static org.cobbzilla.util.io.FileUtil.*;
-import static org.cobbzilla.util.json.JsonUtil.toJsonOrDie;
+import static org.cobbzilla.util.io.FileUtil.abs;
+import static org.cobbzilla.util.io.FileUtil.copyFile;
 import static org.cobbzilla.util.security.ShaUtil.sha256_hex;
 
 @Slf4j
