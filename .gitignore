@@ -13,3 +13,4 @@ target/maven-archiver
 target
 .DS_Store
 dist
+my_init_files

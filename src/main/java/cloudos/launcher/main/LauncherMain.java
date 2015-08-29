@@ -15,6 +15,7 @@ public class LauncherMain {
             .put("cloud", CloudConfigMain.class)
             .put("config", LaunchConfigMain.class)
             .put("instance", InstanceMain.class)
+            .put("key", SshKeyMain.class)
             .put("ctype", CloudTypeMain.class)
             .build();
 

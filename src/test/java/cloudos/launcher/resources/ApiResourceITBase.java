@@ -1,9 +1,12 @@
 package cloudos.launcher.resources;
 
+import cloudos.cslib.ssh.CsKeyPair;
 import cloudos.launcher.model.CloudConfig;
+import cloudos.launcher.model.SshKey;
 import cloudos.launcher.server.LaunchApi;
 import cloudos.launcher.server.LaunchApiConfiguration;
 import cloudos.model.auth.ApiToken;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.RandomUtils;
 import org.cobbzilla.wizard.server.config.factory.ConfigurationSource;
 import org.cobbzilla.wizard.server.config.factory.StreamConfigurationSource;
@@ -30,6 +33,13 @@ public abstract class ApiResourceITBase extends ApiDocsResourceIT<LaunchApiConfi
                 .setAccessKey(randomName())
                 .setSecretKey(randomName())
                 .setName(randomName());
+    }
+
+    public static SshKey randomSshKey() throws Exception {
+        final CsKeyPair keyPair = CsKeyPair.createKeyPairWithoutPassphrase();
+        return (SshKey) new SshKey()
+                .setPublicKey(keyPair.getPublicKey())
+                .setName(RandomStringUtils.randomAlphanumeric(20));
     }
 
     public static final String[] CLOUD_VENDORS = {"AwsCloudType", "DigitalOceanCloudType", "RackspaceCloudType"};

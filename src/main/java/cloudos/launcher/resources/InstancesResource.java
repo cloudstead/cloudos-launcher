@@ -4,10 +4,8 @@ import cloudos.launcher.ApiConstants;
 import cloudos.launcher.dao.CloudConfigDAO;
 import cloudos.launcher.dao.InstanceDAO;
 import cloudos.launcher.dao.LaunchConfigDAO;
-import cloudos.launcher.model.CloudConfig;
-import cloudos.launcher.model.Instance;
-import cloudos.launcher.model.LaunchAccount;
-import cloudos.launcher.model.LaunchConfig;
+import cloudos.launcher.dao.SshKeyDAO;
+import cloudos.launcher.model.*;
 import cloudos.launcher.model.support.InstanceRequest;
 import cloudos.launcher.service.InstanceLaunchManager;
 import cloudos.model.CsGeoRegion;
@@ -35,6 +33,7 @@ public class InstancesResource {
     @Autowired private InstanceDAO instanceDAO;
     @Autowired private CloudConfigDAO cloudConfigDAO;
     @Autowired private LaunchConfigDAO launchConfigDAO;
+    @Autowired private SshKeyDAO keyDAO;
 
     @Autowired private InstanceLaunchManager launchManager;
 
@@ -88,14 +87,23 @@ public class InstancesResource {
         final LaunchConfig launchConfig = launchConfigDAO.findByAccountAndName(account, request.getLaunchConfig(), false);
         if (launchConfig == null) return invalid("err.instance.launchConfig.notFound");
 
+        String sshKey = null;
+        if (request.hasSshKey()) {
+            final SshKey key = keyDAO.findByAccountAndName(account, request.getSshKey());
+            if (key == null) return notFound(request.getSshKey());
+            sshKey = key.getUuid();
+        }
+
         Instance instance = instanceDAO.findByNameAndAccount(account, name);
         if (instance == null) {
             instance = new Instance();
             instance = populate(instance, account, request, cloudConfig, launchConfig);
+            if (sshKey != null) instance.setSshKey(sshKey);
             instance = instanceDAO.create(instance);
 
         } else {
             instance = populate(instance, account, request, cloudConfig, launchConfig);
+            if (sshKey != null) instance.setSshKey(sshKey);
             instance = instanceDAO.update(instance);
         }
         return ok(instance);
@@ -107,6 +115,8 @@ public class InstancesResource {
                                 CloudConfig cloudConfig,
                                 LaunchConfig launchConfig) {
 
+        instance.setLaunchAccount(account);
+
         final CsGeoRegion geoRegion = cloudConfig.getCloudType().getRegion(request.getRegion());
         instance.setAdminUuid(account.getUuid());
         instance.setName(request.getName());
@@ -115,6 +125,12 @@ public class InstancesResource {
         instance.setCsRegion(geoRegion);
         instance.setInstanceType(request.getInstanceType());
         instance.setApps(request.getAdditionalApps());
+
+        // these may be set if we are using an existing instance instead of launching a new one
+        instance.setInstanceId(request.getInstanceId());
+        instance.setPrivateKey(request.getPrivateKey());
+        instance.setKeyPassphrase(request.getKeyPassphrase());
+
         return instance;
     }
 

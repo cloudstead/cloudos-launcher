@@ -10,6 +10,8 @@ import org.cobbzilla.wizard.validation.HasValue;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
+import static org.cobbzilla.util.daemon.ZillaRuntime.empty;
+
 @NoArgsConstructor @AllArgsConstructor @Accessors(chain=true)
 public class InstanceRequest {
 
@@ -27,11 +29,20 @@ public class InstanceRequest {
     @HasValue(message="err.instance.region.required")
     @Getter @Setter private String region = null;
 
+    @Getter @Setter private String sshKey = null;
+    public boolean hasSshKey () { return !empty(sshKey); }
+
     @HasValue(message="err.instance.launchConfig.required")
     @Getter @Setter private String launchConfig;
 
     @HasValue(message="err.instance.type.required")
     @Getter @Setter private String instanceType;
+
+    // optional fields if we are using an existing instance
+    @Getter @Setter private String instanceId;
+    @Getter @Setter private String user;
+    @Getter @Setter private String privateKey;
+    @Getter @Setter private String keyPassphrase;
 
     @Getter @Setter private String additionalApps;
 

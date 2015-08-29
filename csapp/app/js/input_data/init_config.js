@@ -2,19 +2,7 @@ INIT_CONFIG = {
     dns: {
         field_prefix: 'cloudos/base',
         fields: [ 'hostname', 'parent_domain' ],
-        sub_tabs: [ 'dyndns', 'external_dns', 'builtin_djbdns' ],
-        dyndns: {
-            exclusive: 'provider',
-            fields: [ 'dns.account', 'dns.user', 'dns.password', 'dns.zone' ]
-        },
-        external_dns: {
-            exclusive: 'provider',
-            fields: [ 'dns.user', 'dns.password', 'dns.base_uri' ]
-        },
-        builtin_djbdns: {
-            exclusive: 'provider',
-            fields: [ 'djbdns/init/allow_axfr' ]
-        }
+        sub_tabs: 'cloudos/init/dns.mode'
     },
 
     ssl: {

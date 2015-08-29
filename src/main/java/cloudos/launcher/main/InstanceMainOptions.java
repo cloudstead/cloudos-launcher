@@ -4,8 +4,10 @@ import cloudos.launcher.ApiConstants;
 import cloudos.launcher.model.support.InstanceRequest;
 import lombok.Getter;
 import lombok.Setter;
+import org.cobbzilla.util.io.FileUtil;
 import org.kohsuke.args4j.Option;
 
+import java.io.File;
 import java.util.concurrent.TimeUnit;
 
 import static org.cobbzilla.util.daemon.ZillaRuntime.empty;
@@ -27,7 +29,7 @@ public class InstanceMainOptions extends LauncherCrudOptionsBase<InstanceRequest
     public boolean hasLaunch () { return !empty(launch); }
 
     public static final String USAGE_INSTANCE_TYPE = "Name of the instance type config. Required for create/update.";
-    public static final String OPT_INSTANCE_TYPE = "-I";
+    public static final String OPT_INSTANCE_TYPE = "-i";
     public static final String LONGOPT_INSTANCE_TYPE = "--instance-type";
     @Option(name=OPT_INSTANCE_TYPE, aliases=LONGOPT_INSTANCE_TYPE, usage=USAGE_INSTANCE_TYPE)
     @Getter @Setter private String instanceType;
@@ -71,12 +73,41 @@ public class InstanceMainOptions extends LauncherCrudOptionsBase<InstanceRequest
     @Option(name=OPT_POLL, aliases=LONGOPT_POLL, usage=USAGE_POLL)
     @Getter @Setter private long pollSeconds = TimeUnit.SECONDS.toMillis(10);
 
+    public static final String USAGE_IID = "Vendor-specific ID identifying the instance to launch the cloudstead on. If not set then a new instance will be launched.";
+    public static final String OPT_IID = "-I";
+    public static final String LONGOPT_IID = "--iid";
+    @Option(name=OPT_IID, aliases=LONGOPT_IID, usage=USAGE_IID)
+    @Getter @Setter private String instanceId;
+    public boolean hasInstanceId () { return !empty(instanceId); }
+
+    public static final String USAGE_SSHKEY = "Name of SSH Key to place on the instance and allow SSH access";
+    public static final String OPT_SSHKEY = "-k";
+    public static final String LONGOPT_SSHKEY = "--ssh-key";
+    @Option(name=OPT_SSHKEY, aliases=LONGOPT_SSHKEY, usage=USAGE_SSHKEY)
+    @Getter @Setter private String sshKey;
+    public boolean hasSshKey () { return !empty(sshKey); }
+
+    private static final String PK_PASSPHRASE = "PK_PASSPHRASE";
+    public static final String USAGE_PRIVKEY = "Path to private SSH key to use when connecting to the instance. Put the passphrase (if any) in the "+PK_PASSPHRASE+" environment variable.";
+    public static final String OPT_PRIVKEY = "-K";
+    public static final String LONGOPT_PRIVKEY = "--private-key";
+    @Option(name=OPT_PRIVKEY, aliases=LONGOPT_PRIVKEY, usage=USAGE_PRIVKEY)
+    @Getter @Setter private File privateKey;
+    public boolean hasPrivateKey () { return !empty(privateKey); }
+
+    public String getPkPassphrase () { return System.getenv(PK_PASSPHRASE); }
+
     @Override public boolean isValidForWrite() {
         if (!hasCloud()) required("CLOUD");
         if (!hasLaunch()) required("LAUNCH_CONFIG");
         if (!hasInstanceType()) required("INSTANCE_TYPE");
         if (!hasRegion()) required("REGION");
-        return super.isValidForWrite() && hasCloud() && hasLaunch() && hasInstanceType() && hasRegion();
+        if (hasInstanceId() && !hasPrivateKey()) {
+            required("PRIVKEY");
+            required("USER");
+        }
+        return super.isValidForWrite() && hasCloud() && hasLaunch() && hasInstanceType() && hasRegion()
+                && (!hasInstanceId() || (hasInstanceId() && hasPrivateKey()));
     }
 
     @Override public boolean isCustomAction() { return doLaunch || force || destroy; }
@@ -90,6 +121,10 @@ public class InstanceMainOptions extends LauncherCrudOptionsBase<InstanceRequest
                 .setInstanceType(instanceType)
                 .setRegion(region)
                 .setAdditionalApps(apps)
+                .setInstanceId(instanceId)
+                .setSshKey(sshKey)
+                .setPrivateKey(FileUtil.toStringOrDie(privateKey))
+                .setKeyPassphrase(getPkPassphrase())
                 .setName(getName());
     }
 }

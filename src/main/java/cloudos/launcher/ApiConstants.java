@@ -11,6 +11,7 @@ public class ApiConstants {
     public static final String ACCOUNTS_ENDPOINT = "/accounts";
     public static final String CONFIGS_ENDPOINT = "/configs";
     public static final String CLOUDS_ENDPOINT = "/clouds";
+    public static final String KEYS_ENDPOINT = "/keys";
     public static final String INSTANCES_ENDPOINT = "/instances";
     public static final String TASKS_ENDPOINT = "/tasks";
     public static final String CLOUD_TYPES_ENDPOINT = "/cloud_types";

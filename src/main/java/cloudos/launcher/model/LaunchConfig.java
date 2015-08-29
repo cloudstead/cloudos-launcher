@@ -9,7 +9,6 @@ import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.io.IOUtils;
-import org.cobbzilla.util.io.TempDir;
 import org.cobbzilla.util.security.Crypto;
 import org.cobbzilla.util.string.Base64;
 import org.cobbzilla.util.system.Command;
