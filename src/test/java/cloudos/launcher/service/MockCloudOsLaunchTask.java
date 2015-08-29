@@ -8,7 +8,6 @@ import java.util.concurrent.TimeUnit;
 public class MockCloudOsLaunchTask extends InstanceLaunchTask {
 
     public MockCloudOsLaunchTask(Instance instance) {
-        super(null, instance, null, null, null, null, null);
         result.setCloudOs(instance);
     }
 

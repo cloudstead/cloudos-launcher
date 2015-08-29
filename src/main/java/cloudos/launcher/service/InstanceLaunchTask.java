@@ -12,7 +12,9 @@ import cloudos.dns.databag.CloudOsDnsDatabag;
 import cloudos.dns.databag.DjbdnsDatabag;
 import cloudos.dns.service.DynDnsManager;
 import cloudos.launcher.dao.CloudConfigDAO;
+import cloudos.launcher.dao.InstanceDAO;
 import cloudos.launcher.dao.LaunchConfigDAO;
+import cloudos.launcher.dao.SshKeyDAO;
 import cloudos.launcher.model.CloudConfig;
 import cloudos.launcher.model.Instance;
 import cloudos.launcher.model.LaunchAccount;
@@ -21,6 +23,9 @@ import cloudos.launcher.server.LaunchApiConfiguration;
 import cloudos.model.CsGeoRegion;
 import cloudos.model.CsPlatform;
 import cloudos.server.DnsConfiguration;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.cobbzilla.util.collection.SingletonList;
@@ -28,8 +33,8 @@ import org.cobbzilla.util.dns.DnsManager;
 import org.cobbzilla.util.dns.DnsRecordMatch;
 import org.cobbzilla.util.dns.DnsServerType;
 import org.cobbzilla.util.security.bcrypt.BCryptUtil;
-import org.cobbzilla.wizard.dao.DAO;
 import org.cobbzilla.wizard.task.ITask;
+import org.springframework.beans.factory.annotation.Autowired;
 import rooty.toots.chef.ChefSolo;
 
 import java.io.File;
@@ -43,15 +48,19 @@ import static org.cobbzilla.util.io.FileUtil.abs;
 import static org.cobbzilla.util.io.FileUtil.copyFile;
 import static org.cobbzilla.util.security.ShaUtil.sha256_hex;
 
-@Slf4j
+@Slf4j @NoArgsConstructor
 public class InstanceLaunchTask
         extends CloudOsLaunchTaskBase<LaunchAccount, Instance, LauncherTaskResult>
         implements ITask<LauncherTaskResult> {
 
     public static final String CLOUDOS_SERVER_TARBALL = "cloudos-server.tar.gz";
-    private CloudConfigDAO cloudConfigDAO;
-    private LaunchConfigDAO launchConfigDAO;
-    private LaunchApiConfiguration configuration;
+
+    @Autowired @Getter(value=AccessLevel.PROTECTED) private InstanceDAO cloudOsDAO;
+    @Autowired @Getter(value=AccessLevel.PROTECTED) private CloudOsEventDAO eventDAO;
+    @Autowired private CloudConfigDAO cloudConfigDAO;
+    @Autowired private LaunchConfigDAO launchConfigDAO;
+    @Autowired private SshKeyDAO keyDAO;
+    @Autowired private LaunchApiConfiguration configuration;
 
     private void writeZipData(File dir) {
         final LaunchConfig config = launchConfigDAO.findByUuid(cloudOs().getLaunch()).setLaunchAccount(admin());
@@ -71,20 +80,12 @@ public class InstanceLaunchTask
 
     @Override public Mode getMode() { return Mode.inline; }
 
-    public InstanceLaunchTask(LaunchAccount account,
-                              Instance instance,
-                              DAO<Instance> cloudOsDAO,
-                              CloudConfigDAO cloudConfigDAO,
-                              LaunchConfigDAO launchConfigDAO,
-                              LaunchApiConfiguration configuration,
-                              CloudOsEventDAO eventDAO) {
-        init(account, instance, cloudOsDAO, eventDAO);
-        this.cloudConfigDAO = cloudConfigDAO;
-        this.launchConfigDAO = launchConfigDAO;
-        this.configuration = configuration;
-    }
-
     @Override protected String getSimpleHostname() { return getBaseDatabag().getHostname(); }
+
+    @Override protected CsInstanceRequest prepareCsInstanceRequest(CsInstanceRequest request) {
+        if (cloudOs().hasSshKey()) request.setPublicKey(keyDAO.findByUuid(cloudOs().getSshKey()).getPublicKey());
+        return super.prepareCsInstanceRequest(request);
+    }
 
     @Override protected boolean preLaunch() {
 

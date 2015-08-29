@@ -53,6 +53,7 @@ public class Instance extends CloudOsBase implements Scrubbable {
     // the UUID of an SshKey
     @Column(updatable=false, length=UUID_MAXLEN)
     @Getter @Setter private String sshKey;
+    public boolean hasSshKey () { return !empty(sshKey); }
 
     // If set, this is the cloud-vendor-specific name of the instance to use.
     // It will never be destroyed by the launcher

@@ -123,7 +123,7 @@ public class InstanceMainOptions extends LauncherCrudOptionsBase<InstanceRequest
                 .setAdditionalApps(apps)
                 .setInstanceId(instanceId)
                 .setSshKey(sshKey)
-                .setPrivateKey(FileUtil.toStringOrDie(privateKey))
+                .setPrivateKey(empty(privateKey) ? null : FileUtil.toStringOrDie(privateKey))
                 .setKeyPassphrase(getPkPassphrase())
                 .setName(getName());
     }

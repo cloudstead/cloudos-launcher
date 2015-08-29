@@ -157,6 +157,8 @@ public class InstancesResource {
             launchManager.destroy(account, found);
         }
 
+        if (launchManager.isRunning(found)) return invalid("err.instance.alreadyRunning");
+
         final TaskId taskId = launchManager.launch(account, found);
         return ok(taskId);
     }
