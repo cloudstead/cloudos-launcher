@@ -67,12 +67,12 @@ public class InstanceLaunchTask
         config.decryptZipData(dir);
     }
 
-    @Override protected File createInitFilesDir(String dir) {
-        final File chefRepo = LaunchApiConfiguration.configDir(dir);
-        writeZipData(chefRepo);
-        return chefRepo;
+    @Override protected File createInitFilesDir() {
+        final File initFiles = LaunchApiConfiguration.configDir("init-files/"+cloudOs().getUuid());
+        writeZipData(initFiles);
+        return initFiles;
     }
-    @Override protected File createChefDir(String dir) { return LaunchApiConfiguration.configDir(dir); }
+    @Override protected File createChefDir() { return LaunchApiConfiguration.configDir("deploy-staging/"+cloudOs().getUuid()); }
 
     @Override public String getJsonEdit() { return configuration.getJsonEdit(); }
 
@@ -91,6 +91,7 @@ public class InstanceLaunchTask
 
         final File chefMaster = configuration.getChefMaster();
         final File stagingDir = getStagingDir();
+        final File initFiles = getInitFilesDir();
 
         // build app list
         final List<String> allApps = cloudOs().getAllApps();
@@ -98,7 +99,7 @@ public class InstanceLaunchTask
         // prep databags
         final CloudOsDatabag cloudOsDatabag = getCloudOsDatabag();
         if (!cloudOsDatabag.hasServerTarball()) {
-            final File destFile = new File(abs(stagingDir) + "/data_files/cloudos/"+CLOUDOS_SERVER_TARBALL);
+            final File destFile = new File(abs(initFiles) + "/data_files/cloudos/"+CLOUDOS_SERVER_TARBALL);
             copyFile(configuration.getServerTarball(CLOUDOS_SERVER_TARBALL), destFile);
             // note that after substitution at chef-runtime, @data_files becomes chef-repo/data_files/{appname}
             cloudOsDatabag.setServer_tarball("@data_files/" + CLOUDOS_SERVER_TARBALL);
@@ -108,7 +109,7 @@ public class InstanceLaunchTask
         if (!configureDns(stagingDir, cloudOsDatabag)) return false;
 
         // write cloudos init databag to pickup any changes above
-        cloudOsDatabag.toChefRepo(stagingDir);
+        cloudOsDatabag.toChefRepo(initFiles);
 
         // prep staging dir
         if (!prepChefRepo(stagingDir, chefMaster, allApps, configuration)) {
@@ -216,9 +217,11 @@ public class InstanceLaunchTask
         // cloudos will talk to its own local cloudos-dns server, which will manage a local djbdns server
         // steps:
         //   - ensure djbdns databag is present
-        //   - setup cloudos-dns databags (ports.json and init.json)
-        //   - setup 'dns' block cloudos databags
-        //   - ensure cloudos-dns and djbdns apps are in solo.json run list
+        //   - setup cloudos-dns databags (ports.json and init.json), write to initFiles
+        //   - setup 'dns' block cloudos databags, write to initFiles
+        //   - ensure cloudos-dns and djbdns apps are in solo.json run list, write to chefStaging
+
+        final File initFilesDir = getInitFilesDir();
 
         // ensure djbdns databag exists
         if (empty(DjbdnsDatabag.getChefFile(stagingDir))) {
@@ -231,7 +234,7 @@ public class InstanceLaunchTask
 
         // set cdns port and write databag
         cdnsPortsDatabag.setPrimary(4002);
-        cdnsPortsDatabag.toChefRepo(stagingDir, "cloudos-dns");
+        cdnsPortsDatabag.toChefRepo(initFilesDir, "cloudos-dns");
 
         // the cdns admin is defined in cloudos-dns and referenced in cloudos
         final String cdnsAdminUser = "admin";
@@ -247,7 +250,7 @@ public class InstanceLaunchTask
                 .setAdmin(new NameAndPassword().setName(cdnsAdminUser).setPassword(BCryptUtil.hash(cdnsAdminPassword)))
                 .setServer_type(DnsServerType.djbdns)
                 .setDns(dns);
-        cdnsInitDatabag.toChefRepo(stagingDir);
+        cdnsInitDatabag.toChefRepo(initFilesDir);
 
         // update "dns" block of cloudos init databag, point to internal
         // cloudos init databag will be written in preLaunch after this returns
