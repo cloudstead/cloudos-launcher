@@ -36,7 +36,13 @@ if [ ! -d ${BASE_DIR}/target/miredot ] ; then
 fi
 cd ${BASE_DIR}/target && mkdir -p classes/web && cp -R miredot classes/web/api-docs || die "Error copying api-docs to web dir"
 
-# re-roll jar file with API docs
+# generate build stamps
+BMETA="${BASE_DIR}/target/classes/build-meta"
+mkdir -p ${BMETA}
+echo "$(date +%Y%m%d-%H%M%S)" > ${BMETA}/timestamp
+echo "$(uname -a)" > ${BMETA}/sysinfo
+
+# re-roll jar file with API docs and build timestamp
 cd ${BASE_DIR} && mvn -DskipTests=true package
 
 # Build Windows
