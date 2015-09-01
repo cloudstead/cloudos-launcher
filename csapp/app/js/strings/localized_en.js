@@ -5,75 +5,7 @@ TRANSLATIONS['en'] = {
         description: 'This is the name that your cloudstead will have on the public Internet. ' +
         'Additionally, many apps for your cloudstead will require their own hostname. ' +
         'Configuring DNS services here will allow your cloudstead to create DNS records for these ' +
-        'new hostnames when you install the apps.',
-
-        sub_tabs: {
-            provider: {
-                label: 'Provider',
-                info: 'If you want your cloudstead to manage its own DNS service, choose djbdns.'
-            }
-        },
-
-        dyndns: {
-            tab: 'Dyn',
-            description: 'Configure your cloudstead to use an account with <a href="http://dyn.com/">Dyn</a> for DNS services.',
-            fields: {
-                'dns.account': {
-                    label: 'Dyn Customer Name',
-                    info: 'This is what you enter into the "Customer Name" field when logging in to Dyn'
-                },
-                'dns.user': {
-                    label: 'Dyn Username',
-                    info: 'This is what you enter into the "Username" field when logging in to Dyn'
-                },
-                'dns.password': {
-                    label: 'Dyn Password',
-                    info: 'This is the password for the Dyn Username'
-                },
-                'dns.zone': {
-                    label: 'Dyn DNS Zone',
-                    info: 'The fully-qualified zone name.'
-                }
-            }
-        },
-
-        builtin_djbdns: {
-            tab: 'Built-in TinyDNS',
-            description: 'Configure your cloudstead to use a built-in <a href="http://cr.yp.to/djbdns.html">djbdns</a> (also called tinydns) ' +
-            'for DNS services. The djbdns server will be installed automatically with your new cloudstead, but you will need ' +
-            'to update your Name Servers with your domain registrars to include the hostname of this new cloudstead. ' +
-            'You will also need to ensure that this is the primary DNS server for your domain, and all other Name Servers will ' +
-            'be secondaries.',
-            fields: {
-                'djbdns/init/allow_axfr': {
-                    label: 'Allow AXFR from',
-                    info: 'A comma-separated list of IP addresses that this server will allow AXFR requests from. Typically, these are your secondary DNS servers.'
-                }
-            }
-        },
-
-        external_dns: {
-            tab: 'External DNS Server',
-            description: 'Configure your cloudstead to use an external <a href="http://cr.yp.to/djbdns.html">djbdns</a> (also called tinydns) server ' +
-                'for DNS services. If you choose this method, you must also install the cloudos-dns (todo: provide link) server on the external system ' +
-                'running djbdns. The cloudos-dns standalone installer has detailed instructions on how to set this up. Once you have installed and ' +
-                'configured cloudos-dns, enter the credentials here.',
-            fields: {
-                'dns.user': {
-                    label: 'cloudos-dns Username',
-                    info: 'This can either be the cloudos-dns super-admin username, or a specific user you have created just for this cloudstead. ' +
-                        'If going the latter route, the username should be the same as the name of the cloudstead'
-                },
-                'dns.password': {
-                    label: 'cloudos-dns Password',
-                    info: 'Password for the cloudos-dns Username'
-                },
-                'dns.base_uri': {
-                    label: 'cloudos-dns URL',
-                    info: 'A publicly accessible URL for the cloudos-dns server API'
-                }
-            }
-        }
+        'new hostnames when you install the apps.'
     },
 
     ssl: {
@@ -167,10 +99,10 @@ TRANSLATIONS['en'] = {
         'you\'re always free to delegate :)',
         fields: {
             'admin_initial_pass': {
-                label: 'password',
-                info: 'This is the password that you\'ll use to claim the cloudstead. It will be strongly encrypted (12-round bcrypt) ' +
+                label: 'Password to Unlock',
+                info: 'This is the password that you\'ll use to claim the cloudstead. It will be strongly encrypted ' +
                 'when it is written to the configuration files. It will never be stored in plaintext ' +
-                'except in this computer\'s RAM from now until you close this browser session.'
+                'in any durable format.'
             }
         }
     },
@@ -179,19 +111,6 @@ TRANSLATIONS['en'] = {
         tab: 'Apps',
         title: 'Pre-Install Apps',
         description: 'Select the apps you would like to come pre-installed on your cloudstead'
-    },
-
-    launch: {
-        tab: 'Launch',
-        title: 'Launch Your Cloudstead!',
-        description: 'Click the "Generate Configuration" button to save the configuration you\'ve created here.' +
-        'This will generate a zipfile, please save it within the "launcher" directory. ' +
-        'Then, get a target system ready. The target system must be running Ubuntu 14.x, and a you ' +
-        'must have access to a user account that can (a) login via SSH using a keyfile and ' +
-        '(b) has passwordless-sudo privileges. More on how to set up such a system here: Link TBD. ' +
-        'Once this is setup, open a terminal window and run the following command:<br/><br/>' +
-        'cd /path/handy-toolbox/launcher ; ./deploy.sh user@host<br/><br/>' +
-        'This will start the launch process.'
     }
 
 };
