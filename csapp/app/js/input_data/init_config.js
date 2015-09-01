@@ -14,6 +14,7 @@ INIT_CONFIG = {
 
     smtp: {
         field_prefix: 'email/init',
+        sub_tabs: 'email/init/server_type',
         fields: [ 'smtp_relay.username', 'smtp_relay.password', 'smtp_relay.host', 'smtp_relay.port' ]
     },
 
