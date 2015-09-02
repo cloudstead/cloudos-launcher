@@ -27,7 +27,8 @@ module.exports = function(lineman) {
 				"app/js/input_data/**/*.js",
 				"app/js/config/**/*.js",
 				"app/js/strings/**/*.js",
-				"app/js/utility.js",
+				"app/js/utils/utility.js",
+				"app/js/utils/validators.js",
 				"app/js/setup.js",
 				"app/js/**/*.js"
 			],

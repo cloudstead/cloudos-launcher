@@ -5,7 +5,44 @@ TRANSLATIONS['en'] = {
         description: 'This is the name that your cloudstead will have on the public Internet. ' +
         'Additionally, many apps for your cloudstead will require their own hostname. ' +
         'Configuring DNS services here will allow your cloudstead to create DNS records for these ' +
-        'new hostnames when you install the apps.'
+        'new hostnames when you install the apps.',
+
+        sub_tabs: {
+            provider: {
+                label: 'Provider',
+                info: 'If you want your cloudstead to manage its own DNS service, choose djbdns.'
+            }
+        },
+
+        dyndns: {
+            description: 'Configure your cloudstead to use an account with <a href="http://dyn.com/">Dyn</a> for DNS services.',
+            fields: {
+                'dns.account': {
+                    label: 'Dyn Customer Name',
+                    info: 'This is what you enter into the "Customer Name" field when logging in to Dyn'
+                },
+                'dns.user': {
+                    label: 'Dyn Username',
+                    info: 'This is what you enter into the "Username" field when logging in to Dyn'
+                },
+                'dns.password': {
+                    label: 'Dyn Password',
+                    info: 'This is the password for the Dyn Username'
+                },
+                'dns.zone': {
+                    label: 'Dyn DNS Zone',
+                    info: 'The fully-qualified zone name.'
+                }
+            }
+        },
+
+        djbdns: {
+            description: 'Configure your cloudstead to use <a href="http://cr.yp.to/djbdns.html">djbdns</a> (also called tinydns) ' +
+            'for DNS services. The djbdns server will be installed automatically with your new cloudstead, but you will need ' +
+            'to update your Name Servers with your domain registrars to include the hostname of this new cloudstead. ' +
+            'You will also need to ensure that this is the primary DNS server for your domain, and all other Name Servers will ' +
+            'be secondaries.'
+        }
     },
 
     ssl: {
