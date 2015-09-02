@@ -240,16 +240,10 @@ public class InstanceLaunchTask
         final String cdnsAdminUser = "admin";
         final String cdnsAdminPassword = randomAlphanumeric(20);
 
-        // this is the DNS config block for cloudos-dns -- not much here since we're using djbdns
-        final DnsConfiguration dns = new DnsConfiguration();
-        dns.setMode(DnsMode.internal);
-        dns.setEnabled(true);
-
         // define cloudos-dns init databag, use same admin account
         cdnsInitDatabag
                 .setAdmin(new NameAndPassword().setName(cdnsAdminUser).setPassword(BCryptUtil.hash(cdnsAdminPassword)))
-                .setServer_type(DnsServerType.djbdns)
-                .setDns(dns);
+                .setServer_type(DnsServerType.djbdns);
         cdnsInitDatabag.toChefRepo(initFilesDir);
 
         // update "dns" block of cloudos init databag, point to internal
