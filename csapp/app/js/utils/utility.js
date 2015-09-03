@@ -21,7 +21,7 @@ var getModels = function(routeName, params){
 	var data = {}; data.apps = [];
 	if(additional_routes.indexOf(routeName) > -1){
 		if(routeName === "apps"){
-			
+
 		}
 	}else{
 		data = INIT_CONFIG[routeName];
@@ -41,7 +41,7 @@ var readURL = function(input, dataArray, dataIndex) {
 
 		reader.readAsDataURL(input.files[0]);
 	}
-}
+};
 
 var getFirstTranslation = function() {
 	var lang = window.navigator.languages.find(function(l) {
@@ -49,7 +49,7 @@ var getFirstTranslation = function() {
 	});
 
 	return Ember.isNone(lang) ? TRANSLATIONS['en'] : TRANSLATIONS[lang];
-}
+};
 
 var getValues = function(appName, dataKind, fieldType){
 	var r = "", key = "appls";

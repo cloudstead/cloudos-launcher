@@ -16,7 +16,7 @@ App.CloudsController = Ember.ObjectController.extend({
 			console.log(providerToDelete);
 			var originalProviders = this.get('originalProviders');
 			originalProviders = $.grep(originalProviders, function (e) {
-				return e.id != providerToDelete;
+				return e.id !== providerToDelete;
 			});
 			this.set('originalProviders', originalProviders);
 			$("#confirmProviderDelete").foundation('reveal', 'close');

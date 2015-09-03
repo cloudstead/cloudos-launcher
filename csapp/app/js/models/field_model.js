@@ -122,6 +122,9 @@ App.FieldModel.reopenClass({
 			var fieldNameData = fieldName.split("/");
 			var fieldData = {};
 			var translationURL = "";
+			var fieldCategory = "";
+			var fieldAppName = "";
+			var fieldKey = "";
 
 
 			if (fieldNameData.length === 3) {
@@ -151,6 +154,14 @@ App.FieldModel.reopenClass({
 
 				translationURL = APPS_DATA_PATH + appName + "/" + TRANSLATION_FILENAME;
 
+			} else if (fieldNameData.length === 1) {
+				fieldCategory = "init";
+				fieldKey = fieldNameData[0];
+
+				filedData = data["categories"][fieldCategory]["fields"][fieldKey];
+
+				translationURL = APPS_DATA_PATH + appName + "/" + TRANSLATION_FILENAME;
+
 			}
 
 			$.ajax({
@@ -158,12 +169,12 @@ App.FieldModel.reopenClass({
 				url: translationURL,
 				async: false,
 				success: function (data) {
+			console.log("fieldCategory: ", fieldCategory, fieldKey);
 					translation = data["categories"][fieldCategory][fieldKey];
-					if (Ember.isNone(translation)) {
-						translation = defaultTranslation[fieldKind][fieldKey];
-					}
 				}
 			});
+
+			console.log("TRANSLATION: ", translation);
 
 			var newField = App.FieldModel.createNew(fieldName, fieldData, translation);
 			fields.push(newField);

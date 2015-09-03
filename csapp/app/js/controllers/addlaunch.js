@@ -62,6 +62,7 @@ ADD_LAUNCH_ROUTES.forEach(function(route){
 		subTabGroups: function() {
 			var subTabString = this.get("model.sub_tabs");
 
+			console.log("Sub tabs: ", subTabString);
 
 			if (Ember.isEmpty(subTabString)) {
 				return [];
@@ -154,7 +155,7 @@ ADD_LAUNCH_ROUTES.forEach(function(route){
 					// This is the first tab in this group, so activate it.
 					subTab.set("isActive", true);
 
-					var translation = trans[route]['sub_tabs'][subTab.get("tabGroup")];
+					// var translation = trans[route]['sub_tabs'][subTab.get("tabGroup")];
 
 					tabGroup = App.TabGroupModel.createNew(subTab.get("tabGroup"), self.get("model.sub_tabs"));
 
