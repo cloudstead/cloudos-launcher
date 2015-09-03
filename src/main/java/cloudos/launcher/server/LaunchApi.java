@@ -1,7 +1,7 @@
 package cloudos.launcher.server;
 
 import lombok.extern.slf4j.Slf4j;
-import org.cobbzilla.util.system.NetworkUtil;
+import org.cobbzilla.util.network.NetworkUtil;
 import org.cobbzilla.wizard.server.RestServerBase;
 import org.cobbzilla.wizard.server.RestServerLifecycleListener;
 import org.cobbzilla.wizard.server.config.factory.ConfigurationSource;
