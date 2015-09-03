@@ -73,7 +73,7 @@
 				<div id='tab-container'>
 					<ul class='tab-menu'>
 						{{#each tab in subTabGroup.tabs}}
-							<li {{bind-attr id=tab.tabName}} {{action "activateTab" tab}} {{bind-attr class="tab.isActive:active"}}>{{tab.tabName}}</li>
+							<li {{bind-attr id=tab.tabName}} {{action "activateTab" tab}} {{bind-attr class="tab.isActive:active"}}>{{tab.tabTitle}}</li>
 						{{/each}}
 					</ul>
 					<div class='clear_fix'></div>

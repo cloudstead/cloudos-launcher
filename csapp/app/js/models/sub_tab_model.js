@@ -62,24 +62,100 @@ App.SubTabModel = Ember.Object.extend({
 });
 
 App.SubTabModel.reopenClass({
-	createNew: function(subTabName, parentName, model, translation) {
+	createNew: function(subTabName, subTabData, groupName, parentName, translation, data, appName) {
 
-		var fieldsArray = App.FieldModel.createFields(model, translation);
-		var fileFieldsArray = App.FieldModel.createFileFields(model, translation);
+		var fieldsArray = App.FieldModel.createSubTabFields(subTabName, subTabData, translation, data, appName);
+		// var fieldsArray = App.FieldModel.createFields(model, translation);
+		var fileFieldsArray = []; //App.FieldModel.createFileFields(model, translation);
 
 		var a = App.SubTabModel.create({
 			tabName: subTabName,
 			tabContentId: subTabName + '-tab',
 			tabParent: parentName,
-			tabData: model[subTabName],
+			tabData: subTabData,
 			tabFields: fieldsArray,
 			tabFileFields: fileFieldsArray,
-			tabGroup: model["exclusive"],
-			tabDescription: Ember.String.htmlSafe(translation['description']),
+			tabGroup: groupName,
+			tabTitle: Ember.String.htmlSafe(translation['label']),
+			tabDescription: Ember.String.htmlSafe(translation['info']),
+			tabHelp: Ember.String.htmlSafe(translation['help']),
 			isActive: false,
 		});
 
 		return a;
+	},
+
+	// createNew: function(subTabName, parentName, model, translation) {
+
+	// 	var fieldsArray = App.FieldModel.createFields(model, translation);
+	// 	var fileFieldsArray = App.FieldModel.createFileFields(model, translation);
+
+	// 	var a = App.SubTabModel.create({
+	// 		tabName: subTabName,
+	// 		tabContentId: subTabName + '-tab',
+	// 		tabParent: parentName,
+	// 		tabData: model[subTabName],
+	// 		tabFields: fieldsArray,
+	// 		tabFileFields: fileFieldsArray,
+	// 		tabGroup: model["exclusive"],
+	// 		tabDescription: Ember.String.htmlSafe(translation['description']),
+	// 		isActive: false,
+	// 	});
+
+	// 	return a;
+	// },
+
+	createArrayUsingDataFrom: function (data, parentName) {
+		var subTabData = {};
+		var subTabArray = [];
+		var allData = [];
+
+		var dataPath = data.split("/");
+		var appName = dataPath[0];
+		var category = dataPath[1];
+		var field = dataPath[2];
+
+		var jsonURL = APPS_DATA_PATH + appName + "/" + METADATA_FILENAME;
+		var translationURL = APPS_DATA_PATH + appName + "/" + TRANSLATION_FILENAME;
+
+		$.ajax({
+				dataType: "json",
+				url: jsonURL,
+				async: false,
+				success: function (data) {
+					allData = data;
+					subTabData = data["categories"][category]["fields"][field];
+				}
+			});
+
+		$.ajax({
+			dataType: "json",
+			url: translationURL,
+			async: false,
+			success: function (data) {
+				translation = data["categories"][category][field];
+			}
+		});
+			console.log("allData: ", allData);
+
+		var choices = subTabData["choices"];
+		var choicesData = subTabData["sub_fields"];
+		var choicesTrans = translation["choices"];
+		var groupName = subTabData["group"];
+
+		choices.forEach(function(choice){
+			var transForChoice = choicesTrans.find(function(transl){
+				return transl["label"] === choice;
+			});
+			var tabData = choicesData.find(function(choiceData){
+				return choiceData["label"] === choice;
+			});
+
+			subTabArray.push(App.SubTabModel.createNew(choice, choicesData, field, parentName, transForChoice, allData, appName));
+		});
+
+		return subTabArray;
+
 	},
 
 	createArrayUsingListOfNames: function(subTabList, parentName, model, translation) {

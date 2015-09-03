@@ -106,6 +106,73 @@ App.FieldModel.reopenClass({
 		});
 	},
 
+	createSubTabFields: function(tabName, subTabData, translation, data, appName) {
+		var tab = subTabData.find(function(t) {
+			return t["label"] === tabName;
+		});
+
+		console.log("DATA: ", data);
+
+		var requiredFieldNames = tab["required"];
+
+		var fields = [];
+
+		requiredFieldNames.forEach(function(fieldName){
+			console.log("fieldName: ", fieldName);
+			var fieldNameData = fieldName.split("/");
+			var fieldData = {};
+			var translationURL = "";
+
+
+			if (fieldNameData.length === 3) {
+				fieldAppName = fieldNameData[0];
+				fieldCategory = fieldNameData[1];
+				fieldKey = fieldNameData[2];
+
+				translationURL = APPS_DATA_PATH + fieldAppName + "/" + TRANSLATION_FILENAME;
+
+				var jsonURL = APPS_DATA_PATH + fieldAppName + "/" + METADATA_FILENAME;
+
+				$.ajax({
+					dataType: "json",
+					url: jsonURL,
+					async: false,
+					success: function (data) {
+						fieldData = data["categories"][fieldCategory]["fields"][fieldKey];
+					}
+				});
+
+
+			} else if (fieldNameData.length === 2) {
+				fieldCategory = fieldNameData[0];
+				fieldKey = fieldNameData[1];
+
+				filedData = data["categories"][fieldCategory]["fields"][fieldKey];
+
+				translationURL = APPS_DATA_PATH + appName + "/" + TRANSLATION_FILENAME;
+
+			}
+
+			$.ajax({
+				dataType: "json",
+				url: translationURL,
+				async: false,
+				success: function (data) {
+					translation = data["categories"][fieldCategory][fieldKey];
+					if (Ember.isNone(translation)) {
+						translation = defaultTranslation[fieldKind][fieldKey];
+					}
+				}
+			});
+
+			var newField = App.FieldModel.createNew(fieldName, fieldData, translation);
+			fields.push(newField);
+		});
+
+		return fields;
+
+	},
+
 	createFileFields: function(model, defaultTranslation) {
 		var fieldKind = "files";
 

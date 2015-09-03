@@ -60,14 +60,17 @@ ADD_LAUNCH_ROUTES.forEach(function(route){
 		}.property(),
 
 		subTabGroups: function() {
-			var subTabList = this.get("model.sub_tabs");
+			var subTabString = this.get("model.sub_tabs");
 
-			if (Ember.isNone(subTabList)) {
+
+			if (Ember.isEmpty(subTabString)) {
 				return [];
 			}
 
-			var subTabs = App.SubTabModel.createArrayUsingListOfNames(
-				subTabList, this.get("routeName"), this.get("model"), trans[route]);
+			var subTabs = App.SubTabModel.createArrayUsingDataFrom(this.get("model.sub_tabs"), this.get("routeName"));
+
+			// var subTabs = App.SubTabModel.createArrayUsingListOfNames(
+			// 	subTabList, this.get("routeName"), this.get("model"), trans[route]);
 
 			return this._setSubTabGroups(subTabs);
 		}.property(),
@@ -137,7 +140,7 @@ ADD_LAUNCH_ROUTES.forEach(function(route){
 
 		_setSubTabGroups: function(subTabs) {
 			var self = this;
-			var model = self.get("model");
+			// var model = self.get("model");
 			var tabGroupNames = [GENERAL_SUBTAB_GROUP];
 			var tabGroups = [];
 
@@ -153,7 +156,7 @@ ADD_LAUNCH_ROUTES.forEach(function(route){
 
 					var translation = trans[route]['sub_tabs'][subTab.get("tabGroup")];
 
-					tabGroup = App.TabGroupModel.createNew(subTab.get("tabGroup"), translation);
+					tabGroup = App.TabGroupModel.createNew(subTab.get("tabGroup"), self.get("model.sub_tabs"));
 
 					tabGroups.push(tabGroup);
 
