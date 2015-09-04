@@ -13,7 +13,7 @@
 			</tr>
 		</thead>
 		<tbody>
-			{{#each p in providers }}
+			{{#each p in arrangedContent }}
 				<tr id="{{p.id}}">
 					<td class="text_align_center">{{p.name}}</td>
 					<td class="text_align_center">{{p.provider}}</td>
