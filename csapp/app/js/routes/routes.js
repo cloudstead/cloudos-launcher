@@ -12,7 +12,7 @@ App.Router.map(function() {
 			}
 		});
 	});
-	this.resource("launcher", {path: "launcher/"}, function(){
+	this.resource("launcher", {path: "/"}, function(){
 		this.resource('clouds', { path: '/clouds/' });
 		this.resource('configs', { path: '/configs/' });
 		this.resource('cloudsteads', { path: '/cloudsteads/' });
