@@ -12,6 +12,7 @@ import org.apache.commons.io.IOUtils;
 import org.cobbzilla.util.security.Crypto;
 import org.cobbzilla.util.string.Base64;
 import org.cobbzilla.util.system.Command;
+import org.cobbzilla.util.system.CommandResult;
 import org.cobbzilla.util.system.CommandShell;
 import org.cobbzilla.wizard.model.UniquelyNamedEntity;
 
@@ -103,7 +104,8 @@ public class LaunchConfig extends UniquelyNamedEntity {
             IOUtils.copyLarge(crypto.decryptStream(in), out);
 
             final Command command = new Command(new CommandLine("unzip").addArgument(abs(tempZip))).setDir(dir);
-            CommandShell.exec(command);
+            final CommandResult result = CommandShell.exec(command);
+            if (!result.isZeroExitStatus()) die("decryptZipData: unzip had non-zero exit ("+result.getExitStatus()+"/"+result.getExceptionString()+")");
 
         } catch (Exception e) {
             die("decryptZipData: "+e, e);
