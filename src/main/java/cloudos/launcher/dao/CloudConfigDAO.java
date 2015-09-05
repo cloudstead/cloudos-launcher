@@ -30,4 +30,11 @@ import java.util.List;
                                 Restrictions.eq("uuid", nameValue(name))))));
         return config == null ? null : config.setLaunchAccount(account).decrypt();
     }
+
+    public void deleteByAccount(LaunchAccount account) {
+        for (CloudConfig config : findByAccount(account)) {
+            delete(config.getUuid());
+        }
+    }
+
 }

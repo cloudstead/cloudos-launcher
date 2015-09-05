@@ -23,4 +23,10 @@ import java.util.List;
                                 Restrictions.eq("uuid", nameValue(name))))));
     }
 
+    public void deleteByAccount(LaunchAccount account) {
+        for (SshKey key : findByAccount(account)) {
+            delete(key.getUuid());
+        }
+    }
+
 }

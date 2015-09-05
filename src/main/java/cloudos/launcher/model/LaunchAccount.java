@@ -1,6 +1,7 @@
 package cloudos.launcher.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -15,7 +16,7 @@ import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.Transient;
 
-@Entity @Slf4j @Accessors(chain=true)
+@Entity @Slf4j @Accessors(chain=true) @EqualsAndHashCode(of={"uuid"})
 public class LaunchAccount extends UniquelyNamedEntity implements TokenPrincipal {
 
     // Set by LaunchAuthFilter

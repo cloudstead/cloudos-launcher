@@ -18,6 +18,7 @@ public class ApiConstants {
 
     // account endpoints
     public static final String EP_CHANGE_PASSWORD = "/change_password";
+    public static final String EP_DELETE = "/delete";
 
     // instance endpoints
     public static final String EP_LAUNCH = "/launch";

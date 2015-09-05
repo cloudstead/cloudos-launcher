@@ -83,4 +83,5 @@ public class Instance extends CloudOsBase implements Scrubbable {
         return new CsKeyPair().setPrivateKey(getPrivateKey()).setPassphrase(getKeyPassphrase());
     }
 
+    @Transient @JsonIgnore public String getInitFilesDirName() { return "init-files/"+getUuid(); }
 }

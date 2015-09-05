@@ -68,7 +68,7 @@ public class InstanceLaunchTask
     }
 
     @Override protected File createInitFilesDir() {
-        final File initFiles = LaunchApiConfiguration.configDir("init-files/"+cloudOs().getUuid());
+        final File initFiles = LaunchApiConfiguration.configDir(cloudOs().getInitFilesDirName());
         writeZipData(initFiles);
         return initFiles;
     }

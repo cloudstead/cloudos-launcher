@@ -22,7 +22,7 @@ public class SshKeyOptions extends LauncherCrudOptionsBase<SshKey> {
     public boolean hasPublicKey () { return !empty(publicKey); }
 
     @Override public boolean isValidForWrite() {
-        required("KEY");
+        if (!hasPublicKey()) required("KEY");
         return hasPublicKey() && super.isValidForWrite();
     }
 

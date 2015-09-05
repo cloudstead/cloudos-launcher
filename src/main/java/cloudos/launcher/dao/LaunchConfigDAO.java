@@ -26,6 +26,7 @@ import java.util.List;
 
 import static org.cobbzilla.util.daemon.ZillaRuntime.die;
 import static org.cobbzilla.util.io.FileUtil.abs;
+import static org.cobbzilla.util.io.FileUtil.deleteOrDie;
 
 @Repository
 public class LaunchConfigDAO extends UniquelyNamedEntityDAO<LaunchConfig> {
@@ -136,11 +137,16 @@ public class LaunchConfigDAO extends UniquelyNamedEntityDAO<LaunchConfig> {
         }
     }
 
+    public void deleteByAccount(LaunchAccount account) {
+        for (LaunchConfig config : findByAccount(account)) {
+            delete(config.getUuid());
+        }
+    }
+
     @Override public void delete(String uuid) {
         final LaunchConfig config = findByUuid(uuid);
         if (config == null) die("not found: "+uuid);
-        final File zipFile = config.getZipFile();
-        if (!zipFile.delete()) die("Error deleting zipFile: "+abs(zipFile));
+        deleteOrDie(config.getZipFile());
         super.delete(uuid);
     }
 

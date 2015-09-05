@@ -1,5 +1,6 @@
 package cloudos.launcher.resources;
 
+import cloudos.launcher.model.LaunchAccount;
 import cloudos.model.auth.ApiToken;
 import cloudos.model.auth.ChangePasswordRequest;
 import org.cobbzilla.util.http.HttpStatusCodes;
@@ -43,6 +44,25 @@ public class AuthResourceIT extends ApiResourceITBase {
 
         apiDocs.addNote("try to start a new session with correct password, should succeed and return new token");
         assertStatusOK(post(AUTH_ENDPOINT + "/" + name, newPassword));
+
+        // go back to using previous (valid) token
+        setToken(token);
+
+        final String newName = name + "-updated";
+        final LaunchAccount update = (LaunchAccount) new LaunchAccount().setName(newName);
+        apiDocs.addNote("change account name");
+        assertStatusOK(post(ACCOUNTS_ENDPOINT, toJson(update)));
+
+        apiDocs.addNote("fetch account, verify name changed");
+        final LaunchAccount updated = fromJson(get(ACCOUNTS_ENDPOINT).json, LaunchAccount.class);
+        assertEquals(newName.toLowerCase(), updated.getName().toLowerCase());
+
+        apiDocs.addNote("delete account, session will also be invalidated");
+        assertStatusOK(post(ACCOUNTS_ENDPOINT+"/"+EP_DELETE, newPassword));
+
+        apiDocs.addNote("verify session is no longer valid");
+        response = doGet(ACCOUNTS_ENDPOINT);
+        assertEquals(HttpStatusCodes.FORBIDDEN, response.status);
     }
 
 }
