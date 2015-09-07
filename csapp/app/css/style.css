@@ -174,3 +174,15 @@ a {
 .launcher_header_item img {
   height: 100px;
 }
+
+.window_box {
+  padding: 20px 25px;
+  border-radius: 4px;
+  -webkit-box-shadow: 0px 0px 5px 5px rgba(0,0,0,0.2);
+  -moz-box-shadow: 0px 0px 5px 5px rgba(0,0,0,0.2);
+  box-shadow: 0px 0px 5px 5px rgba(0,0,0,0.2);
+}
+
+.centered-title {
+  text-align: center;
+}
