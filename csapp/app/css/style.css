@@ -166,3 +166,11 @@ a {
 .display_none {
   display: none;
 }
+
+.launcher_header_item {
+  text-align: center;
+}
+
+.launcher_header_item img {
+  height: 100px;
+}

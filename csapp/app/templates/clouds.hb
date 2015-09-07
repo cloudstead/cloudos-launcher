@@ -30,7 +30,3 @@
 	<a class="button" {{action "removeProvider" this}}>Yes, Delete</a>
 	<a class="close button" onclick="$('#confirmProviderDelete').foundation('reveal', 'close');">No, Cancel</a>
 </div>
-
-<div class="row">
-	<label for="lost">Lost: <input type="input" id="lost" name="lost"></label>
-</div>
