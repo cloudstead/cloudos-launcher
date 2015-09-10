@@ -18,7 +18,7 @@
 	<div class="small-3 columns launcher_header_item">
 		{{#link-to 'cloudsteads'}}
 		<div class="box">
-			<img src="/img/exit.png" class="box_img">
+			<img src="/img/cloudstead.png" class="box_img">
 			<p class="box_name">cloudstead</p>
 		</div>
 		{{/link-to}}
