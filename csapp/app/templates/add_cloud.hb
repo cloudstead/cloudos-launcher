@@ -1,6 +1,6 @@
 <h3 class="centered-title">Create new Cloud</h3>
-<section class="deck">
-	<div class="row window_box small-12 medium-8 medium-offset-2 large-4 large-offset-4 columns">
+<section class="">
+	<div class="row centered">
 		<form>
 			<div class="row">
 				Name: {{input type="text" value=name size="50"}}

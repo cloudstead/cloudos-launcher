@@ -9,5 +9,15 @@ App.AddCloudsteadRoute = App.ProtectedRoute.extend({
 		console.log("AAAAAAAAAAAAAAAAAA");
 		controller.set("cloudTypes", API.get_cloud_types());
 		console.log("Cloud Types: ", controller.get("cloudTypes"));
+	},
+
+	actions: {
+		doTransitionToAddCloud: function() {
+			this.transitionTo("add_cloud");
+		},
+
+		doTransitionToAddLaunch: function() {
+			this.transitionTo("addlaunch");
+		}
 	}
 });

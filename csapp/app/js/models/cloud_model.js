@@ -11,7 +11,7 @@ App.CloudModel.reopenClass({
 			vendor: "",
 			accessKey: "",
 			secretKey: "",
-			accoount: "",
+			account: "",
 			optionalJson: "",
 		});
 	}

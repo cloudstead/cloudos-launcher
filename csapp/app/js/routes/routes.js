@@ -20,5 +20,7 @@ App.Router.map(function() {
 		});
 		this.resource('add_cloud', {path: '/addcloud/'});
 		this.resource('add_cloudstead', {path: '/addcloudstead/'});
+		this.resource('new_ssh_key', {path: '/new_ssh_key/'});
+		this.resource('manage_ssh_keys', {path: '/manage_shh_keys/'});
 	});
 });

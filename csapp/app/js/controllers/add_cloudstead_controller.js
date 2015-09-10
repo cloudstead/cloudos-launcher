@@ -38,6 +38,14 @@ App.AddCloudsteadController = Ember.ObjectController.extend({
 	actions: {
 		doCreate: function () {
 			console.log("CLOUD: ", this.get("model.vendor"));
+		},
+
+		doNewCloud: function() {
+			this.send("doTransitionToAddCloud");
+		},
+
+		doNewConfig: function() {
+			this.send("doTransitionToAddLaunch");
 		}
 	},
 });
