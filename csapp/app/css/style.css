@@ -186,3 +186,9 @@ a {
 .centered-title {
   text-align: center;
 }
+
+.field-row {
+  padding: 10px;
+}
+
+
