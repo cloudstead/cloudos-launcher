@@ -8,7 +8,9 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.exec.CommandLine;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.cobbzilla.util.io.FileUtil;
 import org.cobbzilla.util.security.Crypto;
 import org.cobbzilla.util.string.Base64;
 import org.cobbzilla.util.system.Command;
@@ -103,6 +105,9 @@ public class LaunchConfig extends UniquelyNamedEntity {
             @Cleanup final OutputStream out = new FileOutputStream(tempZip);
             IOUtils.copyLarge(crypto.decryptStream(in), out);
 
+            // always start with fresh directory
+            FileUtils.deleteQuietly(dir);
+            FileUtil.mkdirOrDie(dir);
             final Command command = new Command(new CommandLine("unzip").addArgument(abs(tempZip))).setDir(dir);
             final CommandResult result = CommandShell.exec(command);
             if (!result.isZeroExitStatus()) die("decryptZipData: unzip had non-zero exit ("+result.getExitStatus()+"/"+result.getExceptionString()+")");

@@ -27,10 +27,10 @@ fi
 DEBUG="${1}"
 DEBUG_OPTS=""
 if [ ! -z ${DEBUG} ] && [ ${DEBUG} = "debug" ] ; then
+  shift
   ARG_LEN=$(echo -n "${1}" | wc -c)
   ARG_NUMERIC_LEN=$(echo -n "${1}" | tr -dc [:digit:] | wc -c)  # strip all non-digits
-  shift
-  if [ ${ARG_LEN} -eq ${ARG_NUMERIC_LEN} ] ; then
+  if [[ ${ARG_LEN} -gt 0 && ${ARG_LEN} -eq ${ARG_NUMERIC_LEN} ]] ; then
     # Second arg is the debug port
     DEBUG_PORT="${1}"
     shift

@@ -12,7 +12,9 @@ import cloudos.server.DnsConfiguration;
 import lombok.Cleanup;
 import org.apache.commons.io.FileUtils;
 import org.cobbzilla.util.dns.DnsManager;
+import org.cobbzilla.util.dns.DnsRecord;
 import org.cobbzilla.util.dns.DnsRecordMatch;
+import org.cobbzilla.util.dns.DnsType;
 import org.cobbzilla.util.io.FileUtil;
 import org.cobbzilla.util.io.TempDir;
 import org.cobbzilla.wizard.dao.UniquelyNamedEntityDAO;
@@ -83,8 +85,7 @@ public class LaunchConfigDAO extends UniquelyNamedEntityDAO<LaunchConfig> {
             } catch (Exception e) {
                 throw new SimpleViolationException("{err.cert.invalid}");
             }
-            final String fqdn = baseDatabag.getHostname() + "." + baseDatabag.getParent_domain();
-            if (!cert.isValidForHostname(fqdn)) throw new SimpleViolationException("{err.cert.wrongName}");
+            if (!cert.isValidForHostname(baseDatabag.getFqdn())) throw new SimpleViolationException("{err.cert.wrongName}");
             ok = true;
 
         } catch (SimpleViolationException e) {
@@ -118,8 +119,10 @@ public class LaunchConfigDAO extends UniquelyNamedEntityDAO<LaunchConfig> {
             case cdns:
                 // cloudos will talk to another cloudos-dns server (which might then talk to Dyn, or manage a local DNS server)
                 dnsManager = new DnsClient(cloudOsDatabagDns);
+                final DnsRecord testRecord = (DnsRecord) new DnsRecord().setType(DnsType.TXT).setFqdn("test."+baseDatabag.getFqdn()).setValue("cloudos-launcher test");
                 try {
-                    dnsManager.list(new DnsRecordMatch());
+                    dnsManager.write(testRecord);
+                    dnsManager.remove(testRecord.getMatcher());
                 } catch (Exception e) {
                     throw new SimpleViolationException("err.dns.cdns.error", "an error occurred trying to talk to cloudos-dns", e.toString());
                 }
