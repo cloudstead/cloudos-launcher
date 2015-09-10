@@ -1,7 +1,9 @@
 
 <div class="row margin_top">
 	<div class="small-4 columns"><h3>Available Clouds</h3></div>
-	<div class="small-4 columns"><a class="button">Add New Cloud</a></div>
+	<div class="small-4 columns">
+		{{#link-to 'add_cloud' classNames="button"}}Add New Cloud{{/link-to}}
+	</div>
 </div>
 <div class="row">
 	<table id="providersTable" width="100%">

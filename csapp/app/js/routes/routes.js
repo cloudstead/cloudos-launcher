@@ -18,7 +18,7 @@ App.Router.map(function() {
 				}
 			});
 		});
-		this.resource('addcloud', {path: '/addcloud/'});
-		this.resource('addcloudstead', {path: '/addcloudstead/'});
+		this.resource('add_cloud', {path: '/addcloud/'});
+		this.resource('add_cloudstead', {path: '/addcloudstead/'});
 	});
 });

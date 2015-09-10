@@ -1,7 +1,9 @@
 
 <div class="row margin_top">
 	<div class="small-4 columns"><h3>Cloudsteads</h3></div>
-	<div class="small-4 columns"><a class="button">New Cloudstead</a></div>
+	<div class="small-4 columns">
+		{{#link-to 'add_cloudstead' classNames="button"}}New Cloudstead{{/link-to}}
+	</div>
 </div>
 <div class="row">
 	<table id="providersTable" width="100%">

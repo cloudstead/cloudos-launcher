@@ -30,7 +30,12 @@ module.exports = function(lineman) {
 				"app/js/utils/utility.js",
 				"app/js/utils/validators.js",
 				"app/js/setup.js",
-				"app/js/**/*.js"
+				"app/js/models/**/*.js",
+				"app/js/controllers/**/*.js",
+				"app/js/routes/routes.js",
+				"app/js/routes/protected_route.js",
+				"app/js/routes/**/*.js",
+				"app/js/**/*.js",
 			],
 		}
 	};

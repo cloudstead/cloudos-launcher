@@ -1,6 +1,6 @@
 //"Addlaunch" ROUTES DEFINITIONS
 
-App.AddlaunchRoute = Ember.Route.extend({
+App.AddlaunchRoute = App.ProtectedRoute.extend({
 	wizard: Em.I18n.translations.wizard,
 	actions: {
 		goToSubRoute: function(data){
