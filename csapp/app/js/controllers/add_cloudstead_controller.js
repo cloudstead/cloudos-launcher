@@ -1,4 +1,4 @@
-App.AddCloudsteadController = Ember.ObjectController.extend({
+App.AddCloudsteadController = App.BaseObjectController.extend({
 	cloudTypes: function() {
 		console.log(this.get("model"));
 		return API.get_cloud_types();
@@ -46,6 +46,22 @@ App.AddCloudsteadController = Ember.ObjectController.extend({
 
 		doNewConfig: function() {
 			this.send("doTransitionToAddLaunch");
+		},
+
+		doLaunch: function() {
+			console.log("Do Launch");
+		},
+
+		doCancel: function() {
+			this.doTransitionToPreviuosRoute();
+		},
+
+		doNewSsh: function() {
+			this.send("doTransitionTo", "new_ssh_key");
+		},
+
+		doManageSsh: function() {
+			this.send("doTransitionTo", "manage_ssh_keys");
 		}
 	},
 });

@@ -2,7 +2,7 @@
 <div class="row margin_top">
 	<div class="small-4 columns"><h3>Cloudsteads</h3></div>
 	<div class="small-4 columns">
-		{{#link-to 'add_cloudstead' classNames="button"}}New Cloudstead{{/link-to}}
+		<button class="button-small" {{ action "doAddCloudstead" }}>New Cloudstead</button>
 	</div>
 </div>
 <div class="row">

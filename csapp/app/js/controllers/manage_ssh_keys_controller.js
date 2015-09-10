@@ -1,8 +1,8 @@
-App.ManageSshKeysController = Ember.ArrayController.extend({
+App.ManageSshKeysController = App.BaseArrayController.extend({
 
 	actions: {
 		goToNewShhKey: function(fileContent) {
-			this.send("doTransitionToNewSshKey");
+			this.send("doTransitionTo", "new_ssh_key");
 		},
 		doDelete: function(ssh_key) {
 		},

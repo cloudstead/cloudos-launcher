@@ -1,4 +1,4 @@
-App.LauncherController = Ember.ObjectController.extend({
+App.LauncherController = App.BaseObjectController.extend({
 	actions: {
 		doLogout: function() {
 			LauncherStorage.removeLogin();

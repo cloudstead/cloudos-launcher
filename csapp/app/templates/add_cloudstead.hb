@@ -58,8 +58,8 @@
 				</div>
 				<div class="small-6 columns">
 				<ul class="stack-for-small button-group even-2">
-					<li>{{#link-to "new_ssh_key"}}<button>New SSH Key</button>{{/link-to}}</li>
-					<li>{{#link-to "manage_ssh_keys"}}<button>Manage SSH Keys</button>{{/link-to}}</li>
+					<li><button {{action 'doNewSsh'}} class="button-small">New SSH Key</button></li>
+					<li><button {{action 'doManageSsh'}} class="button-small">Manage SSH Keys</button></li>
 				</ul>
 				</div>
 			</div>

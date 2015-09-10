@@ -18,6 +18,10 @@ App.AddCloudsteadRoute = App.ProtectedRoute.extend({
 
 		doTransitionToAddLaunch: function() {
 			this.transitionTo("addlaunch");
+		},
+
+		doTransitionToCloudsteads: function() {
+			this.transitionTo("cloudsteads");
 		}
 	}
 });

@@ -1,4 +1,4 @@
-App.NewSshKeyController = Ember.ObjectController.extend({
+App.NewSshKeyController = App.BaseObjectController.extend({
 	previousTransition: null,
 
 	actions: {
@@ -6,13 +6,7 @@ App.NewSshKeyController = Ember.ObjectController.extend({
 			this.set("publicKey", fileContent);
 		},
 		doCancel: function() {
-			if (Ember.isNone(this.get("previousTransition"))) {
-				this.send("doTransitionToPreviuosRoute");
-			} else {
-				var prevTransition = this.get("previousTransition");
-				this.set("previousTransition", null);
-				prevTransition.retry();
-			}
+			this.doTransitionToPreviuosRoute();
 		},
 		doAddKey: function() {
 			API.post_ssh_key(this.get("model"));

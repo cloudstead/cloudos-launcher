@@ -31,6 +31,8 @@ module.exports = function(lineman) {
 				"app/js/utils/validators.js",
 				"app/js/setup.js",
 				"app/js/models/**/*.js",
+				"app/js/controllers/base_object_controller.js",
+				"app/js/controllers/base_array_controller.js",
 				"app/js/controllers/**/*.js",
 				"app/js/routes/routes.js",
 				"app/js/routes/protected_route.js",

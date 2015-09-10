@@ -1,4 +1,4 @@
-App.CloudsController = Ember.ArrayController.extend({
+App.CloudsController = App.BaseArrayController.extend({
 	providerToDelete: null,
 	actions: {
 		confirmProviderRemove: function (id, name) {

@@ -1,4 +1,4 @@
-App.AddCloudController = Ember.ObjectController.extend({
+App.AddCloudController = App.BaseObjectController.extend({
 	allVendors: function() {
 		return App.CloudModel.availableVendors;
 	}.property(),
