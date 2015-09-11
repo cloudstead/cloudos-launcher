@@ -17,7 +17,7 @@
 			{{#each sshKey in arrangedContent }}
 				<tr id="{{sshKey.uuid}}">
 					<td class="text_align_center">{{sshKey.name}}</td>
-					<td class="text_align_center"><a class="button tiny" {{action "doRemoveKey" sshKey.uuid sshKey.name}}>Delete</a></td>
+					<td class="text_align_center"><a class="button tiny" {{action "doDelete" sshKey}}>Delete</a></td>
 				</tr>
 			{{/each}}
 		</tbody>
