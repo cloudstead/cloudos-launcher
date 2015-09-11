@@ -1,6 +1,6 @@
 App.AddCloudController = App.BaseObjectController.extend({
 	allVendors: function() {
-		return App.CloudModel.availableVendors;
+		return App.CloudModel.availableVendors();
 	}.property(),
 	actions: {
 		doCreate: function () {

@@ -1,21 +1,26 @@
 App.AddCloudsteadController = App.BaseObjectController.extend({
 	cloudTypes: function() {
 		console.log(this.get("model"));
-		return API.get_cloud_types();
+		return API.get_cloud_types().data;
 	}.property(),
 
 	allClouds: function() {
-		return this.get("cloudTypes").map(function(cloudType) {
-			return cloudType["name"];
+		return App.CloudModel.getAll().map(function(cloud) {
+			return cloud.name;
 		});
-	}.property("cloudTypes"),
+	}.property(),
+
+	selectedCloud: function() {
+		var cloudName = this.get("cloud");
+		return Ember.isEmpty(cloudName) ? App.CloudModel.createNewEmpty() : App.CloudModel.get(cloudName);
+	}.property('cloud'),
 
 	selectedCloudType: function() {
-		var cloudName = this.get("cloud");
+		var cloudTypeName = this.get("selectedCloud.vendor");
 		return this.get("cloudTypes").find(function(cloudType) {
-			return cloudType["name"] === cloudName;
+			return cloudType.id === cloudTypeName;
 		});
-	}.property('cloud'),
+	}.property('selectedCloud'),
 
 	allRegions: function() {
 		var regions = Ember.isNone(this.get("selectedCloudType.regions")) ?

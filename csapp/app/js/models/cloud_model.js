@@ -22,19 +22,27 @@ App.CloudModel = Ember.Object.extend({
 
 	update: function() {
 		var response = API.update_cloud(this.toObjectForPost());
-
 		return response.isSuccess();
 	},
 
 	destroy: function() {
 		var response = API.delete_cloud(this.get("name"));
-		console.log("DELETE RESPONSE: ", response.isSuccess());
 		return response.isSuccess();
 	},
 });
 
 App.CloudModel.reopenClass({
-	availableVendors: ["Amazon EC2", "Rackspace", "Digitalocean"],
+	availableVendors: function() {
+		var cloudTypeNames = API.get_cloud_types().data;
+		var cloudTypes = [];
+
+		cloudTypeNames.forEach(function(cloudTypeName) {
+			cloudTypes.push(API.get_cloud_type(cloudTypeName).data);
+		});
+		return cloudTypes.map(function(cloudType){
+			return cloudType.id;
+		});
+	}, //["Amazon EC2", "Rackspace", "Digitalocean"],
 
 	createNewEmpty: function() {
 		return App.CloudModel.create({
@@ -61,7 +69,7 @@ App.CloudModel.reopenClass({
 		return retArray;
 	},
 
-	getAll: function(cloudDataArray) {
+	getAll: function() {
 		var response = API.get_clouds();
 
 		var dataArray = [];
@@ -73,6 +81,11 @@ App.CloudModel.reopenClass({
 		}
 
 		return App.CloudModel.createFromArray(dataArray);
+	},
+
+	get: function(cloudName) {
+		var response = API.get_cloud(cloudName);
+		return App.CloudModel.createNewFromData(response.data);
 	},
 
 	findById: function(uuid) {

@@ -50,7 +50,7 @@ App.ConfigModel.reopenClass({
 		return retArray;
 	},
 
-	getAll: function(configDataArray) {
+	getAll: function() {
 		var response = API.get_configs();
 
 		var dataArray = [];
