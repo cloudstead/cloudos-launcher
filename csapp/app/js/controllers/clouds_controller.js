@@ -4,6 +4,14 @@ App.CloudsController = App.BaseArrayController.extend({
 		doAddCloud: function() {
 			this.send("doTransitionTo", "add_cloud");
 		},
+
+		doDelete: function(cloud) {
+			if (cloud.destroy()) {
+				this.get('content').removeObject(cloud);
+				console.log("CONTENT: ", this.get("content"));
+			}
+		},
+
 		confirmProviderRemove: function (id, name) {
 			// console.log(id, name);
 			// $("#providerName").text(name);

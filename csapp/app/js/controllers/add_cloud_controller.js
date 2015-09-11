@@ -4,7 +4,10 @@ App.AddCloudController = App.BaseObjectController.extend({
 	}.property(),
 	actions: {
 		doCreate: function () {
-			console.log("CLOUD: ", this.get("model.vendor"));
+			var cloud = this.get("model");
+			if (cloud.update()) {
+				this.doTransitionToPreviuosRoute();
+			}
 		},
 
 		doCancel: function() {

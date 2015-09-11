@@ -15,11 +15,11 @@
 			</tr>
 		</thead>
 		<tbody>
-			{{#each p in arrangedContent }}
-				<tr id="{{p.id}}">
-					<td class="text_align_center">{{p.name}}</td>
-					<td class="text_align_center">{{p.provider}}</td>
-					<td class="text_align_center"><a class="button tiny" {{action "confirmProviderRemove" p.id p.name}}>Delete</a></td>
+			{{#each cloud in arrangedContent }}
+				<tr id="{{cloud.uuid}}">
+					<td class="text_align_center">{{cloud.name}}</td>
+					<td class="text_align_center">{{cloud.vendor}}</td>
+					<td class="text_align_center"><a class="button tiny" {{action "doDelete" cloud}}>Delete</a></td>
 				</tr>
 			{{/each}}
 		</tbody>

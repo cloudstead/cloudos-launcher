@@ -71,24 +71,28 @@ API = {
 	_post: function(url, data) { return API._update('POST', url, data); },
 	_put:  function(url, data) { return API._update('PUT', url, data); },
 
-	_delete: function (path) {
-		var ok = false;
+	_delete: function (url) {
+		var result = null;
 		url = API.API_PREFIX + url;
 
 		Ember.$.ajax({
 			type: 'DELETE',
-			url: path,
+			url: url,
 			async: false,
 			beforeSend: add_api_auth,
 			'success': function (accounts, status, jqXHR) {
-				ok = true;
+				result = buildResponse("true", "success", { status: 200 });
 			},
 			'error': function (jqXHR, status, error) {
-				// console.log('error deleting '+path+': '+error);
+				result = buildResponse("false", "error", { status: 200 });
+				// console.log('error deleting '+url+': '+error);
 				// $.notify(Em.I18n.translations['errors'].generalServerError, { position: "bottom-right", autoHideDelay: 10000, className: 'error' });
 			}
 		});
-		return ok;
+
+		console.log("DELETE: ", result);
+
+		return result;
 	},
 
 	login: function(username, password) {
@@ -104,8 +108,12 @@ API = {
 		return this._get("clouds");
 	},
 
-	delete_cloud: function() {
+	update_cloud: function(cloudData) {
+		return this._post("clouds/"+cloudData.name, cloudData);
+	},
 
+	delete_cloud: function(cloudName) {
+		return this._delete("clouds/"+cloudName);
 	},
 
 
