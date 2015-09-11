@@ -9,7 +9,10 @@ App.NewSshKeyController = App.BaseObjectController.extend({
 			this.doTransitionToPreviuosRoute();
 		},
 		doAddKey: function() {
-			API.post_ssh_key(this.get("model"));
+			var sshKey = this.get("model");
+			if (sshKey.update()) {
+				this.doTransitionToPreviuosRoute();
+			}
 		}
 	},
 });

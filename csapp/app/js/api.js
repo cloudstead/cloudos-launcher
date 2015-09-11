@@ -169,11 +169,14 @@ API = {
 	},
 
 	get_ssh_keys: function() {
-		var response = '[{"uuid":"123","name":"key1","publicKey":"kakakakakalalqw","account":"acc1"},{"uuid":"123","name":"key2","publicKey":"kakakakakalalqw","account":"acc1"},{"uuid":"123","name":"key3","publicKey":"kakakakakalalqw","account":"acc1"}]';
-		return JSON.parse(response);
+		return this._get("keys/");
 	},
 
-	post_new_ssh_key: function(ssh_key_model) {
-		var requestData = ssh_key_model.toJSObject();
+	create_ssh_key: function(ssh_key) {
+		return this._post("keys/"+ssh_key.name, ssh_key);
+	},
+
+	delete_ssh_key: function(key_name) {
+		return this._delete("keys/"+key_name);
 	},
 };

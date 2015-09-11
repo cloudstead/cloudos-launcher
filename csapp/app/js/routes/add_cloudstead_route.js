@@ -15,6 +15,8 @@ App.AddCloudsteadRoute = App.ProtectedRoute.extend({
 
 		controller.set("clouds", App.CloudModel.getAll());
 		console.log("Cloud Types: ", controller.get("cloudTypes"));
+
+		controller.set("sshKeys", App.SshKeyModel.getAll());
 	},
 
 	actions: {

@@ -40,6 +40,14 @@ App.AddCloudsteadController = App.BaseObjectController.extend({
 		return instaceTypes;
 	}.property("selectedCloudType"),
 
+	sshKeys: [],
+
+	allSSHKeys: function() {
+		return this.get("sshKeys").map(function(sshKey) {
+			return sshKey.name;
+		});
+	}.property("sshKeys"),
+
 	actions: {
 		doCreate: function () {
 			console.log("CLOUD: ", this.get("model.vendor"));
