@@ -2,7 +2,7 @@
 <div class="row margin_top">
 	<div class="small-4 columns"><h3>Available Clouds</h3></div>
 	<div class="small-4 columns">
-		{{#link-to 'add_cloud' classNames="button"}}Add New Cloud{{/link-to}}
+		<button class="button-small" {{ action "doAddCloud" }}>New Cloud</button>
 	</div>
 </div>
 <div class="row">

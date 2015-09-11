@@ -191,4 +191,7 @@ a {
   padding: 10px;
 }
 
+.clearfix {
+  clear: both;
+}
 

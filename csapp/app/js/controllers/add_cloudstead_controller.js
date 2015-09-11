@@ -41,11 +41,11 @@ App.AddCloudsteadController = App.BaseObjectController.extend({
 		},
 
 		doNewCloud: function() {
-			this.send("doTransitionToAddCloud");
+			this.send("doTransitionTo", "add_cloud");
 		},
 
 		doNewConfig: function() {
-			this.send("doTransitionToAddLaunch");
+			this.send("doTransitionTo", "addlaunch");
 		},
 
 		doLaunch: function() {

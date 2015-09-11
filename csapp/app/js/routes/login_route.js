@@ -8,7 +8,7 @@ App.LoginRoute = Ember.Route.extend({
 
 	actions: {
 		transitionToLauncher: function() {
-			this.transitionTo("launcher");
+			this.transitionTo("clouds");
 		}
 	},
 });

@@ -176,7 +176,7 @@ ADD_LAUNCH_ROUTES.forEach(function(route){
 	});
 });
 
-App.AddlaunchController = Ember.Controller.extend({
+App.AddlaunchController = App.BaseObjectController.extend({
 	actions: {
 		updateSelection: function(data){
 			Validator.ValidateActiveTab();
@@ -187,6 +187,9 @@ App.AddlaunchController = Ember.Controller.extend({
 		},
 		activateApp: function(data){
 			console.log("activateApp", data);
+		},
+		doCancel: function() {
+			this.doTransitionToPreviuosRoute();
 		}
 	}
 });

@@ -29,6 +29,7 @@ module.exports = function(lineman) {
 				"app/js/strings/**/*.js",
 				"app/js/utils/utility.js",
 				"app/js/utils/validators.js",
+				"app/js/utils/storage.js",
 				"app/js/setup.js",
 				"app/js/models/**/*.js",
 				"app/js/controllers/base_object_controller.js",

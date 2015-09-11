@@ -1,40 +1,56 @@
 API_HOST = "http://107.170.244.149:18080/";
 
 function add_api_auth (xhr) {
-	var token = LaucherStorage.getToken();
-	if (!Ember.IsNone(token)) {
-		xhr.setRequestHeader(Api.API_TOKEN, token);
+	var token = LauncherStorage.getToken();
+	console.log("TOKEN: ", token);
+	if (token !== undefined) {
+		xhr.setRequestHeader(API.API_TOKEN, token);
 	}
+}
+
+function buildResponse(data, status, jqXHR) {
+	return {
+		status: status,
+		statusCode: jqXHR.status,
+		data: data,
+		jqXHR: jqXHR,
+		isSuccess: function() {
+			return this.statusCode === 200;
+		}
+	};
 }
 
 API = {
 
 	API_TOKEN: '__launcher_session',
+	API_PREFIX: 'api/',
+
 	_get: function (url) {
-		var results = null;
+		var result = null;
+		url = API.API_PREFIX + url;
+
 		Ember.$.ajax({
 			type: 'GET',
 			url: url,
 			async: false,
 			beforeSend: add_api_auth,
-			success: function (data, status, jqXHR) {
-				results = data;
+			success: function (response, status, jqXHR) {
+				console.log("GET Response: ", response, status, jqXHR);
+				result = buildResponse(response, status, jqXHR);
 			},
 			error: function (jqXHR, status, error) {
-				$.notify(Em.I18n.translations['errors'].generalServerError, { position: "bottom-right", autoHideDelay: 10000, className: 'error' });
-				results = {
-					status: status,
-					statusCode: jqXHR.status,
-					jqXHR: jqXHR,
-					errorMessage: error
-				};
+				// $.notify(Em.I18n.translations['errors'].generalServerError, { position: "bottom-right", autoHideDelay: 10000, className: 'error' });
+				result = buildResponse(error, status, jqXHR);
 			}
 		});
-		return results;
+
+		return result;
 	},
 
 	_update: function (method, url, data) {
 		var result = null;
+		url = API.API_PREFIX + url;
+
 		Ember.$.ajax({
 			type: method,
 			url: url,
@@ -43,26 +59,22 @@ API = {
 			data: JSON.stringify(data),
 			beforeSend: add_api_auth,
 			success: function (response, status, jqXHR) {
-				result = response;
+				result = buildResponse(response, status, jqXHR);
 			},
 			error: function (jqXHR, status, error) {
-				$.notify(Em.I18n.translations['errors'].generalServerError, { position: "bottom-right", autoHideDelay: 10000, className: 'error' });
-				result = {
-					status: status,
-					statusCode: jqXHR.status,
-					jqXHR: jqXHR,
-					errorMessage: error
-				};
+				result = buildResponse(error, status, jqXHR);
 			}
 		});
 		return result;
 	},
 
-	_post: function(url, data) { return Api._update('POST', url, data); },
-	_put:  function(url, data) { return Api._update('PUT', url, data); },
+	_post: function(url, data) { return API._update('POST', url, data); },
+	_put:  function(url, data) { return API._update('PUT', url, data); },
 
 	_delete: function (path) {
 		var ok = false;
+		url = API.API_PREFIX + url;
+
 		Ember.$.ajax({
 			type: 'DELETE',
 			url: path,
@@ -72,45 +84,27 @@ API = {
 				ok = true;
 			},
 			'error': function (jqXHR, status, error) {
-				console.log('error deleting '+path+': '+error);
-				$.notify(Em.I18n.translations['errors'].generalServerError, { position: "bottom-right", autoHideDelay: 10000, className: 'error' });
+				// console.log('error deleting '+path+': '+error);
+				// $.notify(Em.I18n.translations['errors'].generalServerError, { position: "bottom-right", autoHideDelay: 10000, className: 'error' });
 			}
 		});
 		return ok;
 	},
 
 	login: function(username, password) {
-		// this.post("api/auth/" + username, password);
+		var response = this._post("auth/" + username, password);
 
-		var loginResponse = {
-			status: 404,
-			data: "bad_credentials"
-		};
+		response.data = response.isSuccess() ? response.data : "Wrong password";
 
-		if (username === "bojan" && password === "bojan123") {
-			loginResponse = {
-				status: 200,
-				data: "valid-token"
-			};
-		}
-
-		return loginResponse;
+		return response;
 	},
 
 
 	get_clouds: function() {
-		var response = [];
-		for(i = 0; i< 5; i++){
-			response.push({
-				id: i,
-				name: "server " + i,
-				provider: "provider " + i,
-			});
-		}
-		return response;
+		return this._get("clouds");
 	},
 
-	delete_provider: function() {
+	delete_cloud: function() {
 
 	},
 

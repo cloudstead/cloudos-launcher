@@ -18,7 +18,8 @@
 				Secret Key: {{input type="password" value=secretKey size="50"}}
 			</div>
 			<div class="row">
-				<button {{action 'doCreate'}} class="small-6 small-offset-3 medium-4 medium-offset-4 large-3 large-offset-4 columns">Create</button>
+				<button {{action 'doCreate'}} class="button-smalls">Create</button>
+				<button {{action 'doCancel'}} class="button-small">Cancel</button>
 			</div>
 		</form>
 	</div>

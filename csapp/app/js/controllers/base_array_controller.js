@@ -3,7 +3,7 @@ App.BaseArrayController = Ember.ArrayController.extend({
 
 		doTransitionToPreviuosRoute: function() {
 			if (Ember.isNone(this.get("previousTransition"))) {
-				this.send("doTransitionTo", "index");
+				this.send("doTransitionTo", "clouds");
 			} else {
 				var prevTransition = this.get("previousTransition");
 				this.set("previousTransition", null);

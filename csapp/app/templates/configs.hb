@@ -2,7 +2,7 @@
 <div class="row margin_top">
 	<div class="small-4 columns"><h3>Configurations</h3></div>
 	<div class="small-4 columns">
-		{{#link-to 'addlaunch' classNames="button"}}New Configuration{{/link-to}}
+		<button class="button-small" {{ action "doNewConfig" }}>New Configuration</button>
 	</div>
 </div>
 <div class="row">

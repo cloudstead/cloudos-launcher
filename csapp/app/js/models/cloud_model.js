@@ -14,5 +14,18 @@ App.CloudModel.reopenClass({
 			account: "",
 			optionalJson: "",
 		});
-	}
+	},
+
+	createNewFromData: function(dataObject) {
+		return App.CloudModel.create(dataObject);
+	},
+
+	createFromArray: function(cloudDataArray) {
+		var retArray = [];
+		cloudDataArray.forEach(function(cloudData) {
+			retArray.push(App.CloudModel.createNewFromData(cloudData));
+		});
+
+		return retArray;
+	},
 });

@@ -1,6 +1,9 @@
 App.CloudsController = App.BaseArrayController.extend({
 	providerToDelete: null,
 	actions: {
+		doAddCloud: function() {
+			this.send("doTransitionTo", "add_cloud");
+		},
 		confirmProviderRemove: function (id, name) {
 			// console.log(id, name);
 			// $("#providerName").text(name);

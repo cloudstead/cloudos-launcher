@@ -10,4 +10,8 @@
 	<div id="main" class="medium-9 columns">
 		{{outlet}}
 	</div>
+	<div class="clearfix"></div>
+	<div class="row">
+		<button {{action 'doCancel'}} class="button-small">Cancel</button>
+	</div>
 </div>
