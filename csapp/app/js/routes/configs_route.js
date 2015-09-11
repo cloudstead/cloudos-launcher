@@ -1,5 +1,11 @@
 App.ConfigsRoute = App.ProtectedRoute.extend({
 	model: function() {
-		return API.get_configs();
+		return App.ConfigModel.getAll();
 	},
+
+	afterModel: function(model) {
+		if (Ember.isEmpty(model)) {
+			this.transitionTo("addlaunch");
+		}
+	}
 });

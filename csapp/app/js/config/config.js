@@ -12,7 +12,7 @@ var DATA = {};
 GENERAL_SUBTAB_GROUP = "generalTabGroup";
 
 // Path to folder containing the apps data.
-APPS_DATA_PATH = "js/apps/";
+APPS_DATA_PATH = "apps/";
 
 // File to look in for metadata for individual apps.
 METADATA_FILENAME = "config-metadata.json";

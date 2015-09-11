@@ -1,5 +1,5 @@
 var ADD_LAUNCH_ROUTES = [];
-var additional_routes = ['apps', 'launch'];
+var additional_routes = ['apps'];
 var trans =  getFirstTranslation();
 
 for(var route in INIT_CONFIG) {
@@ -190,6 +190,27 @@ App.AddlaunchController = App.BaseObjectController.extend({
 		},
 		doCancel: function() {
 			this.doTransitionToPreviuosRoute();
+		},
+		doLaunch: function() {
+			var unopened = $('.unopened');
+			unopened.removeClass('unopened');
+			unopened.addClass('errorLink');
+			var errors = $("#sidebar>ul>li>a.menu-item.errorLink");
+			var dataBlob = "";
+			// if(errors.length === 0 && unopened.length === 0){
+				dataBlob = ZipGeneratorService.generateContentFrom(DATA);
+			// }else{
+			// 	$("button.launch_button").notify( "Please correct the errors", Validator.NotifyOptions );
+			// }
+
+			console.log("DATA: ", DATA);
+
+			var config = App.ConfigModel.create({
+				name: DATA.dns.fields[0].value + " - " + DATA.dns.fields[1].value,
+				base64zipData: dataBlob
+			});
+
+			config.update();
 		}
 	}
 });

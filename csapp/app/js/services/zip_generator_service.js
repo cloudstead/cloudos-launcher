@@ -78,7 +78,11 @@ ZipGeneratorService = {
 
 		folders.cloudos.file("init.json", JSON.stringify(cloudosJSON));
 
-		return folders.root.generate({type:"blob"});
+		var content = folders.root.generate();
+
+		console.log("CONTENT: ", content);
+
+		return content;
 	},
 
 	generateZipFrom: function(dataToProccess) {

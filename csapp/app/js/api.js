@@ -118,18 +118,15 @@ API = {
 
 
 	get_configs: function() {
-		var response = [];
-		for(i = 0; i< 5; i++){
-			response.push({
-				id: i,
-				name: "config " + i,
-			});
-		}
-		return response;
+		return this._get("configs");
 	},
 
-	delete_config: function() {
+	update_config: function(configData) {
+		return this._post("configs/"+configData.name, configData);
+	},
 
+	delete_config: function(configNAme) {
+		return this._delete("configs/"+configNAme);
 	},
 
 
