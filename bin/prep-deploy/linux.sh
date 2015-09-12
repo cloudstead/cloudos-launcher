@@ -19,7 +19,8 @@ fi
 
 JAR="$(find ${BASE_DIR}/target -maxdepth 1 -type f -name cloudos-launcher-*.jar | head -1)"
 if [ -z "${JAR}" ] ; then
-  mvn -DskipTests=true package || die "Error building cloudos-launcher jar"
+  MAVEN="mvn -DskipTests=true -Dcheckstyle.skip=true"
+  ${MAVEN} package || die "Error building cloudos-launcher jar"
   JAR="$(find ${BASE_DIR}/target -maxdepth 1 -type f -name cloudos-launcher-*.jar | head -1)"
   if [ -z "${JAR}" ] ; then
     die "Error building cloudos-launcher jar"

@@ -43,7 +43,8 @@ echo "$(date +%Y%m%d-%H%M%S)" > ${BMETA}/timestamp
 echo "$(uname -a)" > ${BMETA}/sysinfo
 
 # re-roll jar file with API docs and build timestamp
-cd ${BASE_DIR} && mvn -DskipTests=true package
+MAVEN="mvn -DskipTests=true -Dcheckstyle.skip=true"
+cd ${BASE_DIR} && ${MAVEN} package
 
 # Build Windows
 ${SCRIPT_BASE}/windows.sh || die "Error building Windows app"

@@ -7,10 +7,11 @@ function die {
 # script assumes that ../.. is the cloudos-launcher base directory
 SCRIPT_DIR="$(cd $(dirname ${0}) && pwd)"
 BASE_DIR="$(cd ${SCRIPT_DIR}/../.. && pwd)"
+MAVEN="mvn -DskipTests=true -Dcheckstyle.skip=true"
 
 LAUNCHER_EXE="${BASE_DIR}/target/cloudos-launcher.exe"
 if [ ! -f "${LAUNCHER_EXE}" ] ; then
-   mvn -DskipTests=true package || die "Error building cloudos-launcher.exe"
+  ${MAVEN} package || die "Error building cloudos-launcher.exe"
   if [ ! -f "${LAUNCHER_EXE}" ] ; then
     die "Error building cloudos-launcher.exe"
   fi

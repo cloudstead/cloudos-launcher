@@ -56,7 +56,8 @@ mkdir -p ${SERVER_TARBALLS}
 TARBALLS="${CLOUDOS_SERVER}/target/cloudos-server.tar.gz ${CLOUDOS_DNS}/target/cloudos-dns-server.tar.gz"
 for tarball in ${TARBALLS} ; do
   if [ ! -f ${tarball} ] ; then
-    (cd $(dirname ${tarball})/.. && artifact=$(basename $(pwd)) && mvn -DskipTests=true package && ${CLOUDOS_DIR}/prep-deploy.sh ${artifact})
+    MAVEN="mvn -DskipTests=true -Dcheckstyle.skip=true"
+    (cd $(dirname ${tarball})/.. && artifact=$(basename $(pwd)) && ${MAVEN} package && ${CLOUDOS_DIR}/prep-deploy.sh ${artifact})
   fi
   if [ ! -f ${tarball} ] ; then
     die "Error building tarball: ${tarball}"
