@@ -32,7 +32,7 @@ ZipGeneratorService = {
 		};
 	},
 
-	generateContentFrom: function(dataToProcess) {
+	generateContentFrom: function(dataToProcess, type) {
 
 		var folders = this.generateFolderStructure();
 
@@ -73,20 +73,22 @@ ZipGeneratorService = {
 					break;
 			}
 
+		console.log("tab: ", section);
+
 			this.processorServices[section].process(dataToProcess[section], outputFolder, secondaryData);
 		}
 
 		folders.cloudos.file("init.json", JSON.stringify(cloudosJSON));
 
-		var content = folders.root.generate();
-
-		console.log("CONTENT: ", content);
+		var content = folders.root.generate({type: type});
 
 		return content;
 	},
 
 	generateZipFrom: function(dataToProccess) {
-		var content = this.generateContentFrom(dataToProccess);
+		var content = this.generateContentFrom(dataToProccess, "blob");
+
+		console.log("CONTENT2: ", content);
 
 		// see FileSaver.js
 		saveAs(content, this.zipFileName);

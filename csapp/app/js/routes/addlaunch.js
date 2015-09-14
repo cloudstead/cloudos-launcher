@@ -6,7 +6,7 @@ App.AddlaunchRoute = App.ProtectedRoute.extend({
 		goToSubRoute: function(data){
 			if(data === "apps"){
 				// this.transitionTo('app/');
-				window.location.href = "#/addlaunch/apps/app/default";
+				window.location.href = "#/launcher/addlaunch/apps/app/default";
 			}else{
 				this.transitionTo(data);
 			}

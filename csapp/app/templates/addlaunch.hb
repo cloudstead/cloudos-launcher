@@ -13,6 +13,7 @@
 	<div class="clearfix"></div>
 	<div class="row">
 		<button {{action 'doLaunch'}} class="button-small">Save</button>
+		<button {{action 'doDownload'}} class="button-small">Download</button>
 		<button {{action 'doCancel'}} class="button-small">Cancel</button>
 	</div>
 </div>

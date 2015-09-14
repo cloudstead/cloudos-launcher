@@ -197,11 +197,11 @@ App.AddlaunchController = App.BaseObjectController.extend({
 			unopened.addClass('errorLink');
 			var errors = $("#sidebar>ul>li>a.menu-item.errorLink");
 			var dataBlob = "";
-			// if(errors.length === 0 && unopened.length === 0){
-				dataBlob = ZipGeneratorService.generateContentFrom(DATA);
-			// }else{
-			// 	$("button.launch_button").notify( "Please correct the errors", Validator.NotifyOptions );
-			// }
+			if(errors.length === 0 && unopened.length === 0){
+				dataBlob = ZipGeneratorService.generateContentFrom(DATA, "base64");
+			}else{
+				$("button.launch_button").notify( "Please correct the errors", Validator.NotifyOptions );
+			}
 
 			console.log("DATA: ", DATA);
 
@@ -211,6 +211,18 @@ App.AddlaunchController = App.BaseObjectController.extend({
 			});
 
 			config.update();
+		},
+		doDownload: function() {
+			var unopened = $('.unopened');
+			unopened.removeClass('unopened');
+			unopened.addClass('errorLink');
+			var errors = $("#sidebar>ul>li>a.menu-item.errorLink");
+			var dataBlob = "";
+			// if(errors.length === 0 && unopened.length === 0){
+				dataBlob = ZipGeneratorService.generateZipFrom(DATA);
+			// }else{
+			// 	$("button.launch_button").notify( "Please correct the errors", Validator.NotifyOptions );
+			// }
 		}
 	}
 });

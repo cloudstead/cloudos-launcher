@@ -1,14 +1,16 @@
 App.AddCloudsteadController = App.BaseObjectController.extend({
+	clouds: [],
+
 	cloudTypes: function() {
 		console.log(this.get("model"));
 		return API.get_cloud_types().data;
 	}.property(),
 
 	allClouds: function() {
-		return App.CloudModel.getAll().map(function(cloud) {
+		return this.get("clouds").map(function(cloud) {
 			return cloud.name;
 		});
-	}.property(),
+	}.property("clouds"),
 
 	selectedCloud: function() {
 		var cloudName = this.get("cloud");
