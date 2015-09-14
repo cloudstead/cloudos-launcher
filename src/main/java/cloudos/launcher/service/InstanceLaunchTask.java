@@ -10,7 +10,7 @@ import cloudos.deploy.CloudOsLaunchTaskBase;
 import cloudos.dns.DnsClient;
 import cloudos.dns.databag.CloudOsDnsDatabag;
 import cloudos.dns.databag.DjbdnsDatabag;
-import cloudos.dns.service.DynDnsManager;
+import cloudos.dns.service.dyn.DynDnsManager;
 import cloudos.launcher.dao.CloudConfigDAO;
 import cloudos.launcher.dao.InstanceDAO;
 import cloudos.launcher.dao.LaunchConfigDAO;

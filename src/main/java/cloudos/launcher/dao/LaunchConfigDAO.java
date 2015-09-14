@@ -4,7 +4,7 @@ import cloudos.databag.BaseDatabag;
 import cloudos.databag.CloudOsDatabag;
 import cloudos.databag.DnsMode;
 import cloudos.dns.DnsClient;
-import cloudos.dns.service.DynDnsManager;
+import cloudos.dns.service.dyn.DynDnsManager;
 import cloudos.launcher.model.LaunchAccount;
 import cloudos.launcher.model.LaunchConfig;
 import cloudos.model.SslCertificateBase;
