@@ -32,6 +32,7 @@ import org.cobbzilla.util.collection.SingletonList;
 import org.cobbzilla.util.dns.DnsManager;
 import org.cobbzilla.util.dns.DnsRecordMatch;
 import org.cobbzilla.util.dns.DnsServerType;
+import org.cobbzilla.util.io.DeleteOnExit;
 import org.cobbzilla.util.security.bcrypt.BCryptUtil;
 import org.cobbzilla.wizard.task.ITask;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,11 +68,16 @@ public class InstanceLaunchTask
         config.decryptZipData(dir);
     }
 
-    @Override protected File createInitFilesDir() {
-        final File initFiles = LaunchApiConfiguration.configDir(cloudOs().getInitFilesDirName());
-        writeZipData(initFiles);
-        return initFiles;
+    private File initFilesDir;
+    @Override protected synchronized File getInitFilesDir() {
+        if (initFilesDir == null) {
+            initFilesDir = LaunchApiConfiguration.configDir(cloudOs().getInitFilesDirName());
+            writeZipData(initFilesDir);
+            DeleteOnExit.add(initFilesDir);
+        }
+        return initFilesDir;
     }
+
     @Override protected File createChefDir() { return LaunchApiConfiguration.configDir("deploy-staging/"+cloudOs().getUuid()); }
 
     @Override public String getJsonEdit() { return configuration.getJsonEdit(); }
