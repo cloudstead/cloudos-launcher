@@ -78,9 +78,9 @@ Validator = {
 		});
 
 		if(!allFieldsValid){
-			$("#sidebar>ul>li>a.menu-item.selected").addClass("errorLink");
+			$("#sidebar>ul>li>a.menu-item.selected").addClass("error_link");
 		}else{
-			$("#sidebar>ul>li>a.menu-item.selected").removeClass("errorLink");
+			$("#sidebar>ul>li>a.menu-item.selected").removeClass("error_link");
 		}
 	},
 

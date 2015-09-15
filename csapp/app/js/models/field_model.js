@@ -68,19 +68,16 @@ App.FieldModel.reopenClass({
 			return [];
 		}
 
-		if (Ember.isNone(choices)) {
-			return [];
-		}
-
 		var retChoices = [];
 
-		choices.forEach(function(choice) {
-			var translat = Ember.isNone(translation['choices']) ? choice : translation['choices'][choice];
+		choices.forEach(function(choice, index) {
+			var translat = Ember.isNone(translation['choices']) ? choice : translation['choices'][index]['label'];
 			retChoices.push({
 				label: translat,
 				value: choice,
 			});
 		});
+
 
 		return retChoices;
 	},
@@ -175,6 +172,8 @@ App.FieldModel.reopenClass({
 			});
 
 			console.log("TRANSLATION: ", translation);
+
+			fieldData.required = true;
 
 			var newField = App.FieldModel.createNew(fieldName, fieldData, translation);
 			fields.push(newField);
@@ -273,6 +272,8 @@ App.FieldModel.reopenClass({
 					}
 				}
 			});
+
+			console.log("Translation: ", translation);
 
 			var newField = App.FieldModel.createNew(fieldName, fieldData, translation);
 			fieldsArray.push(newField);

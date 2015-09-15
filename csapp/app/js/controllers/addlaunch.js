@@ -126,8 +126,8 @@ ADD_LAUNCH_ROUTES.forEach(function(route){
 			doLaunch: function() {
 				var unopened = $('.unopened');
 				unopened.removeClass('unopened');
-				unopened.addClass('errorLink');
-				var errors = $("#sidebar>ul>li>a.menu-item.errorLink");
+				unopened.addClass('error_link');
+				var errors = $("#sidebar>ul>li>a.menu-item.error_link");
 				if(errors.length === 0 && unopened.length === 0){
 					ZipGeneratorService.generateZipFrom(DATA);
 				}else{
@@ -194,8 +194,8 @@ App.AddlaunchController = App.BaseObjectController.extend({
 		doLaunch: function() {
 			var unopened = $('.unopened');
 			unopened.removeClass('unopened');
-			unopened.addClass('errorLink');
-			var errors = $("#sidebar>ul>li>a.menu-item.errorLink");
+			unopened.addClass('error_link');
+			var errors = $("#sidebar>ul>li>a.menu-item.error_link");
 			var dataBlob = "";
 			if(errors.length === 0 && unopened.length === 0){
 				dataBlob = ZipGeneratorService.generateContentFrom(DATA, "base64");
@@ -204,6 +204,7 @@ App.AddlaunchController = App.BaseObjectController.extend({
 			}
 
 			console.log("DATA: ", DATA);
+			console.log("DATA: ", DATA.two_factor.fields[1].get("value"), DATA.two_factor.fields[1].get("label"));
 
 			var config = App.ConfigModel.create({
 				name: DATA.dns.fields[0].value + " - " + DATA.dns.fields[1].value,
@@ -215,9 +216,10 @@ App.AddlaunchController = App.BaseObjectController.extend({
 		doDownload: function() {
 			var unopened = $('.unopened');
 			unopened.removeClass('unopened');
-			unopened.addClass('errorLink');
-			var errors = $("#sidebar>ul>li>a.menu-item.errorLink");
+			unopened.addClass('error_link');
+			var errors = $("#sidebar>ul>li>a.menu-item.error_link");
 			var dataBlob = "";
+			console.log("DATA: ", DATA.two_factor.fields[1].value);
 			// if(errors.length === 0 && unopened.length === 0){
 				dataBlob = ZipGeneratorService.generateZipFrom(DATA);
 			// }else{
