@@ -1,7 +1,7 @@
 package cloudos.launcher.resources;
 
 import cloudos.launcher.model.LaunchAccount;
-import cloudos.model.auth.ApiToken;
+import org.cobbzilla.wizard.model.ApiToken;
 import cloudos.model.auth.ChangePasswordRequest;
 import org.cobbzilla.util.http.HttpStatusCodes;
 import org.cobbzilla.wizard.util.RestResponse;

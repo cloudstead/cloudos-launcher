@@ -1,7 +1,7 @@
 package cloudos.launcher.main;
 
 import cloudos.launcher.ApiConstants;
-import cloudos.model.auth.ApiToken;
+import org.cobbzilla.wizard.model.ApiToken;
 import org.cobbzilla.wizard.main.MainApiBase;
 import org.cobbzilla.wizard.util.RestResponse;
 

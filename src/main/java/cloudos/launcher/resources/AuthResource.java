@@ -4,7 +4,7 @@ import cloudos.launcher.ApiConstants;
 import cloudos.launcher.dao.ApiTokenDAO;
 import cloudos.launcher.dao.LaunchAccountDAO;
 import cloudos.launcher.model.LaunchAccount;
-import cloudos.model.auth.ApiToken;
+import org.cobbzilla.wizard.model.ApiToken;
 import com.qmino.miredot.annotations.ReturnType;
 import lombok.extern.slf4j.Slf4j;
 import org.cobbzilla.util.security.CryptoSimple;

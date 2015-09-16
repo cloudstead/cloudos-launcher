@@ -1,7 +1,7 @@
 package cloudos.launcher.dao;
 
 import cloudos.launcher.model.LaunchAccount;
-import cloudos.model.auth.ApiToken;
+import org.cobbzilla.wizard.model.ApiToken;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import lombok.extern.slf4j.Slf4j;

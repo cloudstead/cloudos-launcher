@@ -5,7 +5,7 @@ import cloudos.launcher.model.CloudConfig;
 import cloudos.launcher.model.SshKey;
 import cloudos.launcher.server.LaunchApi;
 import cloudos.launcher.server.LaunchApiConfiguration;
-import cloudos.model.auth.ApiToken;
+import org.cobbzilla.wizard.model.ApiToken;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.RandomUtils;
 import org.cobbzilla.wizard.server.config.factory.ConfigurationSource;
