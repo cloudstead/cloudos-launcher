@@ -1,6 +1,6 @@
 INIT_CONFIG = {
     dns: {
-        field_prefix: 'cloudos/base',
+        field_prefix: 'base/base',
         fields: [ 'hostname', 'parent_domain' ],
         sub_tabs: 'cloudos/init/dns.mode'
     },
