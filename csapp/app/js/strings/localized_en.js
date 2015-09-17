@@ -114,39 +114,3 @@ TRANSLATIONS['en'] = {
     }
 
 };
-olite2/">Download from Maxmind</a>.'
-            },
-            GeoLite2_Country: {
-                label: 'GeoIP2 Lite Country Database',
-                info: 'Country Database, free. <a href="http://dev.maxmind.com/geoip/geoip2/geolite2/">Download from Maxmind</a>.'
-            }
-        }
-    },
-
-    claim: {
-        tab: 'Claiming',
-        title: 'How to Claim Your Cloudstead',
-        description: 'It takes two pieces of information to claim a cloudstead. First, you need to know the ' +
-        'password, which is set here. Secondly, when the cloudstead has completed setting itself up, it ' +
-        'will send an email to the address set here. That message will include the URL to claim the cloudstead ' +
-        'along with a key that it generated itself. This is the only place that you can set both the password and ' +
-        'the email address. Once your cloudstead is running, the primary admin user will be responsible for deciding ' +
-        'who has access and how much they should have. Initially this primary admin is probably you, but ' +
-        'you\'re always free to delegate :)',
-        fields: {
-            'admin_initial_pass': {
-                label: 'Password to Unlock',
-                info: 'This is the password that you\'ll use to claim the cloudstead. It will be strongly encrypted ' +
-                'when it is written to the configuration files. It will never be stored in plaintext ' +
-                'in any durable format.'
-            }
-        }
-    },
-
-    apps: {
-        tab: 'Apps',
-        title: 'Pre-Install Apps',
-        description: 'Select the apps you would like to come pre-installed on your cloudstead'
-    }
-
-};
