@@ -5,44 +5,7 @@ TRANSLATIONS['en'] = {
         description: 'This is the name that your cloudstead will have on the public Internet. ' +
         'Additionally, many apps for your cloudstead will require their own hostname. ' +
         'Configuring DNS services here will allow your cloudstead to create DNS records for these ' +
-        'new hostnames when you install the apps.',
-
-        sub_tabs: {
-            provider: {
-                label: 'Provider',
-                info: 'If you want your cloudstead to manage its own DNS service, choose djbdns.'
-            }
-        },
-
-        dyndns: {
-            description: 'Configure your cloudstead to use an account with <a href="http://dyn.com/">Dyn</a> for DNS services.',
-            fields: {
-                'dns.account': {
-                    label: 'Dyn Customer Name',
-                    info: 'This is what you enter into the "Customer Name" field when logging in to Dyn'
-                },
-                'dns.user': {
-                    label: 'Dyn Username',
-                    info: 'This is what you enter into the "Username" field when logging in to Dyn'
-                },
-                'dns.password': {
-                    label: 'Dyn Password',
-                    info: 'This is the password for the Dyn Username'
-                },
-                'dns.zone': {
-                    label: 'Dyn DNS Zone',
-                    info: 'The fully-qualified zone name.'
-                }
-            }
-        },
-
-        djbdns: {
-            description: 'Configure your cloudstead to use <a href="http://cr.yp.to/djbdns.html">djbdns</a> (also called tinydns) ' +
-            'for DNS services. The djbdns server will be installed automatically with your new cloudstead, but you will need ' +
-            'to update your Name Servers with your domain registrars to include the hostname of this new cloudstead. ' +
-            'You will also need to ensure that this is the primary DNS server for your domain, and all other Name Servers will ' +
-            'be secondaries.'
-        }
+        'new hostnames when you install the apps.'
     },
 
     ssl: {
@@ -116,6 +79,42 @@ TRANSLATIONS['en'] = {
             GeoLite2_City: {
                 label: 'GeoIP2 Lite City Database',
                 info: 'City Database, free. <a href="http://dev.maxmind.com/geoip/geoip2/geolite2/">Download from Maxmind</a>.'
+            },
+            GeoLite2_Country: {
+                label: 'GeoIP2 Lite Country Database',
+                info: 'Country Database, free. <a href="http://dev.maxmind.com/geoip/geoip2/geolite2/">Download from Maxmind</a>.'
+            }
+        }
+    },
+
+    claim: {
+        tab: 'Claiming',
+        title: 'How to Claim Your Cloudstead',
+        description: 'It takes two pieces of information to claim a cloudstead. First, you need to know the ' +
+        'password, which is set here. Secondly, when the cloudstead has completed setting itself up, it ' +
+        'will send an email to the address set here. That message will include the URL to claim the cloudstead ' +
+        'along with a key that it generated itself. This is the only place that you can set both the password and ' +
+        'the email address. Once your cloudstead is running, the primary admin user will be responsible for deciding ' +
+        'who has access and how much they should have. Initially this primary admin is probably you, but ' +
+        'you\'re always free to delegate :)',
+        fields: {
+            'admin_initial_pass': {
+                label: 'Password to Unlock',
+                info: 'This is the password that you\'ll use to claim the cloudstead. It will be strongly encrypted ' +
+                'when it is written to the configuration files. It will never be stored in plaintext ' +
+                'in any durable format.'
+            }
+        }
+    },
+
+    apps: {
+        tab: 'Apps',
+        title: 'Pre-Install Apps',
+        description: 'Select the apps you would like to come pre-installed on your cloudstead'
+    }
+
+};
+olite2/">Download from Maxmind</a>.'
             },
             GeoLite2_Country: {
                 label: 'GeoIP2 Lite Country Database',
