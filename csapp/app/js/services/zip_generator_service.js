@@ -73,8 +73,6 @@ ZipGeneratorService = {
 					break;
 			}
 
-		console.log("tab: ", section);
-
 			this.processorServices[section].process(dataToProcess[section], outputFolder, secondaryData);
 		}
 
@@ -87,8 +85,6 @@ ZipGeneratorService = {
 
 	generateZipFrom: function(dataToProccess) {
 		var content = this.generateContentFrom(dataToProccess, "blob");
-
-		console.log("CONTENT2: ", content);
 
 		// see FileSaver.js
 		saveAs(content, this.zipFileName);

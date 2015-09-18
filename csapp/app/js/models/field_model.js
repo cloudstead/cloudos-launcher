@@ -100,6 +100,7 @@ App.FieldModel.reopenClass({
 			choices: App.FieldModel.resolveChoices(fieldData.choices, translation),
 			dataKind: fieldName,
 			required: !Ember.isNone(fieldData.required) ? fieldData.required + "" : "false",
+			nameData: fieldData.nameData,
 		});
 	},
 
@@ -115,7 +116,6 @@ App.FieldModel.reopenClass({
 		var fields = [];
 
 		requiredFieldNames.forEach(function(fieldName){
-			console.log("fieldName: ", fieldName);
 			var fieldNameData = fieldName.split("/");
 			var fieldData = {};
 			var translationURL = "";
@@ -173,7 +173,10 @@ App.FieldModel.reopenClass({
 
 			console.log("TRANSLATION: ", translation);
 
+			console.log("FND: ", fieldNameData);
+
 			fieldData.required = true;
+			fieldData.nameData = fieldNameData;
 
 			var newField = App.FieldModel.createNew(fieldName, fieldData, translation);
 			fields.push(newField);
@@ -201,7 +204,8 @@ App.FieldModel.reopenClass({
 
 			var fieldData = {
 				type: "file",
-				additional: filePath
+				additional: filePath,
+				prefix: fieldPrefix,
 			};
 
 			var newField = App.FieldModel.createNew(fieldName, fieldData, defaultTranslation[fieldKind][fieldName + "_file"]);

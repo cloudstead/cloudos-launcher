@@ -84,6 +84,7 @@ ADD_LAUNCH_ROUTES.forEach(function(route){
 			var dataObj = {};
 			var self = this;
 
+			dataObj["field_prefix"] = this.get("model.field_prefix");
 			dataObj["fields"] = self.get("fields");
 			dataObj["tabGroups"] = {};
 			DATA[self.get("routeName")] = dataObj;
@@ -95,6 +96,7 @@ ADD_LAUNCH_ROUTES.forEach(function(route){
 
 			dataObj["files"] = self.get("fileFields");
 			dataObj["tabGroups"] = {};
+			dataObj["field_prefix"] = this.get("model.field_prefix");
 
 			DATA[self.get("routeName")] = dataObj;
 
@@ -219,12 +221,12 @@ App.AddlaunchController = App.BaseObjectController.extend({
 			unopened.addClass('error_link');
 			var errors = $("#sidebar>ul>li>a.menu-item.error_link");
 			var dataBlob = "";
-			console.log("DATA: ", DATA.two_factor.fields[1].value);
-			// if(errors.length === 0 && unopened.length === 0){
+			console.log("DATA: ", DATA);
+			if(errors.length === 0 && unopened.length === 0){
 				dataBlob = ZipGeneratorService.generateZipFrom(DATA);
-			// }else{
-			// 	$("button.launch_button").notify( "Please correct the errors", Validator.NotifyOptions );
-			// }
+			}else{
+				$("button.launch_button").notify( "Please correct the errors", Validator.NotifyOptions );
+			}
 		}
 	}
 });
