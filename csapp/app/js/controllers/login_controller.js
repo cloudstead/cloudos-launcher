@@ -17,9 +17,15 @@ App.LoginController = Ember.ObjectController.extend({
 		var route = "clouds";
 
 		var clouds = App.CloudModel.getAll();
+		var configs = App.ConfigModel.getAll();
+		var cloudsteads = App.CloudsteadModel.getAll();
 
 		if (Ember.isEmpty(clouds)) {
 			route = "add_cloud";
+		} else if (Ember.isEmpty(configs)) {
+			route = "addlaunch";
+		} else if (Ember.isEmpty(cloudsteads)) {
+			route = "add_cloudstead";
 		}
 
 		return route;
