@@ -22,6 +22,7 @@ App.Router.map(function() {
 		this.resource('edit_cloud', {path: '/cloud/:cloud_name'});
 
 		this.resource('add_cloudstead', {path: '/addcloudstead/'});
+		this.resource('edit_cloudstead', {path: '/cloudstead/:cloudstead_name'});
 
 		this.resource('new_ssh_key', {path: '/new_ssh_key/'});
 		this.resource('manage_ssh_keys', {path: '/manage_shh_keys/'});

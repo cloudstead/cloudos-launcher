@@ -1,6 +1,11 @@
-App.AddCloudsteadRoute = App.ProtectedRoute.extend({
-	model: function() {
-		return App.CloudsteadModel.createNewEmpty();
+App.EditCloudsteadRoute = App.ProtectedRoute.extend({
+	controllerName: 'add_cloudstead',
+
+	model: function(params) {
+		return App.CloudsteadModel.get(params.cloudstead_name);
+	},
+	renderTemplate: function() {
+		this.render('add_cloudstead');
 	},
 
 	setupController: function(controller, model) {
@@ -17,6 +22,6 @@ App.AddCloudsteadRoute = App.ProtectedRoute.extend({
 
 		controller.set("sshKeys", App.SshKeyModel.getAll());
 
-		controller.set("isEdit", false);
-	}
+		controller.set("isEdit", true);
+	},
 });

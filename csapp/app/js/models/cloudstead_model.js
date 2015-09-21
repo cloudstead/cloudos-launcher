@@ -67,6 +67,11 @@ App.CloudsteadModel.reopenClass({
 		return retArray;
 	},
 
+	get: function(cloudsteadName) {
+		var response = API.get_cloudstead(cloudsteadName);
+		return App.CloudModel.createNewFromData(response.data);
+	},
+
 	getAll: function() {
 		var response = API.get_cloudsteads();
 

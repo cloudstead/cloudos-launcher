@@ -118,10 +118,7 @@ API = {
 	},
 
 	get_cloud: function(cloudName) {
-
-		var a = this._get("clouds/"+cloudName);
-		console.log(a);
-		return a;
+		return this._get("clouds/"+cloudName);
 	},
 
 	update_cloud: function(cloudData) {
@@ -149,6 +146,10 @@ API = {
 		return this._get("instances");
 	},
 
+	get_cloudstead: function(cloudsteadName) {
+		return this._get("instances/"+cloudsteadName);
+	},
+
 	update_cloudstead: function(cloudsteadData) {
 		return this._post("instances/"+cloudsteadData.name, cloudsteadData);
 	},
@@ -158,23 +159,11 @@ API = {
 	},
 
 	get_cloud_types: function() {
-
-		var a = this._get("cloud_types");
-		console.log(a);
-		return a;
-		// var response = '[ { "name": "cloud 1", "id": "1", "options":[ { "name": "cloud option 1", "value": "1", "type":"CHOICE", "defaultValue": "One", "required": true, "choices":[ "choice 1", "choice 2" ] } ], "providerName": "Rackspace", "regions":[ { "name": "SE Europe", "country": "Serbia", "region": "Europe", "vendor": "Rackspace" }, { "name": "East US", "country": "USA", "region": "N. America", "vendor": "Rackspace" }, { "name": "West US", "country": "USA", "region": "N. America", "vendor": "Rackspace" } ], "smallestInstanceType": { "name": "small", "storage_type": "local", "memory": 512, "vcpu": 4, "gpu": 2, "system_storage": 1, "storage": 3, "storage_medium": "ssd", "storage_geometry": "star", "storage_bandwidth": 200, "networking": "low", "network_bandwidth": 4 }, "cloudClassName": "cloudos_class", "optionsMap":{ "string": { "name": "option", "value": "value", "type": "CHOICE", "defaultValue": "default", "required": true, "choices":[ "choice 1", "choice 2" ] } }, "instanceTypes":[ { "name": "Instance type 1", "storage_type": "local", "memory": 3, "vcpu": 3, "gpu": 2, "system_storage": 2, "storage": 2, "storage_medium": "ssd", "storage_geometry": "star", "storage_bandwidth": 2, "networking": "low", "network_bandwidth": 5 }, { "name": "Instance type 2", "storage_type": "local", "memory": 3, "vcpu": 3, "gpu": 2, "system_storage": 2, "storage": 2, "storage_medium": "ssd", "storage_geometry": "star", "storage_bandwidth": 2, "networking": "low", "network_bandwidth": 5 }, { "name": "Instance type 3", "storage_type": "local", "memory": 3, "vcpu": 3, "gpu": 2, "system_storage": 2, "storage": 2, "storage_medium": "ssd", "storage_geometry": "star", "storage_bandwidth": 2, "networking": "low", "network_bandwidth": 5 } ] } ]';
-
-		// return JSON.parse(response);
+		return this._get("cloud_types");
 	},
 
 	get_cloud_type: function(cloudTypeName) {
-
-		var a = this._get("cloud_types/"+cloudTypeName);
-		console.log(a);
-		return a;
-		// var response = '[ { "name": "cloud 1", "id": "1", "options":[ { "name": "cloud option 1", "value": "1", "type":"CHOICE", "defaultValue": "One", "required": true, "choices":[ "choice 1", "choice 2" ] } ], "providerName": "Rackspace", "regions":[ { "name": "SE Europe", "country": "Serbia", "region": "Europe", "vendor": "Rackspace" }, { "name": "East US", "country": "USA", "region": "N. America", "vendor": "Rackspace" }, { "name": "West US", "country": "USA", "region": "N. America", "vendor": "Rackspace" } ], "smallestInstanceType": { "name": "small", "storage_type": "local", "memory": 512, "vcpu": 4, "gpu": 2, "system_storage": 1, "storage": 3, "storage_medium": "ssd", "storage_geometry": "star", "storage_bandwidth": 200, "networking": "low", "network_bandwidth": 4 }, "cloudClassName": "cloudos_class", "optionsMap":{ "string": { "name": "option", "value": "value", "type": "CHOICE", "defaultValue": "default", "required": true, "choices":[ "choice 1", "choice 2" ] } }, "instanceTypes":[ { "name": "Instance type 1", "storage_type": "local", "memory": 3, "vcpu": 3, "gpu": 2, "system_storage": 2, "storage": 2, "storage_medium": "ssd", "storage_geometry": "star", "storage_bandwidth": 2, "networking": "low", "network_bandwidth": 5 }, { "name": "Instance type 2", "storage_type": "local", "memory": 3, "vcpu": 3, "gpu": 2, "system_storage": 2, "storage": 2, "storage_medium": "ssd", "storage_geometry": "star", "storage_bandwidth": 2, "networking": "low", "network_bandwidth": 5 }, { "name": "Instance type 3", "storage_type": "local", "memory": 3, "vcpu": 3, "gpu": 2, "system_storage": 2, "storage": 2, "storage_medium": "ssd", "storage_geometry": "star", "storage_bandwidth": 2, "networking": "low", "network_bandwidth": 5 } ] } ]';
-
-		// return JSON.parse(response);
+		return this._get("cloud_types/"+cloudTypeName);
 	},
 
 	get_ssh_keys: function() {
