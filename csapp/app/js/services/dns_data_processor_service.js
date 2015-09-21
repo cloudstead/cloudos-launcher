@@ -90,7 +90,7 @@ DNSDataProcessorService.prototype.process = function(dataToProcess, ouputFolder,
 
 		var pathArray = dataToProcess["field_prefix"].split("/");
 		var folderName = pathArray[0];
-		var fileName = pathArray[1] +".js";
+		var fileName = pathArray[1] +".json";
 
 
 		var baseFolder = ouputFolder.folder(folderName);
