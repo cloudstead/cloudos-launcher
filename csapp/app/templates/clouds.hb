@@ -17,7 +17,7 @@
 		<tbody>
 			{{#each cloud in arrangedContent }}
 				<tr id="{{cloud.uuid}}">
-					<td class="text_align_center">{{cloud.name}}</td>
+					<td class="text_align_center">{{#link-to "edit_cloud" cloud.name }}{{cloud.name}}{{/link-to}}</td>
 					<td class="text_align_center">{{cloud.vendor}}</td>
 					<td class="text_align_center"><a class="button tiny" {{action "doDelete" cloud}}>Delete</a></td>
 				</tr>
