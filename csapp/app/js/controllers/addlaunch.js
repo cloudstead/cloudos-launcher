@@ -201,19 +201,20 @@ App.AddlaunchController = App.BaseObjectController.extend({
 			var dataBlob = "";
 			if(errors.length === 0 && unopened.length === 0){
 				dataBlob = ZipGeneratorService.generateContentFrom(DATA, "base64");
+
+				console.log("DATA: ", DATA);
+				console.log("BLOB: ", dataBlob);
+
+				var config = App.ConfigModel.create({
+					name: DATA.dns.fields[0].value + " - " + DATA.dns.fields[1].value,
+					base64zipData: dataBlob
+				});
+
+				config.update();
 			}else{
-				$("button.launch_button").notify( "Please correct the errors", Validator.NotifyOptions );
+				console.log("");
+				$.notify("Please correct the errors", Validator.NotifyOptions );
 			}
-
-			console.log("DATA: ", DATA);
-			console.log("DATA: ", DATA.two_factor.fields[1].get("value"), DATA.two_factor.fields[1].get("label"));
-
-			var config = App.ConfigModel.create({
-				name: DATA.dns.fields[0].value + " - " + DATA.dns.fields[1].value,
-				base64zipData: dataBlob
-			});
-
-			config.update();
 		},
 		doDownload: function() {
 			var unopened = $('.unopened');
@@ -222,11 +223,11 @@ App.AddlaunchController = App.BaseObjectController.extend({
 			var errors = $("#sidebar>ul>li>a.menu-item.error_link");
 			var dataBlob = "";
 			console.log("DATA: ", DATA);
-			if(errors.length === 0 && unopened.length === 0){
+			// if(errors.length === 0 && unopened.length === 0){
 				dataBlob = ZipGeneratorService.generateZipFrom(DATA);
-			}else{
-				$("button.launch_button").notify( "Please correct the errors", Validator.NotifyOptions );
-			}
+			// }else{
+			// 	$notify( "Please correct the errors", Validator.NotifyOptions );
+			// }
 		}
 	}
 });
