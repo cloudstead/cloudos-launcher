@@ -8,6 +8,8 @@ App.FieldModel = Ember.Object.extend({
 		var fieldFilePath = this.get("fieldFilePath");
 		var retType = {};
 
+		console.log("TYPE: ", fieldType, this.get("elementId"));
+
 		var INPUT_TYPES = {
 			'hostname_part': 'text',
 			'hostname': 'text',
@@ -89,6 +91,7 @@ App.FieldModel.reopenClass({
 				info: fieldName
 			};
 		}
+
 		return App.FieldModel.create({
 			elementId: fieldName,
 			label: Ember.String.htmlSafe(translation['label']),
@@ -108,8 +111,6 @@ App.FieldModel.reopenClass({
 		var tab = subTabData.find(function(t) {
 			return t["label"] === tabName;
 		});
-
-		console.log("DATA: ", data);
 
 		var requiredFieldNames = tab["required"];
 
@@ -147,7 +148,7 @@ App.FieldModel.reopenClass({
 				fieldCategory = fieldNameData[0];
 				fieldKey = fieldNameData[1];
 
-				filedData = data["categories"][fieldCategory]["fields"][fieldKey];
+				fieldData = data["categories"][fieldCategory]["fields"][fieldKey];
 
 				translationURL = APPS_DATA_PATH + appName + "/" + TRANSLATION_FILENAME;
 
@@ -155,7 +156,7 @@ App.FieldModel.reopenClass({
 				fieldCategory = "init";
 				fieldKey = fieldNameData[0];
 
-				filedData = data["categories"][fieldCategory]["fields"][fieldKey];
+				fieldData = data["categories"][fieldCategory]["fields"][fieldKey];
 
 				translationURL = APPS_DATA_PATH + appName + "/" + TRANSLATION_FILENAME;
 
@@ -166,14 +167,9 @@ App.FieldModel.reopenClass({
 				url: translationURL,
 				async: false,
 				success: function (data) {
-			console.log("fieldCategory: ", fieldCategory, fieldKey);
 					translation = data["categories"][fieldCategory][fieldKey];
 				}
 			});
-
-			console.log("TRANSLATION: ", translation);
-
-			console.log("FND: ", fieldNameData);
 
 			fieldData.required = true;
 			fieldData.nameData = fieldNameData;
@@ -217,6 +213,8 @@ App.FieldModel.reopenClass({
 
 	createFields: function(model, defaultTranslation) {
 		var fieldKind = "fields";
+
+		console.log("FIELD KIND: ", model[fieldKind]);
 
 		var fieldNames =  model[fieldKind];
 
