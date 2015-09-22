@@ -19,7 +19,7 @@
 		<tbody>
 			{{#each cloudstead in arrangedContent }}
 				<tr id="{{cloudstead.id}}">
-					<td class="text_align_center">{{cloudstead.name}}</td>
+					<td class="text_align_center">{{#link-to "edit_cloudstead" cloudstead.name }}{{cloudstead.name}}{{/link-to}}</td>
 					<td class="text_align_center">{{cloudstead.cloud}}</td>
 					<td class="text_align_center">{{cloudstead.launch_config}}</td>
 					<td class="text_align_center">{{cloudstead.status}}</td>
