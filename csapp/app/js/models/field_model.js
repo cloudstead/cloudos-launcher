@@ -361,9 +361,7 @@ App.FieldModel.reopenClass({
 		if(fileData === undefined){ return;}
 		for(var category in fileData["categories"]){
 			for(var fieldName in fileData["categories"][category][fileKind]){
-				console.log("FILE => ", fieldName);
 				newField = App.FieldModel.createNew(fieldName, fileData, translation[fieldName]);
-				console.log("fieldName ==> FILE", fieldName);
 				fieldsArray.push(newField);
 			}
 		}
