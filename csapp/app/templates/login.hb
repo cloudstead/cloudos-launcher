@@ -9,7 +9,7 @@
 				Password: {{input type="password" value=password size="50"}}
 			</div>
 			<div class="row">
-				<button {{action 'odLogin'}} class="small-6 small-offset-3 medium-4 medium-offset-4 large-3 large-offset-4 columns">Login/Register</button>
+				<button {{action 'odLogin'}} class="small-6 small-offset-3 medium-6 medium-offset-3 large-4 large-offset-4 columns">Login/Register</button>
 			</div>
 		</form>
 	</div>
