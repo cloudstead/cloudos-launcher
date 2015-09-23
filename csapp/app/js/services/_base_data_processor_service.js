@@ -203,10 +203,61 @@ BaseDataProcessorService.prototype.processMainFields = function(dataToProcess, o
 
 };
 
+BaseDataProcessorService.prototype.parseFileFields = function(dataToProcess) {
+	var retObj = {};
+
+	if (!Ember.isNone(dataToProcess["files"])) {
+
+		dataToProcess["files"].forEach( function(field) {
+			var aditionalInfoArray = field.get("type.additional").split("/");
+			var fileNameData = {
+				folders: aditionalInfoArray.slice(0, aditionalInfoArray.length -1),
+				fileName: aditionalInfoArray[aditionalInfoArray.length -1]
+			};
+			retObj[field.elementId] = {
+				fileData: field.get("fileData"),
+				fileNameData: fileNameData
+			};
+		});
+	}
+
+	return retObj;
+};
+
+BaseDataProcessorService.prototype.processMainFiles = function(dataToProcess, ouputFolder, extensionData) {
+
+	var mainFilesData = this.parseFileFields(dataToProcess);
+
+	var fieldNames = [];
+
+	for (var fieldName in mainFilesData) {
+		fieldNames.push(fieldName);
+	}
+
+	fieldNames.forEach(function(fieldName){
+
+		var baseFolder = ouputFolder;
+		var currentFolder = ouputFolder;
+
+		mainFilesData[fieldName].fileNameData.folders.forEach(function(folder, index) {
+			if (index === 0) {
+				currentFolder = ouputFolder.folder(folder);
+			} else {
+				currentFolder = currentFolder.folder(folder);
+			}
+		});
+
+		currentFolder.file(mainFilesData[fieldName].fileNameData.fileName, mainFilesData[fieldName].fileData);
+
+	});
+
+};
+
 BaseDataProcessorService.prototype.process = function(dataToProcess, ouputFolder, extensionData) {
-	var self = this;
 
-	self.processMainFields(dataToProcess, ouputFolder, extensionData);
+	this.processMainFields(dataToProcess, ouputFolder, extensionData);
 
-	self.processTabGroups(dataToProcess.tabGroups, ouputFolder);
+	this.processMainFiles(dataToProcess, ouputFolder, extensionData);
+
+	this.processTabGroups(dataToProcess.tabGroups, ouputFolder);
 };
