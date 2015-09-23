@@ -227,6 +227,9 @@ App.FieldModel.reopenClass({
 		var fieldsArray = [];
 
 		fieldNames.forEach(function(fieldName) {
+			var fieldData = {};
+			var translation = {};
+
 			var fieldDataArray = fieldName.split("/");
 			var fieldAppName = "cloudos";
 			var fieldCategory = "init";
@@ -249,8 +252,6 @@ App.FieldModel.reopenClass({
 				fieldKey = fieldDataArray[0];
 			}
 
-			var fieldData = {};
-			var translation = {};
 			var jsonURL = APPS_DATA_PATH + fieldAppName + "/" + METADATA_FILENAME;
 			var translationURL = APPS_DATA_PATH + fieldAppName + "/" + TRANSLATION_FILENAME;
 

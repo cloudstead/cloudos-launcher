@@ -212,7 +212,6 @@ App.AddlaunchController = App.BaseObjectController.extend({
 
 				config.update();
 			}else{
-				console.log("");
 				$.notify("Please correct the errors", Validator.NotifyOptions );
 			}
 		},

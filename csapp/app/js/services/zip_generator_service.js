@@ -58,12 +58,14 @@ ZipGeneratorService = {
 					secondaryData = cloudosJSON;
 					break;
 				case "storage":
+					outputFolder = folders.dataBags;
 					secondaryData = cloudosJSON;
 					break;
 				case "geoip":
 					outputFolder = folders.dataFiles;
 					break;
 				case "claim":
+					outputFolder = folders.dataBags;
 					secondaryData = cloudosJSON;
 					break;
 				case "appls":

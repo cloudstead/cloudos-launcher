@@ -4,7 +4,4 @@ ClaimDataProcessorService = function() {
 
 ClaimDataProcessorService.prototype = new BaseDataProcessorService();
 
-ClaimDataProcessorService.prototype.process = function(dataToProcess, ouputFolder, extensionData) {
-	var claimData = this.extractFields(dataToProcess, {});
-	$.extend(extensionData, claimData);
-};
+ClaimDataProcessorService.prototype.appName = "claim";

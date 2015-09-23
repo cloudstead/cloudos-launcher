@@ -4,8 +4,4 @@ StorageDataProcessorService = function() {
 
 StorageDataProcessorService.prototype = new BaseDataProcessorService();
 
-StorageDataProcessorService.prototype.process = function(dataToProcess, ouputFolder, extensionData) {
-	var storageData = this.extractFields(dataToProcess, {});
-
-	$.extend(extensionData, storageData);
-};
+StorageDataProcessorService.prototype.appName = "storage";

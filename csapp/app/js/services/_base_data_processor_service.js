@@ -71,3 +71,142 @@ BaseDataProcessorService.prototype.encryptData = function(data) {
 	}
 	return hash;
 };
+
+BaseDataProcessorService.prototype.appName = "cloudos-dns";
+
+BaseDataProcessorService.prototype.createTabFiles = function(folder, file, newFolder, fieldData) {
+	var fd = {};
+
+	fieldData[folder][file]["fields"].forEach(function(field) {
+		var nfd = {};
+		nfd[field.elementId] = field.value;
+		fd = $.extend(nfd, fd);
+	});
+
+	fd["id"] = file;
+
+	newFolder.file(file, JSON.stringify(fd));
+};
+
+BaseDataProcessorService.prototype.getFieldPath = function(field) {
+	var fieldDataArray = field.nameData;
+	var fieldAppName = this.appName;
+	var fieldCategory = "init";
+	var fieldKey = "";
+
+	if (fieldDataArray.length === 3) {
+		fieldAppName = fieldDataArray[0];
+		fieldCategory = fieldDataArray[1];
+		fieldKey = fieldDataArray[2];
+	} else if (fieldDataArray.length === 2) {
+		fieldCategory = fieldDataArray[0];
+		fieldKey = fieldDataArray[1];
+	} else if (fieldDataArray.length === 1) {
+		fieldKey = fieldDataArray[0];
+	}
+
+	return {
+		appName: fieldAppName,
+		category: fieldCategory
+	};
+};
+
+
+BaseDataProcessorService.prototype.createOrExtendFieldData = function(fieldData, field) {
+
+		var fieldPath = this.getFieldPath(field);
+
+		var fieldAppName = fieldPath.appName;
+		var fieldCategory = fieldPath.category;
+
+		// create data entry for the app or extend it if it already exists
+		fieldData[fieldAppName] = fieldData[fieldAppName] === undefined ? {} : fieldData[fieldAppName];
+
+		fieldData[fieldAppName][fieldCategory] = fieldData[fieldAppName][fieldCategory] === undefined ? {} : fieldData[fieldAppName][fieldCategory];
+
+		fieldData[fieldAppName][fieldCategory]["fields"] = fieldData[fieldAppName][fieldCategory]["fields"] === undefined ? [] : fieldData[fieldAppName][fieldCategory]["fields"];
+
+		fieldData[fieldAppName][fieldCategory]["fields"].push(field);
+
+		return fieldData;
+
+};
+
+BaseDataProcessorService.prototype.writeFieldDataToFilesInFolder = function(fieldData, ouputFolder) {
+	// create databags from filed data
+	for (var folder in fieldData) {
+		var newFolder = ouputFolder.folder(folder);
+		for (var file in fieldData[folder]) {
+			this.createTabFiles(folder, file, newFolder, fieldData);
+		}
+	}
+
+};
+
+BaseDataProcessorService.prototype.processTab = function(tab, ouputFolder) {
+
+	var self = this;
+	var fieldData = {};
+
+	// Create data structure for fields in a tab.
+	tab.tabFields.forEach(function(field) {
+		fieldData = self.createOrExtendFieldData(fieldData, field);
+	});
+
+	console.log("FDATA: ", fieldData);
+
+	self.writeFieldDataToFilesInFolder(fieldData, ouputFolder);
+
+};
+
+BaseDataProcessorService.prototype.processTabGroups = function(tabGroups, ouputFolder) {
+	var self = this;
+	for (var tabGroup in tabGroups) {
+		self.processTab(tabGroups[tabGroup].tab, ouputFolder);
+	}
+};
+
+BaseDataProcessorService.prototype.processMainFields = function(dataToProcess, ouputFolder, extensionData) {
+	// var self = this;
+	// var dnsData = {
+	// 	id: "init",
+	// 	admin: {
+	// 		name: "cloudos-dns-admin",
+	// 		password: "bcrypted-password"
+	// 	}
+	// };
+
+	// dnsData = this.extractFields(dataToProcess, dnsData);
+
+	var mainFieldsData = {};
+	var fieldPrefix = this.appName + "/init";
+
+	if (dataToProcess["field_prefix"] !== undefined) {
+		fieldPrefix = dataToProcess["field_prefix"];
+	}
+
+	var pathArray = fieldPrefix.split("/");
+	var folderName = pathArray[0];
+	var fileName = pathArray[1] +".json";
+
+	mainFieldsData.id = pathArray[1];
+
+	var baseFolder = ouputFolder.folder(folderName);
+
+	if (dataToProcess.hasOwnProperty("fields")){
+		dataToProcess.fields.forEach(function(field){
+			mainFieldsData[field.elementId] = field.value;
+		});
+
+		baseFolder.file(fileName, JSON.stringify(mainFieldsData));
+	}
+
+};
+
+BaseDataProcessorService.prototype.process = function(dataToProcess, ouputFolder, extensionData) {
+	var self = this;
+
+	self.processMainFields(dataToProcess, ouputFolder, extensionData);
+
+	self.processTabGroups(dataToProcess.tabGroups, ouputFolder);
+};
