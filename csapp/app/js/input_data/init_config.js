@@ -7,8 +7,8 @@ INIT_CONFIG = {
 
     ssl: {
         files: {
-            cert_key: 'certs/ssl-https.key',
-            cert_pem: 'certs/ssl-https.pem'
+            cert_key: 'certs/cloudos/ssl-https.key',
+            cert_pem: 'certs/cloudos/ssl-https.pem'
         }
     },
 
