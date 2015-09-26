@@ -75,6 +75,7 @@ public class CloudConfigsResource {
         if (found == null) {
             config = configDAO.create(config);
         } else {
+            found.update(config);
             config = configDAO.update(found);
         }
         return ok(config.setLaunchAccount(account).decrypt());

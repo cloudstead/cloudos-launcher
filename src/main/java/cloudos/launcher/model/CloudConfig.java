@@ -20,6 +20,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import static cloudos.launcher.ApiConstants.CLOUD_TYPE_FACTORY;
+import static org.cobbzilla.util.string.StringUtil.ellipsis;
 
 @Entity @Slf4j @Accessors(chain=true)
 public class CloudConfig extends UniquelyNamedEntity implements CustomScrubbage {
@@ -37,7 +38,7 @@ public class CloudConfig extends UniquelyNamedEntity implements CustomScrubbage 
     @Override public void scrub(Object entity, ScrubbableField field) {
         switch (field.name) {
             case "accessKey":
-                ((CloudConfig) entity).setAccessKey(accessKey.substring(0, ACCESS_KEY_SHOW_CHARS) + "...");
+                ((CloudConfig) entity).setAccessKey(ellipsis(accessKey, ACCESS_KEY_SHOW_CHARS));
                 break;
             case "secretKey":
                 ((CloudConfig) entity).setSecretKey(SECRET_KEY_MASK);
@@ -59,7 +60,11 @@ public class CloudConfig extends UniquelyNamedEntity implements CustomScrubbage 
     @NotNull @HasValue(message="err.cloud.vendor.required")
     @Size(max=100, message="err.cloud.vendor.length")
     @Column(nullable=false, length=100)
-    @Getter @Setter private String vendor;
+    @Getter private String vendor;
+    public CloudConfig setVendor (String v) {
+        vendor = CLOUD_TYPE_FACTORY.fromType(v).getProviderName();
+        return this;
+    }
 
     @NotNull @HasValue(message="err.cloud.access.required")
     @Size(max=2048, message="err.cloud.access.length")
