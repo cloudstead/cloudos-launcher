@@ -4,9 +4,6 @@
 		<h3 class='wiz_panel_header'>{{title}}</h3>
 		<p class='wiz_desc'>{{description}}</p>
 		<div class='row wiz_no_margin'>
-			{{#if isLaunch}}
-				<button class="button small launch_button" {{action "doLaunch"}}>Launch</button>
-			{{/if}}
 			{{#each field in fields }}
 				<div class='large-5 columns wiz_dns_tab'>
 					{{#if field.isChoice}}

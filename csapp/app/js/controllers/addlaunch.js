@@ -1,6 +1,6 @@
 var ADD_LAUNCH_ROUTES = [];
 var additional_routes = ['apps'];
-var trans = getFirstTranslation()['config'];
+var trans = getFirstTranslation()['config_tabs'];
 
 for(var route in INIT_CONFIG) {
 	ADD_LAUNCH_ROUTES.push(route);
