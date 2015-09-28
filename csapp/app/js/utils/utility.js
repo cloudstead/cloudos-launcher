@@ -48,7 +48,11 @@ var getFirstTranslation = function() {
 		return !Ember.isNone(TRANSLATIONS[l]);
 	});
 
-	return Ember.isNone(lang) ? TRANSLATIONS['en'] : TRANSLATIONS[lang];
+	console.log("LANG: ", lang, window.navigator.languages);
+
+	Ember.I18n.translations = Ember.isNone(lang) ? TRANSLATIONS['en'] : TRANSLATIONS[lang];
+
+	return Ember.I18n.translations;
 };
 
 var getValues = function(appName, dataKind, fieldType){

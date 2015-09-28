@@ -1,4 +1,4 @@
-TRANSLATIONS['en'] = {
+TRANSLATIONS['en']['config'] = {
     dns: {
         tab: 'DNS',
         title: 'Configure DNS Services',
