@@ -21,28 +21,18 @@ App.CloudModel = Ember.Object.extend({
 	},
 
 	update: function() {
-		var response = API.update_cloud(this.toObjectForPost());
-		return response.isSuccess();
+		return API.update_cloud(this.toObjectForPost());
 	},
 
 	destroy: function() {
-		var response = API.delete_cloud(this.get("name"));
-		return response.isSuccess();
+		return API.delete_cloud(this.get("name"));
 	},
+
+	availableVendors: [],
+
 });
 
 App.CloudModel.reopenClass({
-	availableVendors: function() {
-		var cloudTypeNames = API.get_cloud_types().data;
-		var cloudTypes = [];
-
-		cloudTypeNames.forEach(function(cloudTypeName) {
-			cloudTypes.push(API.get_cloud_type(cloudTypeName).data);
-		});
-		return cloudTypes.map(function(cloudType){
-			return cloudType.id;
-		});
-	}, //["Amazon EC2", "Rackspace", "Digitalocean"],
 
 	createNewEmpty: function() {
 		return App.CloudModel.create({
@@ -53,6 +43,19 @@ App.CloudModel.reopenClass({
 			secretKey: "",
 			account: "",
 			optionalJson: "",
+		});
+	},
+
+	createWithVendors: function(vendors) {
+		return App.CloudModel.create({
+			uuid: "",
+			name: "",
+			vendor: "",
+			accessKey: "",
+			secretKey: "",
+			account: "",
+			optionalJson: "",
+			availableVendors: vendors
 		});
 	},
 
@@ -72,15 +75,15 @@ App.CloudModel.reopenClass({
 	getAll: function() {
 		var response = API.get_clouds();
 
-		var dataArray = [];
+		// var dataArray = [];
 
-		if (response.isSuccess()) {
-			dataArray = response.data;
-		} else {
-			$.notify("Error fetching clouds", { position: "bottom-right", autoHideDelay: 10000, className: 'error' });
-		}
+		// if (response.isSuccess()) {
+		// 	dataArray = response.data;
+		// } else {
+		// 	$.notify("Error fetching clouds", { position: "bottom-right", autoHideDelay: 10000, className: 'error' });
+		// }
 
-		return App.CloudModel.createFromArray(dataArray);
+		return App.CloudModel.createFromArray(response);
 	},
 
 	get: function(cloudName) {
@@ -95,5 +98,5 @@ App.CloudModel.reopenClass({
 		});
 
 		return cloudToFind;
-	}
+	},
 });

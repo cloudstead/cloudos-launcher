@@ -7,7 +7,7 @@
 			</div>
 			<div class="row">
 				Vendor: {{view Ember.Select
-									content=allVendors
+									content=availableVendors
 									selectionBinding="vendor"
 								}}
 			</div>

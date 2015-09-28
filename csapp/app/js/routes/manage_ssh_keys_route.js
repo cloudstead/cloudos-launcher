@@ -1,5 +1,16 @@
 App.ManageSshKeysRoute = App.ProtectedRoute.extend({
 	model: function() {
-		return App.SshKeyModel.getAll();
+		return API.get_ssh_keys();
+	},
+
+	afterModel: function(model) {
+		if (Ember.isEmpty(model)) {
+			this.transitionTo("new_ssh_key");
+		}
+	},
+
+	setupController: function(controller, model) {
+		controller.set("model", App.SshKeyModel.createFromArray(model));
 	}
+
 });

@@ -210,7 +210,12 @@ App.AddlaunchController = App.BaseObjectController.extend({
 					base64zipData: dataBlob
 				});
 
-				config.update();
+				config.update().then(function(response){
+					console.log("Config Saved!");
+				}, function(reason){
+					console.log("Error saving config: ", reason);
+				});
+
 			}else{
 				$.notify("Please correct the errors", Validator.NotifyOptions );
 			}

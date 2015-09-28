@@ -6,27 +6,24 @@ App.CloudsController = App.BaseArrayController.extend({
 		},
 
 		doDelete: function(cloud) {
-			if (cloud.destroy()) {
-				this.get('content').removeObject(cloud);
-				console.log("CONTENT: ", this.get("content"));
-			}
+			var self = this;
+			cloud.destroy().then(function(response) {
+				self.handleDeleteSuccess(response, cloud);
+			}, function(reason){
+				self.handleDeleteFailure(reason, cloud);
+			});
 		},
+	},
 
-		confirmProviderRemove: function (id, name) {
-			// console.log(id, name);
-			// $("#providerName").text(name);
-			// this.set('providerToDelete', id);
-			// $("#confirmProviderDelete").foundation('reveal', 'open');
-		},
-		removeProvider: function () {
-			// var providerToDelete = this.get('providerToDelete');
-			// console.log(providerToDelete);
-			// var originalProviders = this.get('originalProviders');
-			// originalProviders = $.grep(originalProviders, function (e) {
-			// 	return e.id !== providerToDelete;
-			// });
-			// this.set('originalProviders', originalProviders);
-			// $("#confirmProviderDelete").foundation('reveal', 'close');
+	handleDeleteSuccess: function(response, cloud) {
+		this.get('content').removeObject(cloud);
+	},
+
+	handleDeleteFailure: function(reason, cloud) {
+		if (reason.status === 200) {
+			this.handleDeleteSuccess(reason, cloud);
+		} else if (reason.status === 403) {
+			self.send("handleForbiddenResponse");
 		}
 	},
 });

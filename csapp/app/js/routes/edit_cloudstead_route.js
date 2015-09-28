@@ -1,8 +1,8 @@
-App.EditCloudsteadRoute = App.ProtectedRoute.extend({
+App.EditCloudsteadRoute = App.BaseCloudsteadRoute.extend({
 	controllerName: 'add_cloudstead',
 
 	model: function(params) {
-		return App.CloudsteadModel.get(params.cloudstead_name);
+		return API.get_cloudstead(params.cloud_name);
 	},
 	renderTemplate: function() {
 		this.render('add_cloudstead');
@@ -10,17 +10,8 @@ App.EditCloudsteadRoute = App.ProtectedRoute.extend({
 
 	setupController: function(controller, model) {
 		this._super(controller, model);
-		var cloudTypeNames = API.get_cloud_types().data;
-		var cloudTypes = [];
 
-		cloudTypeNames.forEach(function(cloudTypeName) {
-			cloudTypes.push(API.get_cloud_type(cloudTypeName).data);
-		});
-		controller.set("cloudTypes", cloudTypes);
-
-		controller.set("clouds", App.CloudModel.getAll());
-
-		controller.set("sshKeys", App.SshKeyModel.getAll());
+		this.loadRelatedData(controller, model);
 
 		controller.set("isEdit", true);
 	},

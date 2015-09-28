@@ -21,13 +21,11 @@ App.CloudsteadModel = Ember.Object.extend({
 	},
 
 	update: function() {
-		var response = API.update_cloudstead(this.toObjectForPost());
-		return response.isSuccess();
+		return API.update_cloudstead(this.toObjectForPost());
 	},
 
 	destroy: function() {
-		var response = API.delete_cloudstead(this.get("name"));
-		return response.isSuccess();
+		return API.delete_cloudstead(this.get("name"));
 	},
 });
 
@@ -54,7 +52,6 @@ App.CloudsteadModel.reopenClass({
 	},
 
 	createNewFromData: function(dataObject) {
-		console.log("MOKJOJOJIO: ", dataObject);
 		return App.CloudsteadModel.create(dataObject);
 	},
 
@@ -67,6 +64,19 @@ App.CloudsteadModel.reopenClass({
 		return retArray;
 	},
 
+	createWithVendors: function(vendors) {
+		return App.CloudModel.create({
+			uuid: "",
+			name: "",
+			vendor: "",
+			accessKey: "",
+			secretKey: "",
+			account: "",
+			optionalJson: "",
+			cloudTypes: vendors
+		});
+	},
+
 	get: function(cloudsteadName) {
 		var response = API.get_cloudstead(cloudsteadName);
 		return App.CloudModel.createNewFromData(response.data);
@@ -75,15 +85,15 @@ App.CloudsteadModel.reopenClass({
 	getAll: function() {
 		var response = API.get_cloudsteads();
 
-		var dataArray = [];
+		// var dataArray = [];
 
-		if (response.isSuccess()) {
-			dataArray = response.data;
-		} else {
-			$.notify("Error fetching configs", { position: "bottom-right", autoHideDelay: 10000, className: 'error' });
-		}
+		// if (response.isSuccess()) {
+		// 	dataArray = response.data;
+		// } else {
+		// 	$.notify("Error fetching configs", { position: "bottom-right", autoHideDelay: 10000, className: 'error' });
+		// }
 
-		return App.CloudsteadModel.createFromArray(dataArray);
+		return App.CloudsteadModel.createFromArray(response);
 	},
 
 	findById: function(uuid) {

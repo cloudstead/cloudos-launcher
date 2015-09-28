@@ -16,13 +16,11 @@ App.SshKeyModel = Ember.Object.extend({
 	},
 
 	update: function() {
-		var response = API.create_ssh_key(this.toObjectForPost());
-		return response.isSuccess();
+		return API.create_ssh_key(this.toObjectForPost());
 	},
 
 	destroy: function() {
-		var response = API.delete_ssh_key(this.get("name"));
-		return response.isSuccess();
+		return API.delete_ssh_key(this.get("name"));
 	},
 });
 
@@ -52,14 +50,14 @@ App.SshKeyModel.reopenClass({
 	getAll: function() {
 		var response = API.get_ssh_keys();
 
-		var dataArray = [];
+		// var dataArray = [];
 
-		if (response.isSuccess()) {
-			dataArray = response.data;
-		} else {
-			$.notify("Error fetching ssh keys", { position: "bottom-right", autoHideDelay: 10000, className: 'error' });
-		}
+		// if (response.isSuccess()) {
+		// 	dataArray = response.data;
+		// } else {
+		// 	$.notify("Error fetching ssh keys", { position: "bottom-right", autoHideDelay: 10000, className: 'error' });
+		// }
 
-		return App.SshKeyModel.createFromArray(dataArray);
+		return App.SshKeyModel.createFromArray(response);
 	}
 });
