@@ -18,16 +18,15 @@
 						</label>
 					{{else}}
 
-					{{#if field.isTimeOfDay}}
+					{{#if field.isCronSchedule}}
 						<label class="hint--bottom" {{bind-attr data-hint=field.hint}}>
 							{{field.label}}
-							{{ input
-								type=field.type.typeName
-								value=field.value
-								title=field.info
-								class="large-5 columns wiz_dns_tab time_of_day"
-								data-element-id=field.elementId
-							}}
+							{{view Ember.Select
+								content=field.cronChoices
+								optionValuePath="content.value"
+								optionLabelPath="content.label"
+								valueBinding=field.value
+								data-element-id=field.elementId }}
 						</label>
 						<script>
 							$('.time_of_day').timepicker({ 'scrollDefault': 'now' });

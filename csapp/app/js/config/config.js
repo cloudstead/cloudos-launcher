@@ -24,7 +24,7 @@ TRANSLATION_FILENAME = "translations.json";
 var TRANSLATIONS = {};
 
 // Input types dictionary
-INPUT_TYPES = {
+var INPUT_TYPES = {
 	'hostname_part': 'text',
 	'hostname': 'text',
 	'field': 'text',
@@ -32,14 +32,17 @@ INPUT_TYPES = {
 	'port': 'text',
 	'login': 'text',
 	'list_ipaddr': 'text',
-	'fqdn': 'text',
-	'cron': 'text',
-	'username': 'text',
 	'text': 'text',
 	'hash': 'password',
 	'secret_key': 'password',
 	'password': 'password',
+	'username': 'text',
 	'email': 'email',
+	'fqdn': 'text',
+	'list/ipaddr': 'text',
 	'pick_one': 'choice',
-	'file': 'file'
+	'cron': 'checkbox',
+	'file': 'file',
+	'locale': 'choice',
+	'yesno': 'checkbox'
 };

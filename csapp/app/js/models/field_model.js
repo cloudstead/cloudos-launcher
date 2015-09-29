@@ -8,31 +8,6 @@ App.FieldModel = Ember.Object.extend({
 		var fieldFilePath = this.get("fieldFilePath");
 		var retType = {};
 
-		console.log("TYPE: ", fieldType, this.get("elementId"));
-
-		var INPUT_TYPES = {
-			'hostname_part': 'text',
-			'hostname': 'text',
-			'field': 'text',
-			'host': 'text',
-			'port': 'text',
-			'login': 'text',
-			'list_ipaddr': 'text',
-			'text': 'text',
-			'hash': 'password',
-			'secret_key': 'password',
-			'password': 'password',
-			'username': 'text',
-			'email': 'email',
-			'fqdn': 'text',
-			'list/ipaddr': 'text',
-			'pick_one': 'choice',
-			'cron': 'text',
-			'file': 'file',
-			'locale': 'choice',
-			'yesno': 'checkbox'
-		};
-
 		if(!INPUT_TYPES.hasOwnProperty(fieldType)){
 			fieldType = 'text';
 		}
@@ -54,13 +29,38 @@ App.FieldModel = Ember.Object.extend({
 		return this.get("type").typeKind === 'pick_one' || this.get("type").typeKind === 'locale';
 	}.property(),
 
-	isTimeOfDay: function() {
+	isCronSchedule: function() {
 		return this.get("type").typeKind === 'cron';
 	}.property(),
 
-	isCheckBox: function(){
+	isCheckBox: function() {
 		return this.get("type").typeKind === 'yesno';
-	}.property()
+	}.property(),
+
+	cronChoices: function() {
+		var choices = [];
+		var hour = -1;
+		var minute = "00";
+		var i = 0;
+		while (i < 48) {
+			hour = i%2 === 0 ? (hour+1) : hour;
+			minute = i%2 === 0 ? "00" : "30";
+			var hour_label = hour > 12 ? (hour-12) : hour;
+			if (hour === 0) {
+				hour_label = 12;
+			}
+			var time_of_day = hour > 11 ? " pm" : " am";
+			var cron_minute = i%2 === 0 ? "0" : "30";
+			var choice = {
+				label: "Daily at " + hour_label + ":" + minute + time_of_day,
+				value: cron_minute + " " + hour + " * * *",
+			};
+			choices.push(choice);
+			i++;
+		}
+
+		return choices;
+	}.property(),
 });
 
 App.FieldModel.reopenClass({
