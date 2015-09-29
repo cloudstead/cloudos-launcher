@@ -9,7 +9,7 @@
 				<div class="small-4 columns end">{{input type="text" value=name size="50"}}</div>
 			</div>
 			<div class="row field-row">
-				<div class="small-2 columns">{{t add_cloudstead.lauch_config}}</div>
+				<div class="small-2 columns">{{t add_cloudstead.launch_config}}</div>
 				<div class="small-4 columns">
 					{{view Ember.Select
 									content=allLaunchConfigs
