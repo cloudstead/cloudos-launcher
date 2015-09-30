@@ -1,4 +1,6 @@
 App.CloudsteadModel = Ember.Object.extend({
+	launchTaskKey: "",
+
 	toObject: function() {
 		return {
 			uuid: this.get("uuid"),
@@ -13,15 +15,26 @@ App.CloudsteadModel = Ember.Object.extend({
 
 	toObjectForPost: function() {
 		return {
-			name:  this.get("name"),
-			vendor:  this.get("vendor"),
-			accessKey:  this.get("accessKey"),
-			secretKey:  this.get("secretKey"),
+			privateKey: "test",
+			user: "test",
+			region: "test",
+			cloud: "test",
+			instanceType: "test",
+			instanceId: "test",
+			sshKey: "test",
+			launchConfig: "test",
+			additionalApps: "test",
+			keyPassphrase: "test",
+			name: "test",
 		};
 	},
 
 	update: function() {
 		return API.update_cloudstead(this.toObjectForPost());
+	},
+
+	doLaunch: function() {
+		return API.launch_cloudstead(this.get("name"));
 	},
 
 	destroy: function() {

@@ -20,6 +20,13 @@ function buildResponse(data, status, jqXHR) {
 	};
 }
 
+NUMBER_OF_CALLS = 0;
+
+RESPONSES = {
+	events: [],
+	success: false
+};
+
 API = {
 
 	API_TOKEN: '__launcher_session',
@@ -210,11 +217,26 @@ API = {
 	},
 
 	update_cloudstead: function(cloudsteadData) {
-		return this._post("instances/"+cloudsteadData.name, cloudsteadData);
+		// return this._post("instances/"+cloudsteadData.name, cloudsteadData);
+		return new Ember.RSVP.Promise(function(resolve){
+			resolve('cloudstead created');
+		});
+	},
+
+	launch_cloudstead: function(cloudsteadName) {
+		// return this._post("instances/"+cloudsteadName+"/launch");
+
+		var response = {
+			uuid: "veryuniqueid",
+		};
+
+		return new Ember.RSVP.Promise(function(resolve){
+			resolve(response);
+		});
 	},
 
 	delete_cloudstead: function(cloudsteadName) {
-		return this._delete("instances/"+cloudsteadName);
+		// return this._delete("instances/"+cloudsteadName);
 	},
 
 	get_cloud_types: function() {
@@ -269,5 +291,56 @@ API = {
 		});
 	},
 
+	get_task: function(taskId) {
+		var msg = "";
+		var success = false;
+		console.log(NUMBER_OF_CALLS);
+		switch(NUMBER_OF_CALLS){
+			case 0:
+				msg = "setup.cheffing";
+				break;
+			case 1:
+				msg = "setup.cheffing.percent_done_25";
+				break;
+			case 2:
+				msg = "setup.cheffing.percent_done_55";
+				break;
+			case 3:
+				msg = "setup.cheffing.percent_done_75";
+				break;
+			case 4:
+				msg = "setup.cheffing.percent_done_85";
+				break;
+			case 5:
+				msg = "setup.cheffing.percent_done_100";
+				break;
+			case 6:
+				msg = "setup.instanceLookup";
+				break;
+			case 7:
+				msg = "setup.startingMasterInstance";
+				break;
+			case 8:
+				msg = "setup.success";
+				success = true;
+				break;
+			case 9:
+				msg = "";
+				RESPONSES.evets = [];
+				RESPONSES.success = false;
+				NUMBER_OF_CALLS = 0;
+				break;
+			default:
+				break;
+		}
+
+		RESPONSES.events.push({messageKey: msg});
+		RESPONSES.success = success;
+		NUMBER_OF_CALLS += 1;
+
+		return new Ember.RSVP.Promise(function(resolve){
+			resolve(RESPONSES);
+		});
+	}
 
 };

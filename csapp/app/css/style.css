@@ -198,3 +198,16 @@ a {
 .error_link {
   color: red;
 }
+
+.footer {
+  position: fixed;
+  bottom: 0px;
+  height: 30px;
+  width: 100%;
+  margin: 0px;
+  display: block;
+}
+
+.ember-application {
+  margin: 20px 0px 0px;
+}

@@ -66,7 +66,18 @@ App.AddCloudsteadController = App.BaseObjectController.extend({
 		},
 
 		doLaunch: function() {
-			console.log("Do Launch");
+			var self = this;
+			var cloudstead = this.get("model");
+
+			cloudstead.update().then(function(response) {
+				cloudstead.doLaunch().then(function(launch_response) {
+					self.send("handleLaunchStart", launch_response);
+				}, function(launch_reason) {
+
+				});
+			}, function(reason) {
+
+			});
 		},
 
 		doCancel: function() {

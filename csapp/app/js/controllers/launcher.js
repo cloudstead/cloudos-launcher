@@ -3,6 +3,6 @@ App.LauncherController = App.BaseObjectController.extend({
 		doLogout: function() {
 			LauncherStorage.removeLogin();
 			this.send("doTransitionToLogin");
-		}
+		},
 	}
 });
