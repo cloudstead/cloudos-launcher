@@ -174,7 +174,7 @@ App.FieldModel.reopenClass({
 			fieldData.required = true;
 			fieldData.nameData = fieldNameData;
 
-			var newField = App.FieldModel.createNew(fieldName, fieldData, translation);
+			var newField = App.FieldModel.createNew(fieldKey, fieldData, translation);
 			fields.push(newField);
 		});
 
