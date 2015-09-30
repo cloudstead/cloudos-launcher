@@ -8,6 +8,7 @@ App.LauncherRoute = App.ProtectedRoute.extend({
 			console.log("start tracking task: ", launch_response.uuid);
 			$('.footer').removeClass("hide");
 			$('#launch_progress').val(0);
+			LauncherStorage.addTask(launch_response.uuid);
 			this.startWatchingTaskProgress(launch_response.uuid);
 		}
 	},
