@@ -1,6 +1,6 @@
 App.CloudsteadsRoute = App.ProtectedRoute.extend({
 	model: function() {
-		return API.get_cloudsteads();
+		return App.CloudsteadModel.getAll();
 	},
 
 	afterModel: function(model) {
@@ -8,8 +8,4 @@ App.CloudsteadsRoute = App.ProtectedRoute.extend({
 			this.transitionTo("add_cloudstead");
 		}
 	},
-
-	setupController: function(controller, model) {
-		controller.set("model", App.CloudsteadModel.createFromArray(model));
-	}
 });

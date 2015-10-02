@@ -147,31 +147,20 @@ App.CloudsteadModel.reopenClass({
 		});
 	},
 
-	get: function(cloudsteadName) {
-		var response = API.get_cloudstead(cloudsteadName);
-		return App.CloudModel.createNewFromData(response.data);
+	getCloudstead: function(cloudsteadName) {
+		var getCloud = API.get_cloud(cloudName);
+		var getVendors = API.loadAvailableVendors();
+
+		return Promise.all([getCloud, getVendors]).then(function(responses) {
+			var cloud = responses[0];
+			var vendors = responses[1];
+			return App.CloudModel.create(cloud, {availableVendors: vendors});
+		});
 	},
 
 	getAll: function() {
-		var response = API.get_cloudsteads();
-
-		// var dataArray = [];
-
-		// if (response.isSuccess()) {
-		// 	dataArray = response.data;
-		// } else {
-		// 	$.notify("Error fetching configs", { position: "bottom-right", autoHideDelay: 10000, className: 'error' });
-		// }
-
-		return App.CloudsteadModel.createFromArray(response);
-	},
-
-	findById: function(uuid) {
-		var allConfigs = App.CloudsteadModel.getAll();
-		var configToFind = allConfigs.find(function(config) {
-			return config.uuid === uuid;
+		return API.get_cloudsteads().then(function(cloudsteads){
+			return App.CloudModel.createFromArray(cloudsteads);
 		});
-
-		return configToFind;
-	}
+	},
 });
