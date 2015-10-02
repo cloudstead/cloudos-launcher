@@ -48,16 +48,8 @@ App.SshKeyModel.reopenClass({
 	},
 
 	getAll: function() {
-		var response = API.get_ssh_keys();
-
-		// var dataArray = [];
-
-		// if (response.isSuccess()) {
-		// 	dataArray = response.data;
-		// } else {
-		// 	$.notify("Error fetching ssh keys", { position: "bottom-right", autoHideDelay: 10000, className: 'error' });
-		// }
-
-		return App.SshKeyModel.createFromArray(response);
-	}
+		return API.get_ssh_keys().then(function(ssh_keys){
+			return App.SshKeyModel.createFromArray(ssh_keys);
+		});
+	},
 });
