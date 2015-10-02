@@ -49,25 +49,8 @@ App.ConfigModel.reopenClass({
 	},
 
 	getAll: function() {
-		var response = API.get_configs();
-
-		// var dataArray = [];
-
-		// if (response.isSuccess()) {
-		// 	dataArray = response.data;
-		// } else {
-		// 	$.notify("Error fetching configs", { position: "bottom-right", autoHideDelay: 10000, className: 'error' });
-		// }
-
-		return App.ConfigModel.createFromArray(response);
-	},
-
-	findById: function(uuid) {
-		var allConfigs = App.ConfigModel.getAll();
-		var configToFind = allConfigs.find(function(config) {
-			return config.uuid === uuid;
+		return API.get_configs().then(function(configs){
+			return App.ConfigModel.createFromArray(configs);
 		});
-
-		return configToFind;
-	}
+	},
 });
