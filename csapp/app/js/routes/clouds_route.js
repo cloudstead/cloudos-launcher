@@ -1,6 +1,6 @@
 App.CloudsRoute = App.ProtectedRoute.extend({
 	model: function() {
-		return API.get_clouds();
+		return App.CloudModel.getAll();
 	},
 
 	afterModel: function(model) {
@@ -8,8 +8,4 @@ App.CloudsRoute = App.ProtectedRoute.extend({
 			this.transitionTo("add_cloud");
 		}
 	},
-
-	setupController: function(controller, model) {
-		controller.set("model", App.CloudModel.createFromArray(model));
-	}
 });

@@ -46,16 +46,18 @@ App.CloudModel.reopenClass({
 		});
 	},
 
-	createWithVendors: function(vendors) {
-		return App.CloudModel.create({
-			uuid: "",
-			name: "",
-			vendor: "",
-			accessKey: "",
-			secretKey: "",
-			account: "",
-			optionalJson: "",
-			availableVendors: vendors
+	createWithVendors: function() {
+		return API.loadAvailableVendors().then(function(vendors) {
+			return App.CloudModel.create({
+				uuid: "",
+				name: "",
+				vendor: "",
+				accessKey: "",
+				secretKey: "",
+				account: "",
+				optionalJson: "",
+				availableVendors: vendors
+			});
 		});
 	},
 
@@ -73,30 +75,19 @@ App.CloudModel.reopenClass({
 	},
 
 	getAll: function() {
-		var response = API.get_clouds();
-
-		// var dataArray = [];
-
-		// if (response.isSuccess()) {
-		// 	dataArray = response.data;
-		// } else {
-		// 	$.notify("Error fetching clouds", { position: "bottom-right", autoHideDelay: 10000, className: 'error' });
-		// }
-
-		return App.CloudModel.createFromArray(response);
-	},
-
-	get: function(cloudName) {
-		var response = API.get_cloud(cloudName);
-		return App.CloudModel.createNewFromData(response.data);
-	},
-
-	findById: function(uuid) {
-		var allClouds = App.CloudModel.getAll();
-		var cloudToFind = allClouds.find(function(cloud) {
-			return cloud.uuid === uuid;
+		return API.get_clouds().then(function(clouds){
+			return App.CloudModel.createFromArray(clouds);
 		});
+	},
 
-		return cloudToFind;
+	getForEdit: function(cloudName) {
+		var getCloud = API.get_cloud(cloudName);
+		var getVendors = API.loadAvailableVendors();
+
+		return Promise.all([getCloud, getVendors]).then(function(responses) {
+			var cloud = responses[0];
+			var vendors = responses[1];
+			return App.CloudModel.create(cloud, {availableVendors: vendors});
+		});
 	},
 });
