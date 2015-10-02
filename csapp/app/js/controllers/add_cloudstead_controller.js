@@ -1,8 +1,5 @@
 // When cloud is selected it changes the cloud type which in turn changes regions and instances.
 App.AddCloudsteadController = App.BaseObjectController.extend({
-	clouds: [],
-
-	cloudTypes: [],
 
 	allClouds: function() {
 		return this.get("clouds").map(function(cloud) {
@@ -43,8 +40,6 @@ App.AddCloudsteadController = App.BaseObjectController.extend({
 			});
 		return instaceTypes;
 	}.property("selectedCloudType"),
-
-	sshKeys: [],
 
 	allSSHKeys: function() {
 		return this.get("sshKeys").map(function(sshKey) {

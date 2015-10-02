@@ -90,6 +90,63 @@ App.CloudsteadModel.reopenClass({
 		});
 	},
 
+	createNewForAdd: function() {
+		var getCloudTypes = API.loadCloudTypes();
+		var getClouds = API.get_clouds();
+		var getSshKeys = API.get_ssh_keys();
+
+		return Promise.all([getCloudTypes,getClouds,getSshKeys]).then(function(responses){
+			console.log("RESPONSES: ", responses);
+			var cloudTypes = responses[0];
+			var clouds = responses[1];
+			var sshKeys = responses[2];
+
+			return App.CloudsteadModel.create({
+				uuid : "",
+				name : "",
+				adminUuid : "",
+				instanceType : "",
+				state : "",
+				lastStateChange : 0,
+				ucid : "",
+				launch : "",
+				cloud : "",
+				csRegion : {
+					name : "",
+					country : "",
+					region : "",
+					vendor : ""
+				},
+				allApps : [],
+				cloudTypes: cloudTypes,
+				clouds: clouds,
+				sshKeys: sshKeys,
+			});
+		});
+	},
+
+	getForEdit: function(cloudsteadName) {
+		var getCloudstead = API.get_cloudstead(cloudsteadName);
+
+		var getCloudTypes = API.loadCloudTypes();
+		var getClouds = API.get_clouds();
+		var getSshKeys = API.get_ssh_keys();
+
+		return Promise.all([getCloudTypes,getClouds,getSshKeys, getCloudstead]).then(function(responses){
+			console.log("RESPONSES: ", responses);
+			var cloudTypes = responses[0];
+			var clouds = responses[1];
+			var sshKeys = responses[2];
+			var cloudstead = responses[3];
+
+			return App.CloudsteadModel.create(cloudstead, {
+				cloudTypes: cloudTypes,
+				clouds: clouds,
+				sshKeys: sshKeys,
+			});
+		});
+	},
+
 	get: function(cloudsteadName) {
 		var response = API.get_cloudstead(cloudsteadName);
 		return App.CloudModel.createNewFromData(response.data);
