@@ -34,7 +34,3 @@
 </div>
 
 {{outlet}}
-
-<div class="footer hide">
-	<progress class="footer_progress" id="launch_progress" max="100" value="0"></progress>
-</div>

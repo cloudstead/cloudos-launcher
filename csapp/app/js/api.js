@@ -23,8 +23,33 @@ function buildResponse(data, status, jqXHR) {
 NUMBER_OF_CALLS = 0;
 
 RESPONSES = {
-	events: [],
-	success: false
+	"@class" : "cloudos.launcher.service.LauncherTaskResult",
+	"success" : false,
+	"events" : [ {
+		"taskId" : "b0e111b8-6ad9-4e46-9cba-11961c2892c2",
+		"messageKey" : "success",
+		"success" : false,
+		"cloudOsUuid" : "48f51122-9958-4484-a770-d2d02bee0209",
+		"timestamp" : 1442873958846
+	} ],
+	"cloudOs" : {
+		"uuid" : "48f51122-9958-4484-a770-d2d02bee0209",
+		"name" : "2k0rbhklx99jeoamjoqp",
+		"adminUuid" : "d20ee654-daad-4216-a56e-08aef435ae04",
+		"instanceType" : "t1.micro",
+		"state" : "initial",
+		"lastStateChange" : 0,
+		"ucid" : "68a1a235-ba41-4c7b-81d2-eac4f030beae",
+		"launch" : "f03b1e3f-354c-430b-9a1b-b3ee05aa9943",
+		"cloud" : "0e00ff37-2833-4b91-960d-6353e69f0b89",
+		"csRegion" : {
+			"name" : "us-east-1",
+			"country" : "US",
+			"region" : "N. Virginia",
+			"vendor" : "AwsCloudType"
+		},
+		"allApps" : [ "base", "auth", "apache", "postgresql", "mysql", "java", "git", "email", "kestrel", "cloudos" ]
+	}
 };
 
 API = {
@@ -226,8 +251,10 @@ API = {
 	launch_cloudstead: function(cloudsteadName) {
 		// return this._post("instances/"+cloudsteadName+"/launch");
 
+		var rand = Math.random()*100000000000000000;
+
 		var response = {
-			uuid: "veryuniqueid",
+			uuid: "taskid_"+rand,
 		};
 
 		return new Ember.RSVP.Promise(function(resolve){

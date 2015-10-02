@@ -199,15 +199,38 @@ a {
   color: red;
 }
 
-.footer {
-  position: fixed;
-  bottom: 0px;
-  height: 30px;
-  width: 100%;
-  margin: 0px;
-  display: block;
+progress[value] {
+  /* Reset the default appearance */
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none;
+
+  /* Get rid of default border in Firefox. */
+  border: none;
+
+  /* For IE10 */
+  /*color: #0FA3CD;*/
+
+  border-radius: 2px;
+  background-size: 35px 20px, 100% 100%, 100% 100%;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25) inset;
 }
 
-.ember-application {
-  margin: 20px 0px 0px;
+progress[value]::-webkit-progress-value {
+  background-color: #0FA3CD;
+}
+
+progress[value]::-moz-progress-bar {
+  background-color: #0FA3CD;
+  border-radius: 2px;
+  background-size: 35px 20px, 100% 100%, 100% 100%;
+}
+
+.progress_report {
+  text-align: center;
+}
+
+.progress_report progress {
+  width: 100%;
+  height: 30px;
 }

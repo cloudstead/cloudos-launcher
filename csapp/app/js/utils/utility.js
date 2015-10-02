@@ -68,3 +68,16 @@ var getValues = function(appName, dataKind, fieldType){
 	}
 	return r;
 };
+
+var getObjectPropertyFromPath = function(object, path) {
+	var pathArray = path.split(".");
+	var tempObj = object;
+
+	pathArray.forEach(function(segment){
+		if (!Ember.isNone(tempObj)) {
+			tempObj = tempObj[segment];
+		}
+	});
+
+	return tempObj;
+};
