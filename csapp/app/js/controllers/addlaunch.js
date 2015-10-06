@@ -1,6 +1,7 @@
 var ADD_LAUNCH_ROUTES = [];
 var additional_routes = ['apps'];
 var trans = getFirstTranslation()['config_tabs'];
+var errorTranslation = getFirstTranslation()['error']['config'];
 
 for(var route in INIT_CONFIG) {
 	ADD_LAUNCH_ROUTES.push(route);
@@ -197,37 +198,53 @@ App.AddlaunchController = App.BaseObjectController.extend({
 			var self = this;
 			var dataBlob = "";
 
-			if(self.hasNoValidationErrors()){
+			if (this.isDataValid()) {
 				dataBlob = ZipGeneratorService.generateContentFrom(DATA, "base64");
 
-				var config = App.ConfigModel.create({
-					name: DATA.dns.fields[0].value + " - " + DATA.dns.fields[1].value,
-					base64zipData: dataBlob
-				});
+				var cloudsteadName = DATA.dns.fields[0].value + " - " + DATA.dns.fields[1].value;
+
+				var config = App.ConfigModel.create({ name: cloudsteadName, base64zipData: dataBlob });
 
 				config.update().then(function(response){
 					self.handleUpdateSuccess(response);
 				}, function(reason){
 					self.handleUpdateFailure(reason);
 				});
-
-			}else{
-				$.notify("Please correct the errors", Validator.NotifyOptions );
 			}
+
 		},
 
 		doDownload: function() {
-			var dataBlob = "";
-
-			if(this.hasNoValidationErrors()){
-				dataBlob = ZipGeneratorService.generateZipFrom(DATA);
-			}else{
-				$notify( "Please correct the errors", Validator.NotifyOptions );
+			if(this.isDataValid()){
+				ZipGeneratorService.generateZipFrom(DATA);
 			}
+		},
+	},
+
+	isDataValid: function() {
+		var ret = false;
+
+		if(this.hasNoValidationErrors()){
+			ret = true;
+		} else if (this.hasUnopennedTabsErrors()) {
+			$notify(errorTranslation.unopennedTabs, Validator.NotifyOptions );
+		} else{
+			$notify(errorTranslation.validationError, Validator.NotifyOptions );
 		}
+		return ret;
 	},
 
 	hasNoValidationErrors: function() {
+			var unopened = $('.unopened');
+			unopened.removeClass('unopened');
+			unopened.addClass('error_link');
+
+			var errors = $("#sidebar>ul>li>a.menu-item.error_link");
+
+			return errors.length === 0 && unopened.length === 0;
+	},
+
+	hasUnopennedTabsErrors: function() {
 			var unopened = $('.unopened');
 			unopened.removeClass('unopened');
 			unopened.addClass('error_link');
