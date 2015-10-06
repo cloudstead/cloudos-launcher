@@ -75,27 +75,6 @@ API = {
 		});
 	},
 
-	// _get: function (url) {
-	// 	var result = null;
-	// 	url = API.API_PREFIX + url;
-
-	// 	return Ember.$.ajax({
-	// 		type: 'GET',
-	// 		url: url,
-	// 		// async: false,
-	// 		beforeSend: add_api_auth,
-	// 		success: function (response, status, jqXHR) {
-	// 			console.log("GET Response: ", response, status, jqXHR);
-	// 			return buildResponse(response, status, jqXHR);
-	// 		},
-	// 		error: function (jqXHR, status, error) {
-	// 			// $.notify(Em.I18n.translations['errors'].generalServerError, { position: "bottom-right", autoHideDelay: 10000, className: 'error' });
-	// 			return buildResponse(error, status, jqXHR);
-	// 		}
-	// 	});
-
-	// },
-
 	_update: function (method, url, data) {
 		url = API.API_PREFIX + url;
 		return new Ember.RSVP.Promise(function(resolve, reject) {
@@ -115,27 +94,6 @@ API = {
 			});
 		});
 	},
-
-	// _update: function (method, url, data) {
-	// 	var result = null;
-	// 	url = API.API_PREFIX + url;
-
-	// 	return Ember.$.ajax({
-	// 		type: method,
-	// 		url: url,
-	// 		// async: false,
-	// 		contentType: 'application/json',
-	// 		data: JSON.stringify(data),
-	// 		beforeSend: add_api_auth,
-	// 		success: function (response, status, jqXHR) {
-	// 			return buildResponse(response, status, jqXHR);
-	// 		},
-	// 		error: function (jqXHR, status, error) {
-	// 			return buildResponse(error, status, jqXHR);
-	// 		}
-	// 	});
-	// },
-
 
 	_login: function (url, data) {
 		var result = null;
@@ -187,19 +145,9 @@ API = {
 
 	login: function(username, password) {
 		var response = this._login("auth/" + username, password);
-		// var response = this._post("auth/" + username, password);
 
 		response.data = response.isSuccess() ? response.data : "Wrong password";
 
-		// var response = {
-		// 	status: "success",
-		// 	statusCode: 200,
-		// 	data: "valid-token",
-		// 	jqXHR: {},
-		// 	isSuccess: function() {
-		// 		return true;
-		// 	}
-		// };
 		return response;
 	},
 
