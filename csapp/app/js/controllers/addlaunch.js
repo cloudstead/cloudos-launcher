@@ -227,9 +227,9 @@ App.AddlaunchController = App.BaseObjectController.extend({
 		if(this.hasNoValidationErrors()){
 			ret = true;
 		} else if (this.hasUnopennedTabsErrors()) {
-			$notify(errorTranslation.unopennedTabs, Validator.NotifyOptions );
+			Notify.globally(errorTranslation.unopennedTabs);
 		} else{
-			$notify(errorTranslation.validationError, Validator.NotifyOptions );
+			Notify.globally(errorTranslation.validationError);
 		}
 		return ret;
 	},
@@ -264,7 +264,7 @@ App.AddlaunchController = App.BaseObjectController.extend({
 		} else if (reason.status === 403) {
 			this.send("handleForbiddenResponse");
 		} else {
-			$.notify("Error saving cloudstead", Validator.NotifyOptions );
+			Notify.globally(errorTranslation.save);
 		}
 	},
 });
