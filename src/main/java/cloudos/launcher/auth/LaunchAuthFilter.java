@@ -7,25 +7,26 @@ import com.sun.jersey.spi.container.ContainerRequest;
 import edu.emory.mathcs.backport.java.util.Collections;
 import lombok.Getter;
 import org.apache.commons.collections.CollectionUtils;
+import org.cobbzilla.util.collection.SingletonSet;
 import org.cobbzilla.util.collection.StringPrefixTransformer;
 import org.cobbzilla.wizard.filters.auth.AuthFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.ws.rs.ext.Provider;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+
+import static cloudos.launcher.ApiConstants.AUTH_ENDPOINT;
+import static cloudos.launcher.ApiConstants.H_TOKEN;
 
 @Provider @Service
 public class LaunchAuthFilter extends AuthFilter<LaunchAccount> {
 
-    @Override public String getAuthTokenHeader() { return ApiConstants.H_TOKEN; }
+    @Override public String getAuthTokenHeader() { return H_TOKEN; }
     @Getter private final Set<String> skipAuthPaths = Collections.emptySet();
 
-    private static final Set<String> SKIP_AUTH_PREFIXES = new HashSet<>(Arrays.asList(new String[] {
-            ApiConstants.AUTH_ENDPOINT
-    }));
+    private static final Set<String> SKIP_AUTH_PREFIXES = new SingletonSet<>(AUTH_ENDPOINT);
 
     @Autowired private LaunchApiConfiguration configuration;
     @Autowired @Getter private LaunchAuthProvider authProvider;

@@ -5,6 +5,7 @@ import cloudos.launcher.model.CloudConfig;
 import cloudos.launcher.model.SshKey;
 import cloudos.launcher.server.LaunchApi;
 import cloudos.launcher.server.LaunchApiConfiguration;
+import org.cobbzilla.util.collection.SingletonList;
 import org.cobbzilla.wizard.model.ApiToken;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.RandomUtils;
@@ -50,10 +51,8 @@ public abstract class ApiResourceITBase extends ApiDocsResourceIT<LaunchApiConfi
     @Override protected String getTokenHeader() { return H_TOKEN; }
 
     @Override protected List<ConfigurationSource> getConfigurations() {
-        return StreamConfigurationSource.fromResources(getClass(), "launcher-config-test.yml");
+        return new SingletonList<ConfigurationSource>(new StreamConfigurationSource("launcher-config-test.yml"));
     }
-
-    @Override protected Class<? extends LaunchApi> getRestServerClass() { return LaunchApi.class; }
 
     @Override protected Map<String, String> getServerEnvironment() throws Exception {
         return LaunchApi.getServerEnvironment();
