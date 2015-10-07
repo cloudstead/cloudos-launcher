@@ -1,7 +1,4 @@
 Validator = {
-	errorTranslation: function() {
-		return getFirstTranslation()['error'];
-	},
 
 	ValidateField: function(element){
 		var elem = $(element);
@@ -45,7 +42,7 @@ Validator = {
 			case "text":
 				errorData.isValid = RequiredValidator.isValid(elem.val(), required);
 				if(!errorData.isValid){
-					errorData.message = RequiredValidator.errorMessage;
+					errorData.message = RequiredValidator.getErrorMessage();
 				}
 				break;
 			default:
@@ -55,7 +52,6 @@ Validator = {
 
 		if(errorData.isValid){ return true;}
 		Notify.onElement(elem, errorData.message);
-		// elem.notify( errorData.message, this.NotifyOptions );
 		return false;
 	},
 
@@ -107,7 +103,9 @@ EmptyValidator = {
 };
 
 RequiredValidator = {
-	errorMessage: "Field is required",
+	getErrorMessage: function() {
+		return getFirstTranslation()['error']['fields']['required'];
+	},
 
 	isValid: function(value, required){
 		if(required && EmptyValidator.isEmpty(value)){
@@ -119,15 +117,17 @@ RequiredValidator = {
 
 PatternValidator = {
 
-	errorMessage: "Invalid data format.",
+	getErrorMessage: function() {
+		return getFirstTranslation()['error']['fields']['pattern'];
+	},
 
 	getErrors: function(value, required, pattern) {
 		var error = { isValid: false, message: "" };
 
 		if(!RequiredValidator.isValid(value, required)){
-			error["message"] = RequiredValidator.errorMessage;
+			error["message"] = RequiredValidator.getErrorMessage();
 		}else if (!pattern.test(value)){
-			error["message"] = PatternValidator.errorMessage;
+			error["message"] = PatternValidator.getErrorMessage();
 		}else{
 			error["isValid"] = true;
 		}
@@ -136,7 +136,9 @@ PatternValidator = {
 };
 
 IPListValidator = {
-	errorMessage: "Not IP format.",
+	getErrorMessage: function() {
+		return getFirstTranslation()['error']['fields']['ip_list'];
+	},
 
 	getErrors:function(host, required) {
 		var error = { isValid: false, message: "" };
@@ -146,7 +148,7 @@ IPListValidator = {
 		for (i = 0; i < tokens.length; ++i) {
 			if (tokens[i] !== "" && !pattern.test(tokens[i])) {
 				error.isValid = false;
-				error.message = IPListValidator.errorMessage;
+				error.message = IPListValidator.getErrorMessage();
 			}
 		}
 		return error;
