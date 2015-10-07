@@ -48,7 +48,11 @@ var getFirstTranslation = function() {
 		return !Ember.isNone(TRANSLATIONS[l]);
 	});
 
-	return Ember.isNone(lang) ? TRANSLATIONS['en'] : TRANSLATIONS[lang];
+	console.log("LANG: ", lang, window.navigator.languages);
+
+	Ember.I18n.translations = Ember.isNone(lang) ? TRANSLATIONS['en'] : TRANSLATIONS[lang];
+
+	return Ember.I18n.translations;
 };
 
 var getValues = function(appName, dataKind, fieldType){
@@ -63,4 +67,17 @@ var getValues = function(appName, dataKind, fieldType){
 		}
 	}
 	return r;
+};
+
+var getObjectPropertyFromPath = function(object, path) {
+	var pathArray = path.split(".");
+	var tempObj = object;
+
+	pathArray.forEach(function(segment){
+		if (!Ember.isNone(tempObj)) {
+			tempObj = tempObj[segment];
+		}
+	});
+
+	return tempObj;
 };

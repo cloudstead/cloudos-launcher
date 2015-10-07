@@ -20,39 +20,129 @@ function buildResponse(data, status, jqXHR) {
 	};
 }
 
+NUMBER_OF_CALLS = 0;
+
+RESPONSES = {
+	"@class" : "cloudos.launcher.service.LauncherTaskResult",
+	"success" : false,
+	"events" : [ {
+		"taskId" : "b0e111b8-6ad9-4e46-9cba-11961c2892c2",
+		"messageKey" : "success",
+		"success" : false,
+		"cloudOsUuid" : "48f51122-9958-4484-a770-d2d02bee0209",
+		"timestamp" : 1442873958846
+	} ],
+	"cloudOs" : {
+		"uuid" : "48f51122-9958-4484-a770-d2d02bee0209",
+		"name" : "2k0rbhklx99jeoamjoqp",
+		"adminUuid" : "d20ee654-daad-4216-a56e-08aef435ae04",
+		"instanceType" : "t1.micro",
+		"state" : "initial",
+		"lastStateChange" : 0,
+		"ucid" : "68a1a235-ba41-4c7b-81d2-eac4f030beae",
+		"launch" : "f03b1e3f-354c-430b-9a1b-b3ee05aa9943",
+		"cloud" : "0e00ff37-2833-4b91-960d-6353e69f0b89",
+		"csRegion" : {
+			"name" : "us-east-1",
+			"country" : "US",
+			"region" : "N. Virginia",
+			"vendor" : "AwsCloudType"
+		},
+		"allApps" : [ "base", "auth", "apache", "postgresql", "mysql", "java", "git", "email", "kestrel", "cloudos" ]
+	}
+};
+
 API = {
 
 	API_TOKEN: '__launcher_session',
 	API_PREFIX: 'api/',
 
-	_get: function (url) {
-		var result = null;
+	_get: function(url) {
 		url = API.API_PREFIX + url;
-
-		Ember.$.ajax({
-			type: 'GET',
-			url: url,
-			async: false,
-			beforeSend: add_api_auth,
-			success: function (response, status, jqXHR) {
-				console.log("GET Response: ", response, status, jqXHR);
-				result = buildResponse(response, status, jqXHR);
-			},
-			error: function (jqXHR, status, error) {
-				// $.notify(Em.I18n.translations['errors'].generalServerError, { position: "bottom-right", autoHideDelay: 10000, className: 'error' });
-				result = buildResponse(error, status, jqXHR);
-			}
+		return new Ember.RSVP.Promise(function(resolve, reject) {
+			Ember.$.ajax({
+				type: 'GET',
+				url: url,
+				// async: false,
+				beforeSend: add_api_auth,
+				success: function(response) {
+					resolve(response);
+				},
+				error: function(reason) {
+					reject(reason);
+				}
+			});
 		});
-
-		return result;
 	},
 
+	// _get: function (url) {
+	// 	var result = null;
+	// 	url = API.API_PREFIX + url;
+
+	// 	return Ember.$.ajax({
+	// 		type: 'GET',
+	// 		url: url,
+	// 		// async: false,
+	// 		beforeSend: add_api_auth,
+	// 		success: function (response, status, jqXHR) {
+	// 			console.log("GET Response: ", response, status, jqXHR);
+	// 			return buildResponse(response, status, jqXHR);
+	// 		},
+	// 		error: function (jqXHR, status, error) {
+	// 			// $.notify(Em.I18n.translations['errors'].generalServerError, { position: "bottom-right", autoHideDelay: 10000, className: 'error' });
+	// 			return buildResponse(error, status, jqXHR);
+	// 		}
+	// 	});
+
+	// },
+
 	_update: function (method, url, data) {
+		url = API.API_PREFIX + url;
+		return new Ember.RSVP.Promise(function(resolve, reject) {
+			Ember.$.ajax({
+				type:method,
+				url: url,
+				// async: false,
+				data: JSON.stringify(data),
+				contentType: 'application/json',
+				beforeSend: add_api_auth,
+				success: function(response) {
+					resolve(response);
+				},
+				error: function(reason) {
+					reject(reason);
+				}
+			});
+		});
+	},
+
+	// _update: function (method, url, data) {
+	// 	var result = null;
+	// 	url = API.API_PREFIX + url;
+
+	// 	return Ember.$.ajax({
+	// 		type: method,
+	// 		url: url,
+	// 		// async: false,
+	// 		contentType: 'application/json',
+	// 		data: JSON.stringify(data),
+	// 		beforeSend: add_api_auth,
+	// 		success: function (response, status, jqXHR) {
+	// 			return buildResponse(response, status, jqXHR);
+	// 		},
+	// 		error: function (jqXHR, status, error) {
+	// 			return buildResponse(error, status, jqXHR);
+	// 		}
+	// 	});
+	// },
+
+
+	_login: function (url, data) {
 		var result = null;
 		url = API.API_PREFIX + url;
 
 		Ember.$.ajax({
-			type: method,
+			type: "POST",
 			url: url,
 			async: false,
 			contentType: 'application/json',
@@ -65,38 +155,39 @@ API = {
 				result = buildResponse(error, status, jqXHR);
 			}
 		});
+
 		return result;
+
 	},
 
 	_post: function(url, data) { return API._update('POST', url, data); },
 	_put:  function(url, data) { return API._update('PUT', url, data); },
 
 	_delete: function (url) {
-		var result = null;
 		url = API.API_PREFIX + url;
 
-		Ember.$.ajax({
-			type: 'DELETE',
-			url: url,
-			async: false,
-			beforeSend: add_api_auth,
-			'success': function (accounts, status, jqXHR) {
-				result = buildResponse("true", "success", { status: 200 });
-			},
-			'error': function (jqXHR, status, error) {
-				result = buildResponse("false", "error", { status: 200 });
-				// console.log('error deleting '+url+': '+error);
-				// $.notify(Em.I18n.translations['errors'].generalServerError, { position: "bottom-right", autoHideDelay: 10000, className: 'error' });
-			}
+		return new Ember.RSVP.Promise(function(resolve, reject) {
+			Ember.$.ajax({
+				type: 'DELETE',
+				url: url,
+				// async: false,
+				beforeSend: add_api_auth,
+				success: function(response) {
+
+					console.log("DEL");
+					resolve(response);
+				},
+				error: function(reason) {
+					console.log("ERR", reason);
+					reject(reason);
+				}
+			});
 		});
-
-		console.log("DELETE: ", result);
-
-		return result;
 	},
 
 	login: function(username, password) {
-		var response = this._post("auth/" + username, password);
+		var response = this._login("auth/" + username, password);
+		// var response = this._post("auth/" + username, password);
 
 		response.data = response.isSuccess() ? response.data : "Wrong password";
 
@@ -151,11 +242,28 @@ API = {
 	},
 
 	update_cloudstead: function(cloudsteadData) {
-		return this._post("instances/"+cloudsteadData.name, cloudsteadData);
+		// return this._post("instances/"+cloudsteadData.name, cloudsteadData);
+		return new Ember.RSVP.Promise(function(resolve){
+			resolve('cloudstead created');
+		});
+	},
+
+	launch_cloudstead: function(cloudsteadName) {
+		// return this._post("instances/"+cloudsteadName+"/launch");
+
+		var rand = Math.random()*100000000000000000;
+
+		var response = {
+			uuid: "taskid_"+rand,
+		};
+
+		return new Ember.RSVP.Promise(function(resolve){
+			resolve(response);
+		});
 	},
 
 	delete_cloudstead: function(cloudsteadName) {
-		return this._delete("instances/"+cloudsteadName);
+		// return this._delete("instances/"+cloudsteadName);
 	},
 
 	get_cloud_types: function() {
@@ -177,4 +285,89 @@ API = {
 	delete_ssh_key: function(key_name) {
 		return this._delete("keys/"+key_name);
 	},
+
+	loadAvailableVendors: function() {
+		return API.get_cloud_types().then(function(cloudTypeNames) {
+
+			var promises = [];
+
+			cloudTypeNames.forEach(function(cloudTypeName) {
+				promises.push(API.get_cloud_type(cloudTypeName));
+			});
+
+			return Promise.all(promises);
+		}).then(function(cloudTypes){
+			return cloudTypes.map(function(cloudType){
+				return cloudType.providerName;
+			});
+		});
+	},
+
+	loadCloudTypes: function() {
+		return API.get_cloud_types().then(function(cloudTypeNames) {
+
+			var promises = [];
+
+			cloudTypeNames.forEach(function(cloudTypeName) {
+				promises.push(API.get_cloud_type(cloudTypeName));
+			});
+
+			return Promise.all(promises);
+		}).then(function(cloudTypes){
+			return cloudTypes;
+		});
+	},
+
+	get_task: function(taskId) {
+		var msg = "";
+		var success = false;
+		console.log(NUMBER_OF_CALLS);
+		switch(NUMBER_OF_CALLS){
+			case 0:
+				msg = "setup.cheffing";
+				break;
+			case 1:
+				msg = "setup.cheffing.percent_done_25";
+				break;
+			case 2:
+				msg = "setup.cheffing.percent_done_55";
+				break;
+			case 3:
+				msg = "setup.cheffing.percent_done_75";
+				break;
+			case 4:
+				msg = "setup.cheffing.percent_done_85";
+				break;
+			case 5:
+				msg = "setup.cheffing.percent_done_100";
+				break;
+			case 6:
+				msg = "setup.instanceLookup";
+				break;
+			case 7:
+				msg = "setup.startingMasterInstance";
+				break;
+			case 8:
+				msg = "setup.success";
+				success = true;
+				break;
+			case 9:
+				msg = "";
+				RESPONSES.evets = [];
+				RESPONSES.success = false;
+				NUMBER_OF_CALLS = 0;
+				break;
+			default:
+				break;
+		}
+
+		RESPONSES.events.push({messageKey: msg});
+		RESPONSES.success = success;
+		NUMBER_OF_CALLS += 1;
+
+		return new Ember.RSVP.Promise(function(resolve){
+			resolve(RESPONSES);
+		});
+	}
+
 };

@@ -6,11 +6,17 @@
 				<label {{bind-attr for=app.appName}} class='apps_label'></label>
 			</div>
 			<div class='large-9 columns apps_label'>{{app.appName}}</div>
-			{{#link-to 'appl' app.appName class=app.displayClass style=app.style data-link-id=app.linkId}}Configure{{/link-to}}
+			{{#link-to 'appl' app.appName class=app.displayClass style=app.style data-link-id=app.linkId}}
+				{{t config.apps.config.configure}}
+			{{/link-to}}
 		</div>
 	{{/each}}
 {{else}}
-	<p style="margin-bottom:0px; margin-left:20px;">{{#link-to 'appl' 'default' classNames="button small"}}Back{{/link-to}}</p>
+	<p style="margin-bottom:0px; margin-left:20px;">
+		{{#link-to 'appl' 'default' classNames="button small"}}
+			{{t config.apps.config.back}}
+		{{/link-to}}
+	</p>
 	{{#each field in fields }}
 		<div class='large-5 columns wiz_dns_tab'>
 			{{#if field.isChoice}}
@@ -41,7 +47,7 @@
 				{{else}}
 					{{#if field.isCheckBox}}
 						<label class="hint--bottom" {{bind-attr data-hint=field.hint}} style="height: 50px; margin-top: 35px;">
-							
+
 							<div class="large-1 columns switch tiny radius" style="margin-right: 30px;">
 								{{ input
 									type=field.type.typeName
@@ -57,7 +63,7 @@
 							</div>
 							{{field.label}}
 						</label>
-						
+
 					{{else}}
 						<label class="hint--bottom" {{bind-attr data-hint=field.hint}}>
 							{{field.label}}

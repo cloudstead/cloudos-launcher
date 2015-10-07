@@ -3,7 +3,7 @@
 		{{#link-to 'clouds'}}
 			<div class="box">
 				<img src="/img/cloud.png" class="box_img">
-				<p class="box_name">clouds</p>
+				<p class="box_name">{{t launcher.clouds}}</p>
 			</div>
 		{{/link-to}}
 	</div>
@@ -11,7 +11,7 @@
 		{{#link-to 'configs'}}
 		<div class="box">
 			<img src="/img/settings.png" class="box_img">
-			<p class="box_name">configs</p>
+			<p class="box_name">{{t launcher.configs}}</p>
 		</div>
 		{{/link-to}}
 	</div>
@@ -19,7 +19,7 @@
 		{{#link-to 'cloudsteads'}}
 		<div class="box">
 			<img src="/img/cloudstead.png" class="box_img">
-			<p class="box_name">cloudstead</p>
+			<p class="box_name">{{t launcher.cloudsteads}}</p>
 		</div>
 		{{/link-to}}
 	</div>
@@ -27,7 +27,7 @@
 		<a {{action "doLogout"}}>
 		<div class="box">
 			<img src="/img/exit.png" class="box_img">
-			<p class="box_name">Logout</p>
+			<p class="box_name">{{t launcher.logout}}</p>
 		</div>
 		</a>
 	</div>

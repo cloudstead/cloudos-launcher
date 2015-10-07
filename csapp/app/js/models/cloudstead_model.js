@@ -1,4 +1,6 @@
 App.CloudsteadModel = Ember.Object.extend({
+	launchTaskKey: "",
+
 	toObject: function() {
 		return {
 			uuid: this.get("uuid"),
@@ -13,21 +15,30 @@ App.CloudsteadModel = Ember.Object.extend({
 
 	toObjectForPost: function() {
 		return {
-			name:  this.get("name"),
-			vendor:  this.get("vendor"),
-			accessKey:  this.get("accessKey"),
-			secretKey:  this.get("secretKey"),
+			privateKey: "test",
+			user: "test",
+			region: "test",
+			cloud: "test",
+			instanceType: "test",
+			instanceId: "test",
+			sshKey: "test",
+			launchConfig: "test",
+			additionalApps: "test",
+			keyPassphrase: "test",
+			name: "test",
 		};
 	},
 
 	update: function() {
-		var response = API.update_cloudstead(this.toObjectForPost());
-		return response.isSuccess();
+		return API.update_cloudstead(this.toObjectForPost());
+	},
+
+	doLaunch: function() {
+		return API.launch_cloudstead(this.get("name"));
 	},
 
 	destroy: function() {
-		var response = API.delete_cloudstead(this.get("name"));
-		return response.isSuccess();
+		return API.delete_cloudstead(this.get("name"));
 	},
 });
 
@@ -54,7 +65,6 @@ App.CloudsteadModel.reopenClass({
 	},
 
 	createNewFromData: function(dataObject) {
-		console.log("MOKJOJOJIO: ", dataObject);
 		return App.CloudsteadModel.create(dataObject);
 	},
 
@@ -67,31 +77,90 @@ App.CloudsteadModel.reopenClass({
 		return retArray;
 	},
 
-	get: function(cloudsteadName) {
-		var response = API.get_cloudstead(cloudsteadName);
-		return App.CloudModel.createNewFromData(response.data);
+	createWithVendors: function(vendors) {
+		return App.CloudModel.create({
+			uuid: "",
+			name: "",
+			vendor: "",
+			accessKey: "",
+			secretKey: "",
+			account: "",
+			optionalJson: "",
+			cloudTypes: vendors
+		});
+	},
+
+	createNewForAdd: function() {
+		var getCloudTypes = API.loadCloudTypes();
+		var getClouds = API.get_clouds();
+		var getSshKeys = API.get_ssh_keys();
+
+		return Promise.all([getCloudTypes,getClouds,getSshKeys]).then(function(responses){
+			console.log("RESPONSES: ", responses);
+			var cloudTypes = responses[0];
+			var clouds = responses[1];
+			var sshKeys = responses[2];
+
+			return App.CloudsteadModel.create({
+				uuid : "",
+				name : "",
+				adminUuid : "",
+				instanceType : "",
+				state : "",
+				lastStateChange : 0,
+				ucid : "",
+				launch : "",
+				cloud : "",
+				csRegion : {
+					name : "",
+					country : "",
+					region : "",
+					vendor : ""
+				},
+				allApps : [],
+				cloudTypes: cloudTypes,
+				clouds: clouds,
+				sshKeys: sshKeys,
+			});
+		});
+	},
+
+	getForEdit: function(cloudsteadName) {
+		var getCloudstead = API.get_cloudstead(cloudsteadName);
+
+		var getCloudTypes = API.loadCloudTypes();
+		var getClouds = API.get_clouds();
+		var getSshKeys = API.get_ssh_keys();
+
+		return Promise.all([getCloudTypes,getClouds,getSshKeys, getCloudstead]).then(function(responses){
+			console.log("RESPONSES: ", responses);
+			var cloudTypes = responses[0];
+			var clouds = responses[1];
+			var sshKeys = responses[2];
+			var cloudstead = responses[3];
+
+			return App.CloudsteadModel.create(cloudstead, {
+				cloudTypes: cloudTypes,
+				clouds: clouds,
+				sshKeys: sshKeys,
+			});
+		});
+	},
+
+	getCloudstead: function(cloudsteadName) {
+		var getCloud = API.get_cloud(cloudName);
+		var getVendors = API.loadAvailableVendors();
+
+		return Promise.all([getCloud, getVendors]).then(function(responses) {
+			var cloud = responses[0];
+			var vendors = responses[1];
+			return App.CloudModel.create(cloud, {availableVendors: vendors});
+		});
 	},
 
 	getAll: function() {
-		var response = API.get_cloudsteads();
-
-		var dataArray = [];
-
-		if (response.isSuccess()) {
-			dataArray = response.data;
-		} else {
-			$.notify("Error fetching configs", { position: "bottom-right", autoHideDelay: 10000, className: 'error' });
-		}
-
-		return App.CloudsteadModel.createFromArray(dataArray);
-	},
-
-	findById: function(uuid) {
-		var allConfigs = App.CloudsteadModel.getAll();
-		var configToFind = allConfigs.find(function(config) {
-			return config.uuid === uuid;
+		return API.get_cloudsteads().then(function(cloudsteads){
+			return App.CloudModel.createFromArray(cloudsteads);
 		});
-
-		return configToFind;
-	}
+	},
 });

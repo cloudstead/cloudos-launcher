@@ -7,6 +7,12 @@ App.ProtectedRoute = Ember.Route.extend({
 		}
 	},
 
+	logout: function(){
+		LauncherStorage.removeLogin();
+		// error substate and parent routes do not handle this error
+		return this.transitionTo('login');
+	},
+
 	actions: {
 		doTransitionTo: function(route_name) {
 			var loginController = this.controllerFor('login');
@@ -15,15 +21,28 @@ App.ProtectedRoute = Ember.Route.extend({
 
 			this.transitionTo(route_name);
 		},
+
+		error: function(error, transition) {
+			if (error && error.status === 403) {
+				return this.logout();
+			}
+			return true;
+		},
+
+		handleForbiddenResponse: function() {
+			return this.logout();
+		},
+
+		handleErrorResponse: function(reason) {
+			console.log("ERROR HANDLED: ", reason);
+			if (reason.status === 403) {
+				this.send("handleForbiddenResponse");
+			} else {
+				$.notify(
+					"An unexpected error occured.",
+					{ position: "bottom-right", autoHideDelay: 10000, className: 'error' }
+				);
+			}
+		},
 	},
-
-	// actions: {
-	// 	doTransitionToPreviuosRoute: function() {
-	// 		var loginController = this.controllerFor('login');
-
-	// 		var previousTransition = loginController.get('previousTransition');
-
-	// 		previousTransition.retry();
-	// 	}
-	// }
 });

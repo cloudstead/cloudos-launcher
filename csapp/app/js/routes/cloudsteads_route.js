@@ -7,5 +7,5 @@ App.CloudsteadsRoute = App.ProtectedRoute.extend({
 		if (Ember.isEmpty(model)) {
 			this.transitionTo("add_cloudstead");
 		}
-	}
+	},
 });

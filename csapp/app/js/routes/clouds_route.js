@@ -7,5 +7,5 @@ App.CloudsRoute = App.ProtectedRoute.extend({
 		if (Ember.isEmpty(model)) {
 			this.transitionTo("add_cloud");
 		}
-	}
+	},
 });

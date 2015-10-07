@@ -4,9 +4,6 @@
 		<h3 class='wiz_panel_header'>{{title}}</h3>
 		<p class='wiz_desc'>{{description}}</p>
 		<div class='row wiz_no_margin'>
-			{{#if isLaunch}}
-				<button class="button small launch_button" {{action "doLaunch"}}>Launch</button>
-			{{/if}}
 			{{#each field in fields }}
 				<div class='large-5 columns wiz_dns_tab'>
 					{{#if field.isChoice}}
@@ -21,16 +18,15 @@
 						</label>
 					{{else}}
 
-					{{#if field.isTimeOfDay}}
+					{{#if field.isCronSchedule}}
 						<label class="hint--bottom" {{bind-attr data-hint=field.hint}}>
 							{{field.label}}
-							{{ input
-								type=field.type.typeName
-								value=field.value
-								title=field.info
-								class="large-5 columns wiz_dns_tab time_of_day"
-								data-element-id=field.elementId
-							}}
+							{{view Ember.Select
+								content=field.cronChoices
+								optionValuePath="content.value"
+								optionLabelPath="content.label"
+								valueBinding=field.value
+								data-element-id=field.elementId }}
 						</label>
 						<script>
 							$('.time_of_day').timepicker({ 'scrollDefault': 'now' });

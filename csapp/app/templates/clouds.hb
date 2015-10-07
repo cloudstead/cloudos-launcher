@@ -1,17 +1,17 @@
 
 <div class="row margin_top">
-	<div class="small-4 columns"><h3>Available Clouds</h3></div>
+	<div class="small-4 columns"><h3>{{t clouds.title}}</h3></div>
 	<div class="small-4 columns">
-		<button class="button-small" {{ action "doAddCloud" }}>New Cloud</button>
+		<button class="button-small" {{ action "doAddCloud" }}>{{t clouds.new_cloud}}</button>
 	</div>
 </div>
 <div class="row">
 	<table id="providersTable" width="100%">
 		<thead>
 			<tr style="text-align: center">
-				<th class="text_align_center">Name</th>
-				<th class="text_align_center">Cloud Provider</th>
-				<th class="text_align_center">Delete</th>
+				<th class="text_align_center">{{t clouds.cloud_name}}</th>
+				<th class="text_align_center">{{t clouds.cloud_provider}}</th>
+				<th class="text_align_center">{{t clouds.cloud_actions}}</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -19,7 +19,9 @@
 				<tr id="{{cloud.uuid}}">
 					<td class="text_align_center">{{#link-to "edit_cloud" cloud.name }}{{cloud.name}}{{/link-to}}</td>
 					<td class="text_align_center">{{cloud.vendor}}</td>
-					<td class="text_align_center"><a class="button tiny" {{action "doDelete" cloud}}>Delete</a></td>
+					<td class="text_align_center">
+						<a class="button tiny" {{action "doDelete" cloud}}>{{t clouds.cloud_delete}}</a>
+					</td>
 				</tr>
 			{{/each}}
 		</tbody>

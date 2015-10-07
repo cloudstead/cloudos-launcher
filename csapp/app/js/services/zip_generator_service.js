@@ -16,16 +16,16 @@ ZipGeneratorService = {
 	generateFolderStructure: function() {
 		var rootFolder = new JSZip();
 
-		var initFilesFolder = rootFolder.folder("init_files");
+		// var initFilesFolder = rootFolder.folder("init_files");
 
-		var dataBagsFolder = initFilesFolder.folder("data_bags");
-		var dataFilesFolder = initFilesFolder.folder("data_files");
+		var dataBagsFolder = rootFolder.folder("data_bags");
+		var dataFilesFolder = rootFolder.folder("data_files");
 
 		var cloudosFolder = dataBagsFolder.folder("cloudos");
 
 		return {
 			root: rootFolder,
-			initFiles: initFilesFolder,
+			// initFiles: initFilesFolder,
 			dataBags: dataBagsFolder,
 			dataFiles: dataFilesFolder,
 			cloudos: cloudosFolder
@@ -48,7 +48,7 @@ ZipGeneratorService = {
 					secondaryData = cloudosJSON;
 					break;
 				case "ssl":
-					outputFolder = folders.dataFiles;
+					outputFolder = folders.root;
 					break;
 				case "smtp":
 					outputFolder = folders.dataBags;

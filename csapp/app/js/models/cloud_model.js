@@ -21,28 +21,18 @@ App.CloudModel = Ember.Object.extend({
 	},
 
 	update: function() {
-		var response = API.update_cloud(this.toObjectForPost());
-		return response.isSuccess();
+		return API.update_cloud(this.toObjectForPost());
 	},
 
 	destroy: function() {
-		var response = API.delete_cloud(this.get("name"));
-		return response.isSuccess();
+		return API.delete_cloud(this.get("name"));
 	},
+
+	availableVendors: [],
+
 });
 
 App.CloudModel.reopenClass({
-	availableVendors: function() {
-		var cloudTypeNames = API.get_cloud_types().data;
-		var cloudTypes = [];
-
-		cloudTypeNames.forEach(function(cloudTypeName) {
-			cloudTypes.push(API.get_cloud_type(cloudTypeName).data);
-		});
-		return cloudTypes.map(function(cloudType){
-			return cloudType.id;
-		});
-	}, //["Amazon EC2", "Rackspace", "Digitalocean"],
 
 	createNewEmpty: function() {
 		return App.CloudModel.create({
@@ -53,6 +43,21 @@ App.CloudModel.reopenClass({
 			secretKey: "",
 			account: "",
 			optionalJson: "",
+		});
+	},
+
+	createWithVendors: function() {
+		return API.loadAvailableVendors().then(function(vendors) {
+			return App.CloudModel.create({
+				uuid: "",
+				name: "",
+				vendor: "",
+				accessKey: "",
+				secretKey: "",
+				account: "",
+				optionalJson: "",
+				availableVendors: vendors
+			});
 		});
 	},
 
@@ -70,30 +75,19 @@ App.CloudModel.reopenClass({
 	},
 
 	getAll: function() {
-		var response = API.get_clouds();
-
-		var dataArray = [];
-
-		if (response.isSuccess()) {
-			dataArray = response.data;
-		} else {
-			$.notify("Error fetching clouds", { position: "bottom-right", autoHideDelay: 10000, className: 'error' });
-		}
-
-		return App.CloudModel.createFromArray(dataArray);
-	},
-
-	get: function(cloudName) {
-		var response = API.get_cloud(cloudName);
-		return App.CloudModel.createNewFromData(response.data);
-	},
-
-	findById: function(uuid) {
-		var allClouds = App.CloudModel.getAll();
-		var cloudToFind = allClouds.find(function(cloud) {
-			return cloud.uuid === uuid;
+		return API.get_clouds().then(function(clouds){
+			return App.CloudModel.createFromArray(clouds);
 		});
+	},
 
-		return cloudToFind;
-	}
+	getForEdit: function(cloudName) {
+		var getCloud = API.get_cloud(cloudName);
+		var getVendors = API.loadAvailableVendors();
+
+		return Promise.all([getCloud, getVendors]).then(function(responses) {
+			var cloud = responses[0];
+			var vendors = responses[1];
+			return App.CloudModel.create(cloud, {availableVendors: vendors});
+		});
+	},
 });

@@ -16,13 +16,11 @@ App.ConfigModel = Ember.Object.extend({
 	},
 
 	update: function() {
-		var response = API.update_config(this.toObjectForPost());
-		return response.isSuccess();
+		return API.update_config(this.toObjectForPost());
 	},
 
 	destroy: function() {
-		var response = API.delete_config(this.get("name"));
-		return response.isSuccess();
+		return API.delete_config(this.get("name"));
 	},
 });
 
@@ -51,25 +49,8 @@ App.ConfigModel.reopenClass({
 	},
 
 	getAll: function() {
-		var response = API.get_configs();
-
-		var dataArray = [];
-
-		if (response.isSuccess()) {
-			dataArray = response.data;
-		} else {
-			$.notify("Error fetching configs", { position: "bottom-right", autoHideDelay: 10000, className: 'error' });
-		}
-
-		return App.ConfigModel.createFromArray(dataArray);
-	},
-
-	findById: function(uuid) {
-		var allConfigs = App.ConfigModel.getAll();
-		var configToFind = allConfigs.find(function(config) {
-			return config.uuid === uuid;
+		return API.get_configs().then(function(configs){
+			return App.ConfigModel.createFromArray(configs);
 		});
-
-		return configToFind;
-	}
+	},
 });

@@ -1,3 +1,5 @@
+getFirstTranslation();
+
 // DEFINE ROUTES
 App.Router.map(function() {
 	this.route("login", {path: "/"});
@@ -23,6 +25,7 @@ App.Router.map(function() {
 
 		this.resource('add_cloudstead', {path: '/addcloudstead/'});
 		this.resource('edit_cloudstead', {path: '/cloudstead/:cloudstead_name'});
+		this.resource('launch_cloudstead', {path: '/launch_cloudstead/:task_id'});
 
 		this.resource('new_ssh_key', {path: '/new_ssh_key/'});
 		this.resource('manage_ssh_keys', {path: '/manage_shh_keys/'});

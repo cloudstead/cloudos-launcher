@@ -1,6 +1,6 @@
 var ADD_LAUNCH_ROUTES = [];
 var additional_routes = ['apps'];
-var trans =  getFirstTranslation();
+var trans = getFirstTranslation()['config_tabs'];
 
 for(var route in INIT_CONFIG) {
 	ADD_LAUNCH_ROUTES.push(route);
@@ -194,41 +194,62 @@ App.AddlaunchController = App.BaseObjectController.extend({
 			this.doTransitionToPreviuosRoute();
 		},
 		doLaunch: function() {
-			var unopened = $('.unopened');
-			unopened.removeClass('unopened');
-			unopened.addClass('error_link');
-			var errors = $("#sidebar>ul>li>a.menu-item.error_link");
+			var self = this;
 			var dataBlob = "";
-			if(errors.length === 0 && unopened.length === 0){
-				dataBlob = ZipGeneratorService.generateContentFrom(DATA, "base64");
 
-				console.log("DATA: ", DATA);
-				console.log("BLOB: ", dataBlob);
+			if(self.hasNoValidationErrors()){
+				dataBlob = ZipGeneratorService.generateContentFrom(DATA, "base64");
 
 				var config = App.ConfigModel.create({
 					name: DATA.dns.fields[0].value + " - " + DATA.dns.fields[1].value,
 					base64zipData: dataBlob
 				});
 
-				config.update();
+				config.update().then(function(response){
+					self.handleUpdateSuccess(response);
+				}, function(reason){
+					self.handleUpdateFailure(reason);
+				});
+
 			}else{
 				$.notify("Please correct the errors", Validator.NotifyOptions );
 			}
 		},
+
 		doDownload: function() {
+			var dataBlob = "";
+
+			if(this.hasNoValidationErrors()){
+				dataBlob = ZipGeneratorService.generateZipFrom(DATA);
+			}else{
+				$notify( "Please correct the errors", Validator.NotifyOptions );
+			}
+		}
+	},
+
+	hasNoValidationErrors: function() {
 			var unopened = $('.unopened');
 			unopened.removeClass('unopened');
 			unopened.addClass('error_link');
+
 			var errors = $("#sidebar>ul>li>a.menu-item.error_link");
-			var dataBlob = "";
-			console.log("DATA: ", DATA);
-			// if(errors.length === 0 && unopened.length === 0){
-				dataBlob = ZipGeneratorService.generateZipFrom(DATA);
-			// }else{
-			// 	$notify( "Please correct the errors", Validator.NotifyOptions );
-			// }
+
+			return errors.length === 0 && unopened.length === 0;
+	},
+
+	handleUpdateSuccess: function(response) {
+		this.doTransitionToPreviuosRoute();
+	},
+
+	handleUpdateFailure: function(reason) {
+		if (reason.status === 200) {
+			this.handleUpdateSuccess(reason);
+		} else if (reason.status === 403) {
+			this.send("handleForbiddenResponse");
+		} else {
+			$.notify("Error saving cloudstead", Validator.NotifyOptions );
 		}
-	}
+	},
 });
 
 Ember.View.reopen({

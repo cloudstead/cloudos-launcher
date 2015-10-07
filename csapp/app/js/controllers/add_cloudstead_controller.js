@@ -1,10 +1,5 @@
+// When cloud is selected it changes the cloud type which in turn changes regions and instances.
 App.AddCloudsteadController = App.BaseObjectController.extend({
-	clouds: [],
-
-	cloudTypes: function() {
-		console.log(this.get("model"));
-		return API.get_cloud_types().data;
-	}.property(),
 
 	allClouds: function() {
 		return this.get("clouds").map(function(cloud) {
@@ -14,13 +9,17 @@ App.AddCloudsteadController = App.BaseObjectController.extend({
 
 	selectedCloud: function() {
 		var cloudName = this.get("cloud");
-		return Ember.isEmpty(cloudName) ? App.CloudModel.createNewEmpty() : App.CloudModel.get(cloudName);
+		return Ember.isEmpty(cloudName) ?
+			App.CloudModel.createNewEmpty() :
+			this.get("clouds").find(function(c){
+				return c.name === cloudName;
+			});
 	}.property('cloud'),
 
 	selectedCloudType: function() {
 		var cloudTypeName = this.get("selectedCloud.vendor");
-		return this.get("cloudTypes").find(function(cloudType) {
-			return cloudType.id === cloudTypeName;
+		return  this.get("cloudTypes").find(function(cloudType) {
+			return cloudType.providerName === cloudTypeName;
 		});
 	}.property('selectedCloud'),
 
@@ -42,8 +41,6 @@ App.AddCloudsteadController = App.BaseObjectController.extend({
 		return instaceTypes;
 	}.property("selectedCloudType"),
 
-	sshKeys: [],
-
 	allSSHKeys: function() {
 		return this.get("sshKeys").map(function(sshKey) {
 			return sshKey.name;
@@ -64,7 +61,18 @@ App.AddCloudsteadController = App.BaseObjectController.extend({
 		},
 
 		doLaunch: function() {
-			console.log("Do Launch");
+			var self = this;
+			var cloudstead = this.get("model");
+
+			cloudstead.update().then(function(response) {
+				cloudstead.doLaunch().then(function(launch_response) {
+					self.send("handleLaunchStart", launch_response);
+				}, function(launch_reason) {
+
+				});
+			}, function(reason) {
+
+			});
 		},
 
 		doCancel: function() {

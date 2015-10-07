@@ -22,6 +22,7 @@ module.exports = function(lineman) {
 				"vendor/js/jszip.min.js",
 				"vendor/js/twin-bcrypt.min.js",
 				"vendor/js/notify.min.js",
+				"vendor/js/i18n.js",
 			],
 			app: [
 				"app/js/input_data/**/*.js",

@@ -16,9 +16,9 @@ App.LoginController = Ember.ObjectController.extend({
 	_resolveNextRoute: function() {
 		var route = "clouds";
 
-		var clouds = App.CloudModel.getAll();
-		var configs = App.ConfigModel.getAll();
-		var cloudsteads = App.CloudsteadModel.getAll();
+		var clouds = API.get_clouds();
+		var configs = API.get_configs();
+		var cloudsteads =API.get_cloudsteads();
 
 		if (Ember.isEmpty(clouds)) {
 			route = "add_cloud";

@@ -5,14 +5,31 @@ App.NewSshKeyController = App.BaseObjectController.extend({
 		doReadUploadedFile: function(fileContent) {
 			this.set("publicKey", fileContent);
 		},
+
 		doCancel: function() {
 			this.doTransitionToPreviuosRoute();
 		},
-		doAddKey: function() {
+
+		doAddKey: function () {
+			var self = this;
 			var sshKey = this.get("model");
-			if (sshKey.update()) {
-				this.doTransitionToPreviuosRoute();
-			}
+			sshKey.update().then(function(response) {
+				self.handleUpdateSuccess(response);
+			}, function(reason){
+				self.handleUpdateFailure(reason);
+			});
+		},
+	},
+
+	handleUpdateSuccess: function(response) {
+		this.doTransitionToPreviuosRoute();
+	},
+
+	handleUpdateFailure: function(reason) {
+		if (reason.status === 200) {
+			this.handleUpdateSuccess(reason);
+		} else if (reason.status === 403) {
+			this.send("handleForbiddenResponse");
 		}
 	},
 });
