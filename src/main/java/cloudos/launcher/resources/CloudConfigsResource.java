@@ -78,7 +78,8 @@ public class CloudConfigsResource {
             found.update(config);
             config = configDAO.update(found);
         }
-        return ok(config.setLaunchAccount(account).decrypt());
+        config.setLaunchAccount(account); // it can get reset by hibernate
+        return ok(config.decrypt());
     }
 
     /**

@@ -12,8 +12,10 @@ rsync -avzc ${BASE_DIR}/../cloudos-lib/src/main/* ${SRC_DIR}
 rsync -avzc ${BASE_DIR}/../cloudos-appstore/appstore-common/src/main/* ${SRC_DIR}
 rsync -avzc ${BASE_DIR}/../utils/cobbzilla-utils/src/main/* ${SRC_DIR}
 rsync -avzc ${BASE_DIR}/../utils/cobbzilla-wizard/wizard-server/src/main/* ${SRC_DIR}
+rsync -avzc ${BASE_DIR}/csapp ${BUILD_DIR}
+rsync -avzc ${BASE_DIR}/bin ${BUILD_DIR}
 
-cp ${BASE_DIR}/pom-apidocs.xml ${BUILD_DIR}/pom.xml
+cp ${BASE_DIR}/pom.xml ${BUILD_DIR}/pom.xml
 
 cd ${BUILD_DIR}
-mvn test && rsync -avzc target/miredot .. # && cd ${BASE_DIR} && rm -rf ${BUILD_DIR}
+mvn -P apidocs test && rsync -avzc target/miredot .. # && cd ${BASE_DIR} && rm -rf ${BUILD_DIR}

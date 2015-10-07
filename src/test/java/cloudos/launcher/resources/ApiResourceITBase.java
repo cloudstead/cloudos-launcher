@@ -31,9 +31,9 @@ public abstract class ApiResourceITBase extends ApiDocsResourceIT<LaunchApiConfi
     protected static CloudConfig randomCloudConfig() {
         return (CloudConfig) new CloudConfig()
                 .setVendor(randomCloudVendor())
-                .setAccessKey(randomName())
-                .setSecretKey(randomName())
-                .setName(randomName());
+                .setAccessKey("access-"+randomName())
+                .setSecretKey("secret-"+randomName())
+                .setName("name-"+randomName());
     }
 
     public static SshKey randomSshKey() throws Exception {

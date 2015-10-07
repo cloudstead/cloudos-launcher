@@ -4,6 +4,7 @@ import cloudos.cslib.compute.CsCloud;
 import cloudos.cslib.compute.meta.CsCloudType;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
@@ -22,7 +23,7 @@ import javax.validation.constraints.Size;
 import static cloudos.launcher.ApiConstants.CLOUD_TYPE_FACTORY;
 import static org.cobbzilla.util.string.StringUtil.ellipsis;
 
-@Entity @Slf4j @Accessors(chain=true)
+@Entity @NoArgsConstructor @Slf4j @Accessors(chain=true)
 public class CloudConfig extends UniquelyNamedEntity implements CustomScrubbage {
 
     private static final ScrubbableField[] SCRUB = new ScrubbableField[]{
@@ -89,6 +90,9 @@ public class CloudConfig extends UniquelyNamedEntity implements CustomScrubbage 
     }
 
     public CloudConfig decrypt() {
+        if (getLaunchAccount() == null) {
+            log.warn("oops!");
+        }
         final Crypto crypto = getLaunchAccount().getCrypto();
         setAccessKey(crypto.decrypt(getAccessKey()));
         setSecretKey(crypto.decrypt(getSecretKey()));
