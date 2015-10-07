@@ -1,4 +1,5 @@
 Validator = {
+
 	ValidateField: function(element){
 		var elem = $(element);
 		var kind = Ember.isNone(elem.attr("data-kind")) ? elem.attr("data-kindtab") : elem.attr("data-kind");
@@ -40,7 +41,9 @@ Validator = {
 			case "field":
 			case "text":
 				errorData.isValid = RequiredValidator.isValid(elem.val(), required);
-				if(!errorData.isValid){ errorData.message = "Field is required"; }
+				if(!errorData.isValid){
+					errorData.message = RequiredValidator.getErrorMessage();
+				}
 				break;
 			default:
 				console.log("Validator not recognized");
@@ -48,7 +51,7 @@ Validator = {
 		}
 
 		if(errorData.isValid){ return true;}
-		elem.notify( errorData.message, this.NotifyOptions );
+		Notify.onElement(elem, errorData.message);
 		return false;
 	},
 
@@ -91,7 +94,6 @@ Validator = {
 	NumberPattern: /^\d*$/,
 	StartWithLetterPattern: /^[A-Za-z][A-Za-z0-9]*(?:_[A-Za-z0-9]+)*$/,
 	CronPattern: /(28|\*) (2|\*) (7|\*) (1|\*) (1|\*)/,
-	NotifyOptions: { position:"bottom",autoHideDelay: 1800 }
 };
 
 EmptyValidator = {
@@ -101,6 +103,10 @@ EmptyValidator = {
 };
 
 RequiredValidator = {
+	getErrorMessage: function() {
+		return getFirstTranslation()['error']['fields']['required'];
+	},
+
 	isValid: function(value, required){
 		if(required && EmptyValidator.isEmpty(value)){
 			return false;
@@ -110,13 +116,18 @@ RequiredValidator = {
 };
 
 PatternValidator = {
+
+	getErrorMessage: function() {
+		return getFirstTranslation()['error']['fields']['pattern'];
+	},
+
 	getErrors: function(value, required, pattern) {
 		var error = { isValid: false, message: "" };
 
 		if(!RequiredValidator.isValid(value, required)){
-			error["message"] = "Field is required";
+			error["message"] = RequiredValidator.getErrorMessage();
 		}else if (!pattern.test(value)){
-			error["message"] = "Data is not valid";
+			error["message"] = PatternValidator.getErrorMessage();
 		}else{
 			error["isValid"] = true;
 		}
@@ -125,6 +136,10 @@ PatternValidator = {
 };
 
 IPListValidator = {
+	getErrorMessage: function() {
+		return getFirstTranslation()['error']['fields']['ip_list'];
+	},
+
 	getErrors:function(host, required) {
 		var error = { isValid: false, message: "" };
 		var pattern = /^([1-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])(\.([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])){3}$/;
@@ -133,7 +148,7 @@ IPListValidator = {
 		for (i = 0; i < tokens.length; ++i) {
 			if (tokens[i] !== "" && !pattern.test(tokens[i])) {
 				error.isValid = false;
-				error.message = "Not valid. Use format: xxx.xxx.xxx.xxx, where xxx is 255 maximum";
+				error.message = IPListValidator.getErrorMessage();
 			}
 		}
 		return error;

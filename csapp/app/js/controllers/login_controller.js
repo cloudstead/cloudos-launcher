@@ -8,7 +8,7 @@ App.LoginController = Ember.ObjectController.extend({
 				LauncherStorage.saveLogin(this.get("username"), this.get("password"), loginResponse.data.token);
 				this.send("transitionToLauncherAt", this._resolveNextRoute());
 			} else {
-				$.notify(loginResponse.data, { position: "bottom-right", autoHideDelay: 10000, className: 'error' });
+				Notify.globally(loginResponse.data);
 			}
 		}
 	},

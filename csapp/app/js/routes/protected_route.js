@@ -13,6 +13,10 @@ App.ProtectedRoute = Ember.Route.extend({
 		return this.transitionTo('login');
 	},
 
+	generalErrorTranslation: function () {
+		return getFirstTranslation()['error']['general'];
+	},
+
 	actions: {
 		doTransitionTo: function(route_name) {
 			var loginController = this.controllerFor('login');
@@ -30,18 +34,16 @@ App.ProtectedRoute = Ember.Route.extend({
 		},
 
 		handleForbiddenResponse: function() {
+			Notify.globally(this.generalErrorTranslation().forbidden);
+
 			return this.logout();
 		},
 
 		handleErrorResponse: function(reason) {
-			console.log("ERROR HANDLED: ", reason);
 			if (reason.status === 403) {
 				this.send("handleForbiddenResponse");
 			} else {
-				$.notify(
-					"An unexpected error occured.",
-					{ position: "bottom-right", autoHideDelay: 10000, className: 'error' }
-				);
+				Notify.globally(this.generalErrorTranslation().unknown);
 			}
 		},
 	},
